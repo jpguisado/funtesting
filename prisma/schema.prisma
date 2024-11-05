@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["strictUndefinedChecks"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model userEpic {
+  id Int @id @default(autoincrement())
+  title String
+  description String @default("")
+  userHistories userHistory[]
+}
+
+model userHistory {
+  id Int @id @default(autoincrement())
+  title String
+  description String @default("")
+  userEpic userEpic ? @relation(fields: [userEpicId], references: [id])
+  userEpicId Int ?
+  casesOfThisHistory testCase ? @relation(fields: [casesOfThisHistoryId],references: [id])
+  casesOfThisHistoryId Int ?
+}
+
+model step {
+  id Int @id @default(autoincrement())
+  case testCase @relation(fields: [testCaseId], references: [id])
+  testCaseId Int
+  testStatus String
+}
+
+model testCase {
+  id Int @id @default(autoincrement())
+  caseTitle String
+  preconditions String @default("")
+  stepList step[]
+  historyRelated userHistory[]
+}
