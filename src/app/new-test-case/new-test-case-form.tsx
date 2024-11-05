@@ -21,6 +21,9 @@ import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
 
+export type userHistoryType = z.infer<typeof userHistorySchema>
+export type userEpicType = z.infer<typeof UserEpicSchema>
+
 export const userHistorySchema = z.object({
   title: z.string().min(2, {
     message: "User Epic must be at least 2 characters.",
@@ -29,20 +32,6 @@ export const userHistorySchema = z.object({
     message: "User History must be at least 2 characters.",
   }).optional(),
 }).array()
-
-export type userHistoryType = z.infer<typeof userHistorySchema>
-
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const
 
 const FieldValidationSchema = z.object({
   fieldLabel: z.string().min(1, {
@@ -65,7 +54,12 @@ const StepSchema = z.object({
   // TODO: relatedWithStepId
 })
 
-const FormSchema = z.object({
+export const UserEpicSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+}).array();
+
+const NewTestCaseSchema = z.object({
   userEpic: z.string().min(2, {
     message: "User Epic must be at least 2 characters.",
   }),
@@ -81,10 +75,12 @@ const FormSchema = z.object({
   stepList: StepSchema.array()
 })
 
-export default function NewTestCaseForm({ userHistories }: { userHistories: userHistoryType }) {
+export default function NewTestCaseForm(
+  { userHistories, userEpics }: { userHistories: userHistoryType, userEpics: userEpicType }
+) {
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof NewTestCaseSchema>>({
+    resolver: zodResolver(NewTestCaseSchema),
     defaultValues: {
       userEpic: "",
       titleCase: "",
@@ -103,7 +99,7 @@ export default function NewTestCaseForm({ userHistories }: { userHistories: user
     name: "stepList"
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: z.infer<typeof NewTestCaseSchema>) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -135,37 +131,37 @@ export default function NewTestCaseForm({ userHistories }: { userHistories: user
                       )}
                     >
                       {field.value
-                        ? languages.find(
-                          (language) => language.value === field.value
-                        )?.label
-                        : "Select language"}
+                        ? userEpics.find(
+                          (userEpic) => userEpic.title === field.value
+                        )?.title
+                        : "Select user epic"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search language..." />
+                    <CommandInput placeholder="Search user epic..." />
                     <CommandList>
-                      <CommandEmpty>No language found.</CommandEmpty>
+                      <CommandEmpty>No user epic found.</CommandEmpty>
                       <CommandGroup>
-                        {languages.map((language) => (
+                        {userEpics.map((userEpic) => (
                           <CommandItem
-                            value={language.label}
-                            key={language.value}
+                            value={userEpic.title}
+                            key={userEpic.title}
                             onSelect={() => {
-                              form.setValue("userEpic", language.value)
+                              form.setValue("userEpic", userEpic.title)
                             }}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                language.value === field.value
+                                userEpic.title === field.value
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
                             />
-                            {language.label}
+                            {userEpic.title}
                           </CommandItem>
                         ))}
                       </CommandGroup>
