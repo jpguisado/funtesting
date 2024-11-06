@@ -20,75 +20,33 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-
-export type userHistoryType = z.infer<typeof userHistorySchema>
-export type userEpicType = z.infer<typeof UserEpicSchema>
-
-export const userHistorySchema = z.object({
-  title: z.string().min(2, {
-    message: "User Epic must be at least 2 characters.",
-  }),
-  description: z.string().min(2, {
-    message: "User History must be at least 2 characters.",
-  }).optional(),
-}).array()
-
-const FieldValidationSchema = z.object({
-  fieldLabel: z.string().min(1, {
-    message: "You need at least 1 character.",
-  }).optional(),
-  fieldValidation: z.string().min(1, {
-    message: "You need at least 1 character.",
-  }).array().optional(),
-})
-
-const StepSchema = z.object({
-  stepDescription: z.string().min(2, {
-    message: "You need at least 2 characters.",
-  }),
-  expectedResult: z.string().min(2, {
-    message: "You need at least 2 characters.",
-  }),
-  field: FieldValidationSchema.array().optional(),
-  isBlocker: z.string().optional()
-  // TODO: relatedWithStepId
-})
-
-export const UserEpicSchema = z.object({
-  title: z.string(),
-  description: z.string().optional(),
-}).array();
-
-const NewTestCaseSchema = z.object({
-  userEpic: z.string().min(2, {
-    message: "User Epic must be at least 2 characters.",
-  }),
-  userHistory: z.string().min(2, {
-    message: "User History must be at least 2 characters.",
-  }),
-  titleCase: z.string().min(1, {
-    message: "At least one title."
-  }),
-  preconditions: z.string().min(1, {
-    message: "At least one precondition."
-  }),
-  stepList: StepSchema.array()
-})
+import { newTestCaseType, userEpicListType, userStoryListType } from "@/types/types"
+import { NewTestCaseSchema } from "@/schemas/schemas"
+import { createNewTestCase } from "@/server/actions"
 
 export default function NewTestCaseForm(
-  { userHistories, userEpics }: { userHistories: userHistoryType, userEpics: userEpicType }
+  { userStoriesList, userEpicsList }: { userStoriesList: userStoryListType, userEpicsList: userEpicListType }
 ) {
 
-  const form = useForm<z.infer<typeof NewTestCaseSchema>>({
+  const form = useForm<newTestCaseType>({
     resolver: zodResolver(NewTestCaseSchema),
     defaultValues: {
-      userEpic: "",
+      userEpic: {
+        title: '',
+        description: ''
+      },
       titleCase: "",
-      userHistory: "",
+      userStory: {
+        title: '',
+        description: ''
+      },
       preconditions: "",
       stepList: [{
         expectedResult: '',
         stepDescription: '',
+        // field: [{}],
+        isBlocker: 'no',
+        stepStatus: 'failed'
       }],
     },
   })
@@ -99,7 +57,7 @@ export default function NewTestCaseForm(
     name: "stepList"
   });
 
-  function onSubmit(data: z.infer<typeof NewTestCaseSchema>) {
+  async function onSubmit(data: newTestCaseType) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -108,6 +66,8 @@ export default function NewTestCaseForm(
         </pre>
       ),
     })
+
+    await createNewTestCase(data)
   }
 
   return (
@@ -131,7 +91,7 @@ export default function NewTestCaseForm(
                       )}
                     >
                       {field.value
-                        ? userEpics.find(
+                        ? userEpicsList.find(
                           (userEpic) => userEpic.title === field.value
                         )?.title
                         : "Select user epic"}
@@ -145,18 +105,18 @@ export default function NewTestCaseForm(
                     <CommandList>
                       <CommandEmpty>No user epic found.</CommandEmpty>
                       <CommandGroup>
-                        {userEpics.map((userEpic) => (
+                        {userEpicsList.map((userEpic) => (
                           <CommandItem
-                            value={userEpic.title}
+                            value={userEpic}
                             key={userEpic.title}
                             onSelect={() => {
-                              form.setValue("userEpic", userEpic.title)
+                              form.setValue("userEpic", userEpic)
                             }}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                userEpic.title === field.value
+                                userEpic.title === field.value.title
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
@@ -178,7 +138,7 @@ export default function NewTestCaseForm(
         />
         <FormField
           control={control}
-          name="userHistory"
+          name="userStory"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Historia de usuario</FormLabel>
@@ -194,7 +154,7 @@ export default function NewTestCaseForm(
                       )}
                     >
                       {field.value
-                        ? userHistories.find(
+                        ? userStoriesList.find(
                           (HU) => HU.title === field.value
                         )?.title
                         : "Select HU"}
@@ -208,12 +168,12 @@ export default function NewTestCaseForm(
                     <CommandList>
                       <CommandEmpty>No HU found.</CommandEmpty>
                       <CommandGroup>
-                        {userHistories.map((HU) => (
+                        {userStoriesList.map((HU) => (
                           <CommandItem
                             value={HU.title}
                             key={HU.title}
                             onSelect={() => {
-                              form.setValue("userHistory", HU.title)
+                              form.setValue("userStory", HU)
                             }}
                           >
                             <Check
@@ -298,6 +258,14 @@ export default function NewTestCaseForm(
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
+                </div>
+              )}
+            />
+            <FormField
+              control={control}
+              name={`stepList.${index}.expectedResult`}
+              render={({ field }) => (
+                <div className="flex gap-3 w-full">
                   <FormItem className="w-full">
                     <FormLabel>Resultado esperado paso {index}</FormLabel>
                     <FormControl className="">

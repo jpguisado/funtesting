@@ -20,43 +20,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
+import { userEpicListType, userStoryType } from "@/types/types"
+import { userStorySchema } from "@/schemas/schemas"
+import { createUserStory } from "@/server/actions"
 
-const languages = [
-    { label: "English", value: "en" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
-    { label: "Japanese", value: "ja" },
-    { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
-] as const
-
-const FormSchema = z.object({
-    userEpic: z.string().min(2, {
-        message: ""
-    }).optional(),
-    userHistoryTitle: z.string().min(2, {
-        message: "User Epic must be at least 2 characters.",
-    }),
-    caseDescription: z.string().min(2, {
-        message: "User History must be at least 2 characters.",
-    }).optional(),
-})
-
-export default function Page() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+export default function NewUserStoryForm({userEpicsList} : {userEpicsList : userEpicListType}) {
+    const form = useForm<userStoryType>({
+        resolver: zodResolver(userStorySchema),
         defaultValues: {
-            userHistoryTitle: "",
-            caseDescription: "",
+            title: "",
+            description: "",
+            userEpic: {
+                title: "",
+            },
         }
     })
 
     const { control, handleSubmit, reset, trigger, setError } = form;
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
+    async function onSubmit(data: userStoryType) {
         toast({
             title: "You submitted the following values:",
             description: (
@@ -64,14 +46,16 @@ export default function Page() {
                     <code className="text-white">{JSON.stringify(data, null, 2)}</code>
                 </pre>
             ),
-        })
+        });
+
+        await createUserStory(data)
     }
 
     return (
         <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 space-y-6">
                 <FormField
-                    control={control}
+                    control={form.control}
                     name="userEpic"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
@@ -88,10 +72,10 @@ export default function Page() {
                                             )}
                                         >
                                             {field.value
-                                                ? languages.find(
-                                                    (language) => language.value === field.value
+                                                ? userEpicsList.find(
+                                                    (userEpic) => userEpic === field.value
                                                 )?.label
-                                                : "Select language"}
+                                                : "Select user epic"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
@@ -102,23 +86,23 @@ export default function Page() {
                                         <CommandList>
                                             <CommandEmpty>No language found.</CommandEmpty>
                                             <CommandGroup>
-                                                {languages.map((language) => (
+                                                {userEpicsList.map((userEpic) => (
                                                     <CommandItem
-                                                        value={language.label}
-                                                        key={language.value}
+                                                        value={userEpic.title}
+                                                        key={userEpic.title}
                                                         onSelect={() => {
-                                                            form.setValue("userEpic", language.value)
+                                                            form.setValue("userEpic", userEpic)
                                                         }}
                                                     >
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                language.value === field.value
+                                                                userEpic.title === field.value.title
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
                                                         />
-                                                        {language.label}
+                                                        {userEpic.title}
                                                     </CommandItem>
                                                 ))}
                                             </CommandGroup>
@@ -135,7 +119,7 @@ export default function Page() {
                 />
                 <FormField
                     control={control}
-                    name="userHistoryTitle"
+                    name="title"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Título de la historia de usuario</FormLabel>
@@ -151,7 +135,7 @@ export default function Page() {
                 />
                 <FormField
                     control={control}
-                    name="caseDescription"
+                    name="description"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Descripción</FormLabel>

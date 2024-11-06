@@ -22,14 +22,16 @@ model User {
 
 model userEpic {
   id Int @id @default(autoincrement())
-  title String
+  title String @unique
   description String @default("")
-  userHistories userHistory[]
+  userHistories userStory[]
+  casesOfThisUserEpic testCase ? @relation(fields: [casesOfThisUserEpicId],references: [id])
+  casesOfThisUserEpicId Int ?
 }
 
-model userHistory {
+model userStory {
   id Int @id @default(autoincrement())
-  title String
+  title String @unique
   description String @default("")
   userEpic userEpic ? @relation(fields: [userEpicId], references: [id])
   userEpicId Int ?
@@ -41,13 +43,17 @@ model step {
   id Int @id @default(autoincrement())
   case testCase @relation(fields: [testCaseId], references: [id])
   testCaseId Int
-  testStatus String
+  stepDescription String
+  expectedResult String
+  stepStatus String
+  isBlocker String?
 }
 
 model testCase {
   id Int @id @default(autoincrement())
-  caseTitle String
+  titleCase String @unique
   preconditions String @default("")
   stepList step[]
-  historyRelated userHistory[]
+  relatedStory userStory[]
+  userEpic userEpic []
 }

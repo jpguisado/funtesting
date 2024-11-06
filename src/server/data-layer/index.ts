@@ -1,12 +1,17 @@
 import { db } from "../db";
 
-export function fetchUserEpics() {
-    return db.userEpic.findMany({
+export async function fetchUserEpics() {
+    return await db.userEpic.findMany({
+        select: {
+            id: true,
+            title: true,
+            description: true
+        }
     })
 }
 
-export function fetchUserHistories() {
-    return db.userHistory.findMany({
+export async function fetchUserStories() {
+    return await db.userStory.findMany({
     })
 }
 

@@ -34,7 +34,7 @@ export default function RootLayout({
           {children}
           <ul className="flex flex-col">  
             <Link href={'/new-user-epic'}>New user epic</Link>
-            <Link href={'/new-user-history'}>New user history</Link>
+            <Link href={'/new-user-story'}>New user history</Link>
             <Link href={'/new-test-case'}>New test case</Link>
             <Link href={'/test-execution'}>Test execution</Link>
           </ul>
