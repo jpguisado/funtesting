@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -32,11 +31,10 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
             description: "",
             userEpic: {
                 title: "",
+                description: "",
             },
         }
     })
-
-    const { control, handleSubmit, reset, trigger, setError } = form;
 
     async function onSubmit(data: userStoryType) {
         toast({
@@ -47,13 +45,12 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                 </pre>
             ),
         });
-
         await createUserStory(data)
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                     control={form.control}
                     name="userEpic"
@@ -71,20 +68,16 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                                                 !field.value && "text-muted-foreground"
                                             )}
                                         >
-                                            {field.value
-                                                ? userEpicsList.find(
-                                                    (userEpic) => userEpic === field.value
-                                                )?.label
-                                                : "Select user epic"}
+                                            {field.value.title ? field.value.title : 'Select user epic'}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[200px] p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search language..." />
+                                        <CommandInput placeholder="Search user story..." />
                                         <CommandList>
-                                            <CommandEmpty>No language found.</CommandEmpty>
+                                            <CommandEmpty>No user story found.</CommandEmpty>
                                             <CommandGroup>
                                                 {userEpicsList.map((userEpic) => (
                                                     <CommandItem
@@ -118,7 +111,7 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                     )}
                 />
                 <FormField
-                    control={control}
+                    control={form.control}
                     name="title"
                     render={({ field }) => (
                         <FormItem>
@@ -134,7 +127,7 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                     )}
                 />
                 <FormField
-                    control={control}
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>

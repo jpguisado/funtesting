@@ -28,16 +28,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`flex justify-center ${geistSans.variable} ${geistMono.variable} antialiased px-2`}
       >
-        <main className="flex justify-center mt-24 mb-24">
-          {children}
-          <ul className="flex flex-col">  
-            <Link href={'/new-user-epic'}>New user epic</Link>
-            <Link href={'/new-user-story'}>New user history</Link>
-            <Link href={'/new-test-case'}>New test case</Link>
-            <Link href={'/test-execution'}>Test execution</Link>
-          </ul>
+        <main className="w-full mt-24 mb-24 md:w-3/4 lg:w-4/5 flex gap-6">
+          <div className="w-full">
+            {children}
+          </div>
+          <div className="w-1/3 lg:w-1/5">
+            <strong>Enlaces:</strong>
+            <ul className="flex flex-col space-y-3">
+              <Link href={'/new-user-epic'}>Epics</Link>
+              <Link href={'/new-user-story'}>User stories</Link>
+              <Link href={'/new-test-case'}>Test cases</Link>
+              <Link href={'/test-execution'}>Test execution</Link>
+            </ul>
+          </div>
         </main>
         <Toaster />
       </body>

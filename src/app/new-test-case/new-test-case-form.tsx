@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
 import { Check, ChevronsUpDown, PlusCircleIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -31,10 +30,10 @@ export default function NewTestCaseForm(
   const form = useForm<newTestCaseType>({
     resolver: zodResolver(NewTestCaseSchema),
     defaultValues: {
-      userEpic: {
-        title: '',
-        description: ''
-      },
+      // userEpic: {
+      //   title: '',
+      //   description: ''
+      // },
       titleCase: "",
       userStory: {
         title: '',
@@ -42,11 +41,12 @@ export default function NewTestCaseForm(
       },
       preconditions: "",
       stepList: [{
+        order: 0,
         expectedResult: '',
         stepDescription: '',
         // field: [{}],
         isBlocker: 'no',
-        stepStatus: 'failed'
+        stepStatus: 'not started'
       }],
     },
   })
@@ -54,7 +54,7 @@ export default function NewTestCaseForm(
   const { control, handleSubmit, reset, trigger, setError } = form;
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "stepList"
+    name: "stepList",
   });
 
   async function onSubmit(data: newTestCaseType) {
@@ -72,8 +72,8 @@ export default function NewTestCaseForm(
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 space-y-6">
-        <FormField
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* <FormField
           control={control}
           name="userEpic"
           render={({ field }) => (
@@ -90,11 +90,7 @@ export default function NewTestCaseForm(
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value
-                        ? userEpicsList.find(
-                          (userEpic) => userEpic.title === field.value
-                        )?.title
-                        : "Select user epic"}
+                      {field.value.title ? field.value.title : 'Select user epic'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -135,7 +131,7 @@ export default function NewTestCaseForm(
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={control}
           name="userStory"
@@ -153,11 +149,7 @@ export default function NewTestCaseForm(
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value
-                        ? userStoriesList.find(
-                          (HU) => HU.title === field.value
-                        )?.title
-                        : "Select HU"}
+                      {field.value.title ? field.value.title : 'Select HU'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -285,7 +277,7 @@ export default function NewTestCaseForm(
                 </div>
               )}
             />
-            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "" })}><PlusCircleIcon className="" /></Button>
+            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: 0 })}><PlusCircleIcon className="" /></Button>
             <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
           </div>
         ))}

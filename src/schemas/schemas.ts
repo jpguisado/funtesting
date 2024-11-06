@@ -38,8 +38,9 @@ export const StepSchema = z.object({
     }),
     // field: FieldValidationSchema.array().optional(),
     isBlocker: z.string().optional(),
-    stepStatus: z.string().optional()
+    stepStatus: z.string().optional(),
     // TODO: relatedWithStepId
+    order: z.number(),
 })
 
 export const NewTestCaseSchema = z.object({

@@ -24,9 +24,7 @@ model userEpic {
   id Int @id @default(autoincrement())
   title String @unique
   description String @default("")
-  userHistories userStory[]
-  casesOfThisUserEpic testCase ? @relation(fields: [casesOfThisUserEpicId],references: [id])
-  casesOfThisUserEpicId Int ?
+  userStoriesOfThisEpic userStory[]
 }
 
 model userStory {
@@ -35,8 +33,16 @@ model userStory {
   description String @default("")
   userEpic userEpic ? @relation(fields: [userEpicId], references: [id])
   userEpicId Int ?
-  casesOfThisHistory testCase ? @relation(fields: [casesOfThisHistoryId],references: [id])
-  casesOfThisHistoryId Int ?
+  casesOfThisStory testCase[]
+}
+
+model testCase {
+  id Int @id @default(autoincrement())
+  titleCase String @unique
+  preconditions String @default("")
+  relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
+  relatedStoryId Int ?
+  stepList step[]
 }
 
 model step {
@@ -46,14 +52,6 @@ model step {
   stepDescription String
   expectedResult String
   stepStatus String
-  isBlocker String?
-}
-
-model testCase {
-  id Int @id @default(autoincrement())
-  titleCase String @unique
-  preconditions String @default("")
-  stepList step[]
-  relatedStory userStory[]
-  userEpic userEpic []
+  isBlocker String ?
+  order Int
 }
