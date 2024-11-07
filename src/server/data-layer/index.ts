@@ -1,4 +1,3 @@
-import { userEpicListType } from "@/types/types";
 import { db } from "../db";
 
 export async function fetchUserEpics() {
