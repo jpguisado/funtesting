@@ -11,8 +11,9 @@ import {
 import { fetchTestCases } from "@/server/data-layer"
 import Link from "next/link"
 
-export default async function Page() {
+export const dynamic = 'force-dynamic'
 
+export default async function Page() {
     const testCases = await fetchTestCases();
     console.log(testCases)
     return (

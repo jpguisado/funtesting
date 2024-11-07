@@ -10,10 +10,10 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page() {
-
     const testCase = await fetchTestCase(3)
-
     return (
         <div>
             <Alert className="bg-blue-200">
