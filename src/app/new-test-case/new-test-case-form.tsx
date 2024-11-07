@@ -277,7 +277,7 @@ export default function NewTestCaseForm(
                 </div>
               )}
             />
-            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: 0 })}><PlusCircleIcon className="" /></Button>
+            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index+1 })}><PlusCircleIcon className="" /></Button>
             <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
           </div>
         ))}
