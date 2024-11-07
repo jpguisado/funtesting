@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
-import { userEpicListType, userStoryType } from "@/types/types"
+import { userEpicListType, userEpicType, userStoryType } from "@/types/types"
 import { userStorySchema } from "@/schemas/schemas"
 import { createUserStory } from "@/server/actions"
 
@@ -79,7 +79,7 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                                         <CommandList>
                                             <CommandEmpty>No user story found.</CommandEmpty>
                                             <CommandGroup>
-                                                {userEpicsList.map((userEpic) => (
+                                                {userEpicsList.map((userEpic: userEpicType) => (
                                                     <CommandItem
                                                         value={userEpic.title}
                                                         key={userEpic.title}

@@ -19,12 +19,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import { newTestCaseType, userEpicListType, userStoryListType } from "@/types/types"
+import { newTestCaseType, userStoryListType, userStoryType } from "@/types/types"
 import { NewTestCaseSchema } from "@/schemas/schemas"
 import { createNewTestCase } from "@/server/actions"
 
 export default function NewTestCaseForm(
-  { userStoriesList, userEpicsList }: { userStoriesList: userStoryListType, userEpicsList: userEpicListType }
+  { userStoriesList }: { userStoriesList: userStoryListType }
 ) {
 
   const form = useForm<newTestCaseType>({
@@ -51,7 +51,7 @@ export default function NewTestCaseForm(
     },
   })
 
-  const { control, handleSubmit, reset, trigger, setError } = form;
+  const { control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "stepList",
@@ -160,7 +160,7 @@ export default function NewTestCaseForm(
                     <CommandList>
                       <CommandEmpty>No HU found.</CommandEmpty>
                       <CommandGroup>
-                        {userStoriesList.map((HU) => (
+                        {userStoriesList.map((HU: userStoryType) => (
                           <CommandItem
                             value={HU.title}
                             key={HU.title}

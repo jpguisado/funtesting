@@ -28,7 +28,7 @@ export default function NewUserEpicForm() {
         }
     })
 
-    const { control, handleSubmit, reset, trigger, setError } = form;
+    const { control, handleSubmit } = form;
 
     async function onSubmit(data: userEpicType) {
         toast({
