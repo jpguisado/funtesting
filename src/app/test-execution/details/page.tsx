@@ -12,8 +12,13 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page() {
-    const testCase = await fetchTestCase(3)
+export default async function Page({
+    searchParams,
+  }: {
+    searchParams: Promise<{ id: string }>
+  }) {
+    const id = (await searchParams).id
+    const testCase = await fetchTestCase(parseInt(id))
     return (
         <div>
             <Alert className="bg-blue-200">
