@@ -28,8 +28,8 @@ export async function createNewTestCase(data: newTestCaseType) {
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStory: { connect: { id: data.userStory.id }},
-            stepList: {createMany: {data: data.stepList}},
+            relatedStory: { connect: { id: data.userStory.id } },
+            stepList: { createMany: { data: data.stepList } },
         }
     })
 }
@@ -40,11 +40,53 @@ export async function updateTestCase(data: editTestCaseType, id: number) {
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStory: { update: { id: data.relatedStory.id }},
-            stepList: {createMany: {data: data.stepList}},
+            relatedStory: { update: { id: data.relatedStory.id } },
+            // stepList: {createMany: {data: data.stepList}},
         },
         where: {
             id: id
+        }
+    })
+
+    for (const step of data.stepList) {
+        console.log(step)
+        // Check if the step has an existing ID, if so, update it
+        if (step.id) {
+            await db.step.update({
+                where: {
+                    id: step.id,
+                },
+                data: {
+                    expectedResult: step.expectedResult,
+                    isBlocker: step.isBlocker,
+                    stepDescription: step.stepDescription,
+                    order: step.order,
+                    stepStatus: step.stepStatus,
+                },
+            });
+        } else {
+            // Otherwise, create a new step
+            await db.step.create({
+                data: {
+                    expectedResult: step.expectedResult,
+                    isBlocker: step.isBlocker,
+                    stepDescription: step.stepDescription,
+                    order: step.order,
+                    stepStatus: step.stepStatus,
+                    testCaseId: id
+                },
+            });
+        }
+    }
+}
+
+export async function updateStepStatus(data: string, id: number) {
+    await db.step.update({
+        where: {
+            id: id
+        },
+        data: {
+            stepStatus: data
         }
     })
 }

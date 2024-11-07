@@ -37,6 +37,7 @@ export default function RootLayout({
           <div className="w-1/3 lg:w-1/5">
             <strong>Enlaces:</strong>
             <ul className="flex flex-col space-y-3">
+              <Link href={'/'}>Home</Link>
               <Link href={'/new-user-epic'}>Epics</Link>
               <Link href={'/new-user-story'}>User stories</Link>
               <Link href={'/new-test-case'}>Test cases</Link>

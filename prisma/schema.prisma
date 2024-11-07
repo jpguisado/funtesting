@@ -43,6 +43,8 @@ model testCase {
   relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
   relatedStoryId Int ?
   stepList step[]
+  executionOrder Int @default(0)
+  status String @default("no ejecutado")
 }
 
 model step {

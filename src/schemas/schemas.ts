@@ -30,7 +30,7 @@ export const FieldValidationSchema = z.object({
 })
 
 export const StepSchema = z.object({
-    id: z.number(),
+    id: z.number().optional(),
     stepDescription: z.string().min(2, {
         message: "You need at least 2 characters.",
     }),
@@ -51,7 +51,9 @@ export const NewTestCaseSchema = z.object({
     preconditions: z.string().min(1, {
         message: "At least one precondition."
     }),
-    stepList: StepSchema.array()
+    stepList: StepSchema.array(),
+    executionOrder: z.number().default(0),
+    status: z.string().default('no ejecutado')
 })
 
 export const EditTestCaseSchema = z.object({
@@ -60,5 +62,7 @@ export const EditTestCaseSchema = z.object({
     preconditions: z.string().min(1, {
         message: "At least one precondition."
     }),
-    stepList: StepSchema.array()
+    stepList: StepSchema.array(),
+    executionOrder: z.number().default(0),
+    status: z.string().default('no ejecutado')
 })

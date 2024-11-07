@@ -32,8 +32,6 @@ export default function EditTestCaseForm(
     defaultValues: editedCase,
   })
 
-  console.log(editedCase)
-
   const { control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -41,7 +39,6 @@ export default function EditTestCaseForm(
   });
 
   async function onSubmit(data: editTestCaseType) {
-    console.log(data)
     toast({
       title: "You submitted the following values:",
       description: (

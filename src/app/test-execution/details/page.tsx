@@ -4,27 +4,26 @@ import { Terminal } from "lucide-react"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import EditStepStatus from "./edit-step-status"
 
 export const dynamic = 'force-dynamic'
 
 export default async function Page({
     searchParams,
-  }: {
+}: {
     searchParams: Promise<{ id: string }>
-  }) {
+}) {
     const id = (await searchParams).id
     const testCase = await fetchTestCase(parseInt(id))
     return (
         <div>
             <Alert className="bg-blue-200">
                 <Terminal className="h-4 w-4" />
-                <AlertTitle>{testCase?.titleCase}</AlertTitle>
-                <AlertDescription>
+                <AlertTitle className="text-xl">{testCase?.titleCase}</AlertTitle>
+                <AlertDescription className="text-xl">
                     {testCase?.preconditions}
                 </AlertDescription>
             </Alert>
@@ -33,34 +32,22 @@ export default async function Page({
                     <div key={step.id} className="flex w-full mt-3 gap-3">
                         <Card className="w-3/4">
                             <CardHeader>
-                                <CardTitle>{step.id}</CardTitle>
-                                <CardDescription>{step.stepDescription}</CardDescription>
+                                <CardTitle>Paso {step.order}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <p>{step.stepDescription}</p>
                             </CardContent>
-                            <CardFooter>
-                                <p>Card Footer</p>
-                            </CardFooter>
                         </Card>
 
                         <Card className="w-3/4">
                             <CardHeader>
-                                <CardTitle>Card Title</CardTitle>
-                                <CardDescription>Card Description</CardDescription>
+                                <CardTitle>Resultado esperado paso {step.order}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <p>Card Content</p>
                             </CardContent>
-                            <CardFooter>
-                                <p>Card Footer</p>
-                            </CardFooter>
                         </Card>
-
-                        <div className="w-24 bg-green-300 flex items-center justify-center border-gray-300 border-2 rounded-lg">
-                            pass
-                        </div>
-
+                        <EditStepStatus stepStatus={step.stepStatus} stepId={step.id}/>
                     </div>
                 )
             })}

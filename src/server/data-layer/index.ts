@@ -21,7 +21,10 @@ export async function fetchTestCases() {
         include: {
             stepList: true,
             relatedStory: true,
-        }
+        },
+        orderBy: {
+            executionOrder: 'asc'
+        },
     })
 }
 
@@ -40,6 +43,9 @@ export async function fetchTestCase(id: number) {
                     order: true,
                     stepDescription: true,
                     stepStatus: true,
+                },
+                orderBy: {
+                    order: 'asc'
                 }
             },
             relatedStory: true
@@ -52,7 +58,7 @@ export async function fetchStringOfTest() {
         include: {
             userStoriesOfThisEpic: {
                 include: {
-                    casesOfThisStory: true
+                    casesOfThisStory: {orderBy: {executionOrder: 'asc'}}
                 }
             }
         }

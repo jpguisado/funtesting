@@ -34,7 +34,7 @@ export default async function Page() {
                         return (
                             <TableRow key={test.id}>
                                 <TableCell className="font-medium">{test.id}</TableCell>
-                                <TableCell><Badge variant="default" className="bg-green-300 text-black">Done</Badge></TableCell>
+                                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell className="text-right"><Link href={'/test-execution/details/?id='+test.id.toString()}>Detalles</Link></TableCell>
                             </TableRow>
