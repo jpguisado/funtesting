@@ -1,6 +1,6 @@
 'use server'
 
-import { newTestCaseType, userEpicType, userStoryType } from "@/types/types";
+import { editTestCaseType, newTestCaseType, userEpicType, userStoryType } from "@/types/types";
 import { db } from "./db";
 
 export async function createUserEpic(data: userEpicType) {
@@ -34,14 +34,20 @@ export async function createNewTestCase(data: newTestCaseType) {
     })
 }
 
-export async function updateTestCase(data: newTestCaseType, id: number) {
+export async function updateTestCase(data: editTestCaseType, id: number) {
     console.log(data)
     await db.testCase.update({
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
             relatedStory: { update: { id: data.relatedStory.id }},
-            stepList: {createMany: {data: data.stepList}},
+            stepList: {upsert: {
+                create: data.stepList,
+                update: data.stepList, 
+                where: {
+                    id: data.stepList.id
+                }
+            }},
         },
         where: {
             id: id
