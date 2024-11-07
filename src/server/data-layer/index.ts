@@ -1,3 +1,4 @@
+import { userEpicListType } from "@/types/types";
 import { db } from "../db";
 
 export async function fetchUserEpics() {
@@ -36,12 +37,12 @@ export async function fetchTestCase(id: number) {
     })
 }
 
-export async function fetchStringOfTest() {
+export async function fetchStringOfTest(): userEpicListType {
     return await db.userEpic.findMany({
         include: {
-            userStoriesOfThisEpic: {
+            userHistories: {
                 include: {
-                    casesOfThisStory: true
+                    casesOfThisHistory: true
                 }
             }
         }
