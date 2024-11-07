@@ -12,9 +12,12 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    const id = params.id;
+export default async function Page({
+    searchParams,
+  }: {
+    searchParams: Promise<{ id: string }>
+  }) {
+    const id = (await searchParams).id
     const testCase = await fetchTestCase(parseInt(id))
     return (
         <div>

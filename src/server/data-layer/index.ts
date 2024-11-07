@@ -31,7 +31,8 @@ export async function fetchTestCase(id: number) {
             id: id
         },
         include: {
-            stepList: true
+            stepList: true,
+            relatedStory: true
         }
     })
 }

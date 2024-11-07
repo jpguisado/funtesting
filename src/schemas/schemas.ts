@@ -45,7 +45,16 @@ export const StepSchema = z.object({
 
 export const NewTestCaseSchema = z.object({
     userEpic: userEpicSchema.optional(),
-    userStory: userEpicSchema.optional(),
+    userStory: userEpicSchema.optional(), // TODO: VER QUE HACEMOS CON ESTO
+    titleCase: z.string(),
+    preconditions: z.string().min(1, {
+        message: "At least one precondition."
+    }),
+    stepList: StepSchema.array()
+})
+
+export const EditTestCaseSchema = z.object({
+    relatedStory: userEpicSchema.optional(),
     titleCase: z.string(),
     preconditions: z.string().min(1, {
         message: "At least one precondition."

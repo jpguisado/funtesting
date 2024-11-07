@@ -36,7 +36,7 @@ export default async function Page() {
                                 <TableCell className="font-medium">{test.id}</TableCell>
                                 <TableCell><Badge variant="default" className="bg-green-300 text-black">Done</Badge></TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
-                                <TableCell className="text-right"><Link href={'/test-execution/'+test.id.toString()}>Detalles</Link></TableCell>
+                                <TableCell className="text-right"><Link href={'/test-execution/details/?id='+test.id.toString()}>Detalles</Link></TableCell>
                             </TableRow>
                         )
                     })}

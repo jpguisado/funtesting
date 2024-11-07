@@ -24,14 +24,27 @@ export async function createUserStory(data: userStoryType) {
 }
 
 export async function createNewTestCase(data: newTestCaseType) {
-    console.log(data.stepList);
     await db.testCase.create({
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
             relatedStory: { connect: { id: data.userStory.id }},
-            // userEpic: { connect: { id: data.userEpic.id }},
             stepList: {createMany: {data: data.stepList}},
+        }
+    })
+}
+
+export async function updateTestCase(data: newTestCaseType, id: number) {
+    console.log(data)
+    await db.testCase.update({
+        data: {
+            titleCase: data.titleCase,
+            preconditions: data.preconditions,
+            relatedStory: { update: { id: data.relatedStory.id }},
+            stepList: {createMany: {data: data.stepList}},
+        },
+        where: {
+            id: id
         }
     })
 }
