@@ -30,6 +30,7 @@ export const FieldValidationSchema = z.object({
 })
 
 export const StepSchema = z.object({
+    id: z.number(),
     stepDescription: z.string().min(2, {
         message: "You need at least 2 characters.",
     }),

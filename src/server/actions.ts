@@ -35,19 +35,13 @@ export async function createNewTestCase(data: newTestCaseType) {
 }
 
 export async function updateTestCase(data: editTestCaseType, id: number) {
-    console.log(data)
+    console.log(data.stepList)
     await db.testCase.update({
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
             relatedStory: { update: { id: data.relatedStory.id }},
-            stepList: {upsert: {
-                create: data.stepList,
-                update: data.stepList, 
-                where: {
-                    id: data.stepList.id
-                }
-            }},
+            stepList: {createMany: {data: data.stepList}},
         },
         where: {
             id: id

@@ -8,7 +8,6 @@ export default async function Page({
     searchParams: Promise<{ id: string }>
   }) {
     const id = (await searchParams).id
-    console.log(id)
     const testCase: editTestCaseType = await fetchTestCase(parseInt(id));
     const userStories = await fetchUserStories();
     
