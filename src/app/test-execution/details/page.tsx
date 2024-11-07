@@ -21,9 +21,9 @@ export default async function Page({
     return (
         <div>
             <Alert className="bg-blue-200">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle className="text-xl">{testCase?.titleCase}</AlertTitle>
-                <AlertDescription className="text-xl">
+                <Terminal className="h-8 w-8" />
+                <AlertTitle className="text-2xl">{testCase?.titleCase}</AlertTitle>
+                <AlertDescription className="text-md">
                     {testCase?.preconditions}
                 </AlertDescription>
             </Alert>
@@ -44,7 +44,7 @@ export default async function Page({
                                 <CardTitle>Resultado esperado paso {step.order}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p>Card Content</p>
+                                <p>{step.expectedResult}</p>
                             </CardContent>
                         </Card>
                         <EditStepStatus stepStatus={step.stepStatus} stepId={step.id}/>

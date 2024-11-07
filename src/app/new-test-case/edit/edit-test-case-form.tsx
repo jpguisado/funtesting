@@ -107,7 +107,7 @@ export default function EditTestCaseForm(
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                This is the language that will be used in the dashboard.
+                This is the HU
               </FormDescription>
               <FormMessage />
             </FormItem>

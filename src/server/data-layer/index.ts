@@ -10,6 +10,14 @@ export async function fetchUserEpics() {
     })
 }
 
+export async function fetchUserEpicById(id: number) {
+    return await db.userEpic.findFirst({
+        where: {
+            id: id
+        }
+    })
+}
+
 export async function fetchUserStories() {
     return await db.userStory.findMany({
 
