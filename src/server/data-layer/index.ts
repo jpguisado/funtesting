@@ -37,12 +37,12 @@ export async function fetchTestCase(id: number) {
     })
 }
 
-export async function fetchStringOfTest(): userEpicListType {
+export async function fetchStringOfTest() {
     return await db.userEpic.findMany({
         include: {
-            userHistories: {
+            userStoriesOfThisEpic: {
                 include: {
-                    casesOfThisHistory: true
+                    casesOfThisStory: true
                 }
             }
         }
