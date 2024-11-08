@@ -40,7 +40,7 @@ export default function RootLayout({
               <Link href={'/'}>Home</Link>
               <Link href={'/new-user-epic'}>Epics</Link>
               <Link href={'/new-user-story'}>User stories</Link>
-              <Link href={'/new-test-case'}>Test cases</Link>
+              <Link href={'/test-case'}>Test cases</Link>
               <Link href={'/test-execution'}>Test execution</Link>
             </ul>
           </div>

@@ -89,7 +89,7 @@ export default function TestCaseForm(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value.title ? field.value.title : 'Select HU'}
+                        {field.value?.title ? field.value.title : 'Select HU'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -105,7 +105,7 @@ export default function TestCaseForm(
                               value={HU.title}
                               key={HU.title}
                               onSelect={() => {
-                                form.setValue("userStory", HU)
+                                form.setValue("relatedStory", HU)
                               }}
                             >
                               <Check
@@ -148,7 +148,7 @@ export default function TestCaseForm(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value.name ? field.value.name : 'Select responsible'}
+                        {field.value?.name ? field.value.name : 'Select responsible'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>

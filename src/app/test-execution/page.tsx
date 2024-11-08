@@ -15,7 +15,6 @@ export const dynamic = 'force-dynamic'
 
 export default async function Page() {
     const testCases = await fetchTestCases();
-    console.log(testCases)
     return (
         <>
             <div className="text-2xl">Resumen de test:</div>

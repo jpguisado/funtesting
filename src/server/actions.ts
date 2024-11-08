@@ -28,20 +28,20 @@ export async function createNewTestCase(data: newTestCaseType) {
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStory: { connect: { id: data.userStory.id } },
+            relatedStory: { connect: { id: data.relatedStory.id } },
             stepList: { createMany: { data: data.stepList } },
+            executor: { connect: { id: data.executor.id } }
         }
     })
 }
 
 export async function updateTestCase(data: editTestCaseType, id: number) {
-    console.log(data.stepList)
     await db.testCase.update({
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
             relatedStory: { update: { id: data.relatedStory.id } },
-            // stepList: {createMany: {data: data.stepList}},
+            executor: { connect: { id: data.executor.id } }
         },
         where: {
             id: id
@@ -49,7 +49,6 @@ export async function updateTestCase(data: editTestCaseType, id: number) {
     })
 
     for (const step of data.stepList) {
-        console.log(step)
         // Check if the step has an existing ID, if so, update it
         if (step.id) {
             await db.step.update({
