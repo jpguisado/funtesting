@@ -45,7 +45,7 @@ export default function NewUserEpicForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
                 <FormField
                     control={control}
                     name="title"

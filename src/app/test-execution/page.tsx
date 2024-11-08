@@ -24,8 +24,11 @@ export default async function Page() {
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">Test Code</TableHead>
-                        <TableHead>Status</TableHead>
+                        <TableHead>Execution order</TableHead>
+                        <TableHead>Asignee</TableHead>
                         <TableHead>Title</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Executed steps</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -34,8 +37,11 @@ export default async function Page() {
                         return (
                             <TableRow key={test.id}>
                                 <TableCell className="font-medium">{test.id}</TableCell>
-                                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
+                                <TableCell className="font-medium">{test.executionOrder}</TableCell>
+                                <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
+                                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
+                                <TableCell><Badge variant="outline">{test.id}</Badge></TableCell>
                                 <TableCell className="text-right"><Link href={'/test-execution/details/?id='+test.id.toString()}>Detalles</Link></TableCell>
                             </TableRow>
                         )

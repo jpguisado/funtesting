@@ -18,6 +18,7 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+  assignedTest testCase[]
 }
 
 model userEpic {
@@ -39,6 +40,8 @@ model userStory {
 model testCase {
   id Int @id @default(autoincrement())
   titleCase String @unique
+  executor User ? @relation(fields: [userId], references: [id])
+  userId Int ?
   preconditions String @default("")
   relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
   relatedStoryId Int ?
@@ -57,8 +60,6 @@ model step {
   isBlocker String ?
   order Int
 }
-
-
 
 /// RECETARIO MODELS
 

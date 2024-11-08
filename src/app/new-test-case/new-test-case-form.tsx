@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { Check, ChevronsUpDown, PlusCircleIcon, Trash2Icon } from "lucide-react"
+import { Check, ChevronDown, ChevronsUpDown, ChevronUp, PlusCircleIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -30,10 +30,6 @@ export default function NewTestCaseForm(
   const form = useForm<newTestCaseType>({
     resolver: zodResolver(NewTestCaseSchema),
     defaultValues: {
-      // userEpic: {
-      //   title: '',
-      //   description: ''
-      // },
       titleCase: "",
       userStory: {
         title: '',
@@ -41,18 +37,17 @@ export default function NewTestCaseForm(
       },
       preconditions: "",
       stepList: [{
-        order: 0,
+        order: 99,
         expectedResult: '',
         stepDescription: '',
-        // field: [{}],
         isBlocker: 'no',
-        stepStatus: 'not started'
+        stepStatus: 'pendiente'
       }],
     },
   })
 
   const { control, handleSubmit } = form;
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "stepList",
   });
@@ -73,65 +68,6 @@ export default function NewTestCaseForm(
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* <FormField
-          control={control}
-          name="userEpic"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Épica de usuario</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value.title ? field.value.title : 'Select user epic'}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search user epic..." />
-                    <CommandList>
-                      <CommandEmpty>No user epic found.</CommandEmpty>
-                      <CommandGroup>
-                        {userEpicsList.map((userEpic) => (
-                          <CommandItem
-                            value={userEpic}
-                            key={userEpic.title}
-                            onSelect={() => {
-                              form.setValue("userEpic", userEpic)
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                userEpic.title === field.value.title
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {userEpic.title}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                This is the language that will be used in the dashboard.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <FormField
           control={control}
           name="userStory"
@@ -246,7 +182,6 @@ export default function NewTestCaseForm(
                       </div>
                     </FormControl>
                     <FormDescription>
-                      Describe el paso aplicable
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -277,8 +212,10 @@ export default function NewTestCaseForm(
                 </div>
               )}
             />
-            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index+1 })}><PlusCircleIcon className="" /></Button>
+            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
             <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
+            <Button type="button" variant={"outline"} onClick={() => { move(index, index - 1) }}><ChevronUp className="" /></Button>
+            <Button type="button" variant={"outline"} onClick={() => { move(index, index + 1) }}><ChevronDown className="" /></Button>
           </div>
         ))}
         <Button type="submit">Guardar</Button>

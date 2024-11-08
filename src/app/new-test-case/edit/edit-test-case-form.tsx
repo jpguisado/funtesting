@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { Check, ChevronsUpDown, PlusCircleIcon, Trash2Icon } from "lucide-react"
+import { Check, ChevronDown, ChevronsUpDown, ChevronUp, PlusCircleIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -33,7 +33,7 @@ export default function EditTestCaseForm(
   })
 
   const { control, handleSubmit } = form;
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "stepList",
   });
@@ -201,6 +201,8 @@ export default function EditTestCaseForm(
             />
             <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index+1 })}><PlusCircleIcon className="" /></Button>
             <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
+            <Button type="button" variant={"outline"} onClick={() => {move(index, index-1)}}><ChevronUp className="" /></Button>
+            <Button type="button" variant={"outline"} onClick={() => {move(index, index + 1)}}><ChevronDown className="" /></Button>
           </div>
         ))}
         <Button type="submit">Guardar</Button>

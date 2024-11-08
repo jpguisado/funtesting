@@ -29,6 +29,7 @@ export async function fetchTestCases() {
         include: {
             stepList: true,
             relatedStory: true,
+            executor: true,
         },
         orderBy: {
             executionOrder: 'asc'

@@ -56,8 +56,15 @@ export const NewTestCaseSchema = z.object({
     status: z.string().default('no ejecutado')
 })
 
+export const userSchema = z.object({
+    id: z.number().optional(),
+    email: z.string().email(),
+    name: z.string()
+})
+
 export const EditTestCaseSchema = z.object({
     relatedStory: userEpicSchema.optional(),
+    executor: userSchema.optional(),
     titleCase: z.string(),
     preconditions: z.string().min(1, {
         message: "At least one precondition."
