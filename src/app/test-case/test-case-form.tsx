@@ -19,20 +19,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import { newTestCaseType, userStoryListType, userStoryType, userListType, userType } from "@/types/types"
-import { NewTestCaseSchema } from "@/schemas/schemas"
-import { createNewTestCase } from "@/server/actions"
+import { userStoryListType, userStoryType, userListType, userType, testCaseType } from "@/types/types"
+import { TestCaseSchema } from "@/schemas/schemas"
+import { createNewTestCase, updateTestCase } from "@/server/actions"
 
-export default function NewTestCaseForm(
-  { userStoriesList, userList }: { userList: userListType, userStoriesList: userStoryListType }
+export default function TestCaseForm(
+  { editedCase, userStoriesList, userList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType }
 ) {
-
-  const form = useForm<newTestCaseType>({
-    resolver: zodResolver(NewTestCaseSchema),
-    defaultValues: {
+  const form = useForm<testCaseType>({
+    resolver: zodResolver(TestCaseSchema),
+    defaultValues: editedCase || {
       titleCase: '',
       executor: '',
-      userStory: {
+      relatedStory: {
         title: '',
         description: ''
       },
@@ -53,7 +52,7 @@ export default function NewTestCaseForm(
     name: "stepList",
   });
 
-  async function onSubmit(data: newTestCaseType) {
+  async function onSubmit(data: testCaseType) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -61,9 +60,12 @@ export default function NewTestCaseForm(
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
-
-    await createNewTestCase(data)
+    });
+    if (editedCase) {
+      await updateTestCase(data, editedCase.id);
+    } else {
+      await createNewTestCase(data)
+    }
   }
 
   return (
@@ -72,7 +74,7 @@ export default function NewTestCaseForm(
         <div className="flex gap-3">
           <FormField
             control={control}
-            name="userStory"
+            name="relatedStory"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Historia de usuario</FormLabel>

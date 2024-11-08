@@ -37,11 +37,30 @@ export const StepSchema = z.object({
     expectedResult: z.string().min(2, {
         message: "You need at least 2 characters.",
     }),
-    // field: FieldValidationSchema.array().optional(),
     isBlocker: z.string().optional(),
     stepStatus: z.string().optional(),
-    // TODO: relatedWithStepId
     order: z.number(),
+})
+
+export const userSchema = z.object({
+    id: z.number().optional(),
+    email: z.string().email(),
+    name: z.string()
+})
+
+export const userListSchema = userSchema.array();
+
+export const TestCaseSchema = z.object({
+    userEpic: userEpicSchema.optional(),
+    relatedStory: userEpicSchema.optional(), // TODO: VER QUE HACEMOS CON ESTO
+    titleCase: z.string(),
+    preconditions: z.string().min(1, {
+        message: "At least one precondition."
+    }),
+    stepList: StepSchema.array(),
+    executionOrder: z.number().default(0),
+    status: z.string().default('no ejecutado'),
+    executor: userSchema.optional(),
 })
 
 export const NewTestCaseSchema = z.object({
@@ -53,13 +72,8 @@ export const NewTestCaseSchema = z.object({
     }),
     stepList: StepSchema.array(),
     executionOrder: z.number().default(0),
-    status: z.string().default('no ejecutado')
-})
-
-export const userSchema = z.object({
-    id: z.number().optional(),
-    email: z.string().email(),
-    name: z.string()
+    status: z.string().default('no ejecutado'),
+    executor: userSchema.optional(),
 })
 
 export const EditTestCaseSchema = z.object({

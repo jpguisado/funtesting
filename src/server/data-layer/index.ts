@@ -18,6 +18,10 @@ export async function fetchUserEpicById(id: number) {
     })
 }
 
+export async function fetchUsers() {
+    return await db.user.findMany()
+}
+
 export async function fetchUserStories() {
     return await db.userStory.findMany({
 
@@ -43,6 +47,7 @@ export async function fetchTestCase(id: number) {
             id: id
         },
         include: {
+            executor: true,
             stepList: {
                 select: {
                     case: true,

@@ -1,13 +1,11 @@
 import { fetchUsers, fetchUserStories } from "@/server/data-layer";
-import NewTestCaseForm from "./new-test-case-form";
-
-export const dynamic = 'force-dynamic'
+import TestCaseForm from "./test-case-form";
 
 export default async function Page() {
-
     const users = await fetchUsers();
     const userStories = await fetchUserStories();
-    return <NewTestCaseForm
+
+    return <TestCaseForm
         userStoriesList={userStories}
         userList={users}
     />
