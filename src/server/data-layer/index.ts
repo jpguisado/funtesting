@@ -28,6 +28,22 @@ export async function fetchUserStories() {
     })
 }
 
+/**
+ * Fetchs an User Story using an id
+ * @param id id used to filter all the stories
+ * @returns fetched user story
+ */
+export async function fetchUserStoryById(id: number) {
+    return await db.userStory.findFirst({
+        where: {
+            id: id
+        },
+        include: { 
+            userEpic: true
+        }
+    })
+}
+
 export async function fetchTestCases() {
     return await db.testCase.findMany({
         include: {

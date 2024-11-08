@@ -21,17 +21,18 @@ import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { userEpicListType, userEpicType, userStoryType } from "@/types/types"
 import { userStorySchema } from "@/schemas/schemas"
-import { createUserStory } from "@/server/actions"
+import { createUserStory, updateUserStory } from "@/server/actions"
 
-export default function NewUserStoryForm({userEpicsList} : {userEpicsList : userEpicListType}) {
+export default function UserStoryForm({userEpicsList, editedUserStory} : {userEpicsList : userEpicListType, editedUserStory: userStoryType}) {
     const form = useForm<userStoryType>({
         resolver: zodResolver(userStorySchema),
-        defaultValues: {
+        defaultValues: editedUserStory || {
             title: "",
             description: "",
             userEpic: {
                 title: "",
                 description: "",
+                id: "",
             },
         }
     })
@@ -45,7 +46,11 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                 </pre>
             ),
         });
-        await createUserStory(data)
+        if (editedUserStory) {
+            await updateUserStory(data, editedUserStory.id);
+        } else {
+            await createUserStory(data)
+        }
     }
 
     return (
@@ -68,16 +73,16 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                                                 !field.value && "text-muted-foreground"
                                             )}
                                         >
-                                            {field.value.title ? field.value.title : 'Select user epic'}
+                                            {field.value?.title ? field.value.title : 'Select user epic'}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[200px] p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search user story..." />
+                                        <CommandInput placeholder="Search epic user..." />
                                         <CommandList>
-                                            <CommandEmpty>No user story found.</CommandEmpty>
+                                            <CommandEmpty>No user epic found.</CommandEmpty>
                                             <CommandGroup>
                                                 {userEpicsList.map((userEpic: userEpicType) => (
                                                     <CommandItem
@@ -90,7 +95,7 @@ export default function NewUserStoryForm({userEpicsList} : {userEpicsList : user
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                userEpic.title === field.value.title
+                                                                userEpic.title === field.value?.title
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}

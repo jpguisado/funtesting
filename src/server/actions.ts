@@ -30,6 +30,18 @@ export async function createUserStory(data: userStoryType) {
     }
 }
 
+export async function updateUserStory(data: userStoryType, id: number) {
+    console.log(data)
+    await db.userStory.update({
+        data: {
+            title: data.title,
+            description: data.description,
+            userEpic: { connect: { id: data.userEpic.id } }
+        },
+        where: { id: id }
+    })
+}
+
 export async function createNewTestCase(data: newTestCaseType) {
     await db.testCase.create({
         data: {
