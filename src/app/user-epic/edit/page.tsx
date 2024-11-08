@@ -1,5 +1,5 @@
 import { fetchUserEpicById } from "@/server/data-layer"
-import EditUserEpicForm from "./edit-user-epic"
+import UserEpicForm from "../user-epic-form"
 
 export default async function Page({
     searchParams,
@@ -9,7 +9,7 @@ export default async function Page({
     const id = (await searchParams).id
     const userEpic = await fetchUserEpicById(parseInt(id, 10))
     return (
-        <EditUserEpicForm
+        <UserEpicForm
             userEpic={userEpic}
         />
     )

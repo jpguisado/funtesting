@@ -17,18 +17,16 @@ import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { userEpicSchema } from "@/schemas/schemas"
 import { userEpicType } from "@/types/types"
-import { createUserEpic } from "@/server/actions"
+import { createUserEpic, updateUserEpic } from "@/server/actions"
 
-export default function NewUserEpicForm() {
+export default function UserEpicForm({ userEpic }: { userEpic?: userEpicType }) {
     const form = useForm<userEpicType>({
         resolver: zodResolver(userEpicSchema),
-        defaultValues: {
+        defaultValues: userEpic || {
             title: "",
             description: "",
         }
     })
-
-    const { control, handleSubmit } = form;
 
     async function onSubmit(data: userEpicType) {
         toast({
@@ -39,15 +37,18 @@ export default function NewUserEpicForm() {
                 </pre>
             ),
         })
-
-        await createUserEpic(data);
+        if (userEpic) {
+            await updateUserEpic(data, userEpic.id);
+        } else {
+            await createUserEpic(data);
+        }
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
                 <FormField
-                    control={control}
+                    control={form.control}
                     name="title"
                     render={({ field }) => (
                         <FormItem>
@@ -63,7 +64,7 @@ export default function NewUserEpicForm() {
                     )}
                 />
                 <FormField
-                    control={control}
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>

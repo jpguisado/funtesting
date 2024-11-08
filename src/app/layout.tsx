@@ -38,8 +38,8 @@ export default function RootLayout({
             <strong>Enlaces:</strong>
             <ul className="flex flex-col space-y-3">
               <Link href={'/'}>Home</Link>
-              <Link href={'/new-user-epic'}>Epics</Link>
-              <Link href={'/new-user-story'}>User stories</Link>
+              <Link href={'/user-epic'}>Epics</Link>
+              <Link href={'/user-story'}>User stories</Link>
               <Link href={'/test-case'}>Test cases</Link>
               <Link href={'/test-execution'}>Test execution</Link>
             </ul>

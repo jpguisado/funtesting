@@ -9,6 +9,13 @@ export async function createUserEpic(data: userEpicType) {
     })
 }
 
+export async function updateUserEpic(data: userEpicType, id: number) {
+    await db.userEpic.update({
+        data: data,
+        where: { id: id }
+    })
+}
+
 export async function createUserStory(data: userStoryType) {
     try {
         await db.userStory.create({

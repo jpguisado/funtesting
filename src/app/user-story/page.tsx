@@ -1,5 +1,5 @@
 import { fetchUserEpics } from "@/server/data-layer";
-import NewUserStoryForm from "./new-user-story-form";
+import NewUserStoryForm from "./user-story-form";
 
 export const dynamic = 'force-dynamic'
 
