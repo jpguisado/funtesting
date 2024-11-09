@@ -1,4 +1,4 @@
-import { fetchSteps, fetchUsers, fetchUserStories } from "@/server/data-layer";
+import { fetchUsers, fetchUserStories } from "@/server/data-layer";
 import TestCaseForm from "./test-case-form";
 
 export default async function Page() {

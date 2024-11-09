@@ -23,7 +23,7 @@ import { userEpicListType, userEpicType, userStoryType } from "@/types/types"
 import { userStorySchema } from "@/schemas/schemas"
 import { createUserStory, updateUserStory } from "@/server/actions"
 
-export default function UserStoryForm({userEpicsList, editedUserStory} : {userEpicsList : userEpicListType, editedUserStory: userStoryType}) {
+export default function UserStoryForm({userEpicsList, editedUserStory} : {userEpicsList : userEpicListType, editedUserStory ? : userStoryType}) {
     const form = useForm<userStoryType>({
         resolver: zodResolver(userStorySchema),
         defaultValues: editedUserStory || {

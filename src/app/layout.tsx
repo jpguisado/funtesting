@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Link from "next/link";
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Button } from "@/components/ui/button";
-import { BookOpenTextIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, TestTubeDiagonalIcon, TestTubeIcon, WrenchIcon } from "lucide-react";
+import { BookOpenTextIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, WrenchIcon } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
