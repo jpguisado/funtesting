@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { Check, ChevronDown, ChevronsUpDown, ChevronUp, PlusCircleIcon, Trash2Icon } from "lucide-react"
+import { Check, ChevronDown, ChevronsUpDown, ChevronUp, CopyCheckIcon, PlusCircleIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -240,12 +240,13 @@ export default function TestCaseForm(
                       <div className="flex gap-1">
                         <Textarea
                           placeholder="Añade una descripción del paso"
-                          className="resize-none"
+                          className="resize-y"
                           {...field}
                         />
                       </div>
                     </FormControl>
                     <FormDescription>
+                      Describe el paso aplicable
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -276,10 +277,17 @@ export default function TestCaseForm(
                 </div>
               )}
             />
-            <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
-            <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
-            <Button type="button" variant={"outline"} onClick={() => { move(index, index - 1) }}><ChevronUp className="" /></Button>
-            <Button type="button" variant={"outline"} onClick={() => { move(index, index + 1) }}><ChevronDown className="" /></Button>
+            <div className="grid col-span-2 gap-1">
+              <div className="flex gap-1">
+                <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
+                <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
+                <Button type="button" variant={"outline"} onClick={() => { move(index, index - 1) }}><ChevronUp className="" /></Button>
+                <Button type="button" variant={"outline"} onClick={() => { move(index, index + 1) }}><ChevronDown className="" /></Button>
+              </div>
+              <div className="flex gap-3">
+                <Button type="button" variant={"outline"} onClick={() => {console.log(index)}}><CopyCheckIcon className="" /></Button>
+              </div>
+            </div>
           </div>
         ))}
         <Button type="submit">Guardar</Button>

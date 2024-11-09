@@ -28,6 +28,10 @@ export async function fetchUserStories() {
     })
 }
 
+export async function fetchSteps() {
+    return await db.step.findMany({})
+}
+
 /**
  * Fetchs an User Story using an id
  * @param id id used to filter all the stories

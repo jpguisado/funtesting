@@ -1,12 +1,15 @@
-import { fetchUsers, fetchUserStories } from "@/server/data-layer";
+import { fetchSteps, fetchUsers, fetchUserStories } from "@/server/data-layer";
 import TestCaseForm from "./test-case-form";
 
 export default async function Page() {
     const users = await fetchUsers();
     const userStories = await fetchUserStories();
+    // const stepList = await fetchSteps(); // TODO
 
-    return <TestCaseForm
-        userStoriesList={userStories}
-        userList={users}
-    />
+    return (
+        <TestCaseForm
+            userStoriesList={userStories}
+            userList={users}
+        />
+    )
 }

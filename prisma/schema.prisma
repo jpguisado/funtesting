@@ -47,7 +47,7 @@ model testCase {
   relatedStoryId Int ?
   stepList step[]
   executionOrder Int @default(0)
-  status String @default("no ejecutado")
+  status String @default("pendiente")
 }
 
 model step {

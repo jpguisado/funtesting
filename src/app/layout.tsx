@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Link from "next/link";
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { Button } from "@/components/ui/button";
+import { BookOpenTextIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, TestTubeDiagonalIcon, TestTubeIcon, WrenchIcon } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,27 +29,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`flex justify-center ${geistSans.variable} ${geistMono.variable} antialiased px-2`}
-      >
-        <main className="w-full mt-24 mb-24 md:w-3/4 lg:w-4/5 flex gap-6">
-          <div className="w-full">
-            {children}
-          </div>
-          <div className="w-1/3 lg:w-1/5">
-            <strong>Enlaces:</strong>
-            <ul className="flex flex-col space-y-3">
-              <Link href={'/'}>Home</Link>
-              <Link href={'/user-epic'}>Epics</Link>
-              <Link href={'/user-story'}>User stories</Link>
-              <Link href={'/test-case'}>Test cases</Link>
-              <Link href={'/test-execution'}>Test execution</Link>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`grid grid-cols-12 gap-x-12 ${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <header className="pr-32 flex justify-end col-span-12 h-12 mb-24">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </header>
+          <main className="col-start-2 col-span-9 mb-24">
+            <div className="w-full">
+              {children}
+            </div>
+          </main>
+          <aside className="">
+            <ul className="space-y-3">
+              <Button variant={"link"}><HomeIcon/><Link href={'/'}>Home</Link></Button>
+              <Button variant={"link"}><MountainSnowIcon/><Link href={'/user-epic'}>Home</Link></Button>
+              <Button variant={"link"}><BookOpenTextIcon/><Link href={'/user-story'}>User stories</Link></Button>
+              <Button variant={"link"}><FlaskConicalIcon/><Link href={'/test-case'}>Test cases</Link></Button>
+              <Button variant={"link"}><WrenchIcon/><Link href={'/test-execution'}>Execution</Link></Button>
             </ul>
-          </div>
-        </main>
-        <Toaster />
-      </body>
-    </html>
+          </aside>
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
