@@ -1,77 +1,71 @@
-import { fetchTestCases } from "@/server/data-layer";
-import Link from "next/link";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge";
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { BookOpenTextIcon, CogIcon, DatabaseZapIcon, FlaskConicalIcon, MonitorCogIcon, MountainSnowIcon, WrenchIcon } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const testCases = await fetchTestCases();
+
+  const content = [{
+    'icon': <MountainSnowIcon />,
+    'title': 'Épicas de usuario',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/user-epic'
+
+  }, {
+    'icon': <BookOpenTextIcon />,
+    'title': 'Historias de usuario',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/user-story'
+
+  }, {
+    'icon': <FlaskConicalIcon />,
+    'title': 'Listado de test',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/test-case'
+
+  }, , {
+    'icon': <WrenchIcon />,
+    'title': 'Ejecución de test',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/test-execution'
+
+  }, {
+    'icon': <DatabaseZapIcon />,
+    'title': 'Preparación de datos',
+    'subtitle': 'Diseño y gestión de los datos necesarios para lanzar las pruebas',
+    'link': '/data-preparation'
+
+  }, {
+    'icon': <MonitorCogIcon />,
+    'title': 'Administración del proyecto',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/project-config'
+
+  }, {
+    'icon': <CogIcon />,
+    'title': 'Administración de la herramienta',
+    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'link': '/administrator'
+  }]
+
   return (
-    <>
-      <div className="text-2xl">Resumen de test:</div>
-      <Table>
-        <TableCaption>A list of your tests.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Test Code</TableHead>
-            <TableHead>Execution order</TableHead>
-            <TableHead>Asignee</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {testCases.map((test) => {
-            return (
-              <TableRow key={test.id}>
-                <TableCell className="font-medium">{test.id}</TableCell>
-                <TableCell className="font-medium">{test.executionOrder}</TableCell>
-                <TableCell className="font-medium">{test.executor?.name}</TableCell>
-                <TableCell>{test.titleCase}</TableCell>
-                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
-                <TableCell className="text-right"><Link href={'/test-case/edit?id=' + test.id.toString()}>Detalles</Link></TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-      {/* {
-        testCases.map((epic: userEpicListType) => {
-          return <Accordion key={epic.id} type="single" collapsible>
-            <AccordionItem value={epic.id.toString()}>
-              <AccordionTrigger>{epic.title}</AccordionTrigger>
-              <AccordionContent>
-                {epic.userStoriesOfThisEpic.map((userStory: userStoryListType) => {
-                  return <Accordion key={userStory.id} type="single" collapsible>
-                    <AccordionItem value={userStory.id.toString()}>
-                      <AccordionTrigger>{userStory.title}</AccordionTrigger>
-                      <AccordionContent>
-                        {userStory.casesOfThisStory.map((caseOf: newTestCaseType) => {
-                          return <Accordion key={caseOf.id} type="single" collapsible>
-                            <AccordionItem value={caseOf.titleCase}>
-                              <div className="my-3"><Link href={`/test-case/edit?id=${caseOf.id}`}>{caseOf.titleCase}</Link></div>
-                            </AccordionItem>
-                          </Accordion>
-                        })}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                })}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        })
-      } */}
-    </>
+    <div className="grid grid-cols-4 gap-12">
+      {content.map((element) => {
+        return <Link key={element!.title} href={element!.link}>
+          <Card className="hover:bg-slate-50">
+            <CardHeader>
+              <CardTitle className="flex gap-3 flex-col">{element!.icon} {element!.title}</CardTitle>
+              <CardDescription>{element!.subtitle}</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+      })}
+    </div>
   );
 }

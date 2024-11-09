@@ -16,9 +16,11 @@ export const dynamic = 'force-dynamic'
 export default async function Page() {
     const testCases = await fetchTestCases();
     return (
-        <>
-            <div className="text-2xl">Resumen de test:</div>
-            <Table>
+        <div className="">
+            <div className="text-2xl mb-12 w-full">
+                <div>Resumen de test:</div>
+            </div>
+            <Table className="">
                 <TableCaption>A list of your tests.</TableCaption>
                 <TableHeader>
                     <TableRow>
@@ -41,13 +43,12 @@ export default async function Page() {
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
                                 <TableCell><Badge variant="outline">{test.id}</Badge></TableCell>
-                                <TableCell className="text-right"><Link href={'/test-execution/details/?id='+test.id.toString()}>Detalles</Link></TableCell>
+                                <TableCell className="text-right"><Link href={'/test-execution/details/?id=' + test.id.toString()}>Detalles</Link></TableCell>
                             </TableRow>
                         )
                     })}
                 </TableBody>
             </Table>
-
-        </>
+        </div>
     )
 }

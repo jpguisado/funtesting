@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Link from "next/link";
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Button } from "@/components/ui/button";
-import { BookOpenTextIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, WrenchIcon } from "lucide-react";
+import { BookOpenTextIcon, DatabaseZapIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, WrenchIcon } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -50,9 +50,10 @@ export default function RootLayout({
           <aside className="">
             <ul className="space-y-3">
               <Button variant={"link"}><HomeIcon/><Link href={'/'}>Home</Link></Button>
-              <Button variant={"link"}><MountainSnowIcon/><Link href={'/user-epic'}>Home</Link></Button>
+              <Button variant={"link"}><MountainSnowIcon/><Link href={'/user-epic'}>Epics</Link></Button>
               <Button variant={"link"}><BookOpenTextIcon/><Link href={'/user-story'}>User stories</Link></Button>
               <Button variant={"link"}><FlaskConicalIcon/><Link href={'/test-case'}>Test cases</Link></Button>
+              <Button variant={"link"}><DatabaseZapIcon/><Link href={'/data-preparation'}>Data preparation</Link></Button>
               <Button variant={"link"}><WrenchIcon/><Link href={'/test-execution'}>Execution</Link></Button>
             </ul>
           </aside>
