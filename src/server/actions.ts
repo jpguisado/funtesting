@@ -1,6 +1,6 @@
 'use server'
 
-import { editTestCaseType, newTestCaseType, userEpicType, userStoryType } from "@/types/types";
+import { testCaseType, userEpicType, userStoryType } from "@/types/types";
 import { db } from "./db";
 import { revalidatePath } from "next/cache";
 
@@ -43,7 +43,7 @@ export async function updateUserStory(data: userStoryType, id: number) {
     })
 }
 
-export async function createNewTestCase(data: newTestCaseType) {
+export async function createNewTestCase(data: testCaseType) {
     await db.testCase.create({
         data: {
             titleCase: data.titleCase,
@@ -55,7 +55,7 @@ export async function createNewTestCase(data: newTestCaseType) {
     })
 }
 
-export async function updateTestCase(data: editTestCaseType, id: number) {
+export async function updateTestCase(data: testCaseType, id: number) {
     await db.testCase.update({
         data: {
             titleCase: data.titleCase,
@@ -120,4 +120,8 @@ export async function updateStepStatus(data: string, id: number) {
             stepStatus: data
         }
     })
+}
+
+export async function deleteStep(id: number) {
+    await db.step.delete({ where: { id: id } })
 }

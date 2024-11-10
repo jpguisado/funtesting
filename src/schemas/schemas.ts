@@ -20,15 +20,6 @@ export const userStorySchema = z.object({
 
 export const userStoryListSchema = userStorySchema.array()
 
-export const FieldValidationSchema = z.object({
-    fieldLabel: z.string().min(1, {
-        message: "You need at least 1 character.",
-    }).optional(),
-    fieldValidation: z.string().min(1, {
-        message: "You need at least 1 character.",
-    }).array().optional(),
-})
-
 export const stepSchema = z.object({
     id: z.number().optional(),
     stepDescription: z.string().min(2, {
@@ -52,7 +43,8 @@ export const userSchema = z.object({
 
 export const userListSchema = userSchema.array();
 
-export const TestCaseSchema = z.object({
+export const testCaseSchema = z.object({
+    id: z.number().optional(),
     userEpic: userEpicSchema.optional(),
     relatedStory: userEpicSchema.optional(), // TODO: VER QUE HACEMOS CON ESTO
     titleCase: z.string(),
@@ -64,29 +56,4 @@ export const TestCaseSchema = z.object({
     status: z.string().default('no ejecutado'),
     executor: userSchema.optional(),
     updatedAt: z.date()
-})
-
-export const NewTestCaseSchema = z.object({
-    userEpic: userEpicSchema.optional(),
-    userStory: userEpicSchema.optional(), // TODO: VER QUE HACEMOS CON ESTO
-    titleCase: z.string(),
-    preconditions: z.string().min(1, {
-        message: "At least one precondition."
-    }),
-    stepList: stepSchema.array(),
-    executionOrder: z.number().default(0),
-    status: z.string().default('no ejecutado'),
-    executor: userSchema.optional(),
-})
-
-export const EditTestCaseSchema = z.object({
-    relatedStory: userEpicSchema.optional(),
-    executor: userSchema.optional(),
-    titleCase: z.string(),
-    preconditions: z.string().min(1, {
-        message: "At least one precondition."
-    }),
-    stepList: stepSchema.array(),
-    executionOrder: z.number().default(0),
-    status: z.string().default('no ejecutado')
 })

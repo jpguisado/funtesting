@@ -1,5 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { fetchTestCase } from "@/server/data-layer"
+import { fetchTestCaseById } from "@/server/data-layer"
 import { Terminal } from "lucide-react"
 import {
     Card,
@@ -20,11 +20,7 @@ export default async function Page({
     searchParams: Promise<{ id: string }>
 }) {
     const id = (await searchParams).id;
-    const testCase = await fetchTestCase(parseInt(id));
-
-    if(testCase!.executor) {
-
-    } 
+    const testCase = await fetchTestCaseById(parseInt(id));
     const userId = testCase?.executor?.id?.toString() ?? '';
     const avatar = (await (await clerkClient()).users.getUser(userId).then((user) => user).catch(() => console.log('This case does not have a executor'))) ?? {imageUrl: '', fullName: ''}; 
     return (

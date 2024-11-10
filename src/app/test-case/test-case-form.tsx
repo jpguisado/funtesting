@@ -20,14 +20,14 @@ import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
 import { userStoryListType, userStoryType, userListType, userType, testCaseType } from "@/types/types"
-import { TestCaseSchema } from "@/schemas/schemas"
-import { createNewTestCase, updateTestCase } from "@/server/actions"
+import { testCaseSchema } from "@/schemas/schemas"
+import { createNewTestCase, deleteStep, updateTestCase } from "@/server/actions"
 
 export default function TestCaseForm(
   { editedCase, userStoriesList, userList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType }
 ) {
   const form = useForm<testCaseType>({
-    resolver: zodResolver(TestCaseSchema),
+    resolver: zodResolver(testCaseSchema),
     defaultValues: editedCase || {
       titleCase: '',
       executor: '',
@@ -37,6 +37,7 @@ export default function TestCaseForm(
       },
       preconditions: "",
       stepList: [{
+        id: '',
         order: 99,
         expectedResult: '',
         stepDescription: '',
@@ -50,6 +51,7 @@ export default function TestCaseForm(
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "stepList",
+    keyName: 'key'
   });
 
   async function onSubmit(data: testCaseType) {
@@ -68,6 +70,9 @@ export default function TestCaseForm(
     }
   }
 
+  async function deleteStepFromDB(stepId: number) {
+    if(stepId) await deleteStep(stepId)
+  }
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -228,7 +233,7 @@ export default function TestCaseForm(
           )}
         />
         {fields.map((item, index) => (
-          <div className="flex items-center gap-3" key={item.id}>
+          <div className="flex items-center gap-3" key={item.key}>
             <FormField
               control={control}
               name={`stepList.${index}.stepDescription`}
@@ -280,12 +285,20 @@ export default function TestCaseForm(
             <div className="grid col-span-2 gap-1">
               <div className="flex gap-1">
                 <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
-                <Button type="button" variant={"destructive"} onClick={() => remove(index)}><Trash2Icon /></Button>
+                <Button type="button" variant={"destructive"} onClick={() => {
+                  if (editedCase?.stepList[index]?.id) { 
+                    // TODO: revalidate page when I create a new step. If not, I cannot delete step, cause Id doesn't exist
+                    deleteStepFromDB(parseInt(editedCase.stepList[index].id))
+                  };
+                  remove(index)
+                }
+                }
+                ><Trash2Icon /></Button>
                 <Button type="button" variant={"outline"} onClick={() => { move(index, index - 1) }}><ChevronUp className="" /></Button>
                 <Button type="button" variant={"outline"} onClick={() => { move(index, index + 1) }}><ChevronDown className="" /></Button>
               </div>
               <div className="flex gap-3">
-                <Button type="button" variant={"outline"} onClick={() => {console.log(index)}}><CopyCheckIcon className="" /></Button>
+                <Button type="button" variant={"outline"} onClick={() => { console.log(index) }}><CopyCheckIcon className="" /></Button>
               </div>
             </div>
           </div>

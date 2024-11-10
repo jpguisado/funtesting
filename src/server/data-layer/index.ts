@@ -54,7 +54,7 @@ export async function fetchUserStoryById(id: number) {
             id: id
         },
         include: {
-            userEpic: true
+            userEpic: true,
         }
     })
 }
@@ -72,7 +72,7 @@ export async function fetchTestCases() {
     })
 }
 
-export async function fetchTestCase(id: number) {
+export async function fetchTestCaseById(id: number) {
     return await db.testCase.findFirst({
         where: {
             id: id

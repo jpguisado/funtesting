@@ -1,4 +1,4 @@
-import { clerkUsers, fetchTestCase, fetchUserStories } from "@/server/data-layer";
+import { clerkUsers, fetchTestCaseById, fetchUserStories } from "@/server/data-layer";
 import TestCaseForm from "../test-case-form";
 
 export default async function Page({
@@ -9,8 +9,7 @@ export default async function Page({
     const id = (await searchParams).id
 
     const userStories = await fetchUserStories();
-    const editedCase = await fetchTestCase(parseInt(id, 10));
-
+    const editedCase = await fetchTestCaseById(parseInt(id, 10));
     return <TestCaseForm
         editedCase={editedCase}
         userStoriesList={userStories}
