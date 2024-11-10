@@ -9,6 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { fetchTestCases } from "@/server/data-layer"
+import { EyeIcon } from "lucide-react";
 import Link from "next/link"
 
 export const dynamic = 'force-dynamic'
@@ -17,8 +18,8 @@ export default async function Page() {
     const testCases = await fetchTestCases();
     return (
         <div className="">
-            <div className="text-2xl mb-12 w-full">
-                <div>Resumen de test:</div>
+            <div className="flex items-center justify-between mb-12">
+                <div className="text-2xl font-bold">Test ejecutables:</div>
             </div>
             <Table className="">
                 <TableCaption>A list of your tests.</TableCaption>
@@ -42,8 +43,11 @@ export default async function Page() {
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
-                                <TableCell><Badge variant="outline">{test.id}</Badge></TableCell>
-                                <TableCell className="text-right"><Link href={'/test-execution/details/?id=' + test.id.toString()}>Detalles</Link></TableCell>
+                                <TableCell><Badge variant="outline">{test.stepList.filter((step) => step.stepStatus === 'pass').length}</Badge></TableCell>
+                                <TableCell className="text-right flex gap-3">
+                                    {/* <Link href={'/test-execution/details/?id=' + test.id.toString()}><CheckCheckIcon/></Link> */}
+                                    <Link href={'/test-execution/details/?id=' + test.id.toString()}><EyeIcon/></Link>
+                                </TableCell>
                             </TableRow>
                         )
                     })}

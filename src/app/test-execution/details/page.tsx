@@ -10,6 +10,7 @@ import {
 import EditStepStatus from "./edit-step-status"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { clerkClient } from "@clerk/nextjs/server"
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +21,12 @@ export default async function Page({
 }) {
     const id = (await searchParams).id;
     const testCase = await fetchTestCase(parseInt(id));
+
+    if(testCase!.executor) {
+
+    } 
+    const userId = testCase?.executor?.id?.toString() ?? '';
+    const avatar = (await (await clerkClient()).users.getUser(userId).then((user) => user).catch(() => console.log('This case does not have a executor'))) ?? {imageUrl: '', fullName: ''}; 
     return (
         <div className="grid gap-3">
             <Alert className="bg-blue-200">
@@ -32,11 +39,12 @@ export default async function Page({
             <div className="flex gap-3">
                 <Card className="w-full">
                     <CardHeader className="font-bold text-2xl">Responsable:</CardHeader>
-                    <CardContent>
+                    <CardContent className="flex  items-center gap-3">
                         <Avatar>
-                            <AvatarImage src={'user?.imageUrl'} />
+                            <AvatarImage src={avatar.imageUrl} />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
+                        {avatar.fullName}
                     </CardContent>
                 </Card>
                 <Card className="w-full">

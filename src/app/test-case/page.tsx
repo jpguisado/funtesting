@@ -32,7 +32,7 @@ export default async function Page() {
                         <TableHead>Asignee</TableHead>
                         <TableHead>Title</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Executed steps</TableHead>
+                        <TableHead>Steps</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -45,7 +45,7 @@ export default async function Page() {
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
-                                <TableCell><Badge variant="outline">{test.id}</Badge></TableCell>
+                                <TableCell><Badge variant="outline">{test.stepList.length}</Badge></TableCell>
                                 <TableCell className="text-right"><Link href={'/test-case/edit/?id=' + test.id.toString()}>Detalles</Link></TableCell>
                             </TableRow>
                         )

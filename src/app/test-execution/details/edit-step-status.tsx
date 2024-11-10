@@ -23,10 +23,6 @@ export default function EditStepStatus({ testCaseId, stepId, stepStatus }: { tes
                 <Button disabled={stepStatusState === 'pass' ? true : false} onClick={() => {save('pass', stepId)}}><CheckCheckIcon /></Button>
                 <Button disabled={stepStatusState === 'failed' ? true : false} onClick={() => save('failed', stepId)}variant="destructive" className=""><CircleOffIcon /></Button>
             </div>
-            {/* <div className="flex gap-3">
-            <Button variant="outline" className=""><LockIcon /></Button>
-            <Button variant="outline" className=""><UnlockIcon /></Button>
-        </div> */}
         </div>
     )
 }

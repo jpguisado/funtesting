@@ -45,7 +45,7 @@ export const stepSchema = z.object({
 export const stepListSchema = stepSchema.array();
 
 export const userSchema = z.object({
-    id: z.number().optional(),
+    id: z.string().optional(),
     email: z.string().email(),
     name: z.string()
 })
