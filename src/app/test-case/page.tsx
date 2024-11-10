@@ -15,7 +15,6 @@ export const dynamic = 'force-dynamic'
 
 export default async function Page() {
     const testCases = await fetchTestCases();
-    // const stepList = await fetchSteps(); // TODO
 
     return (
 

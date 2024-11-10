@@ -1,4 +1,15 @@
+import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
+
+const usersFromClerk = await (await clerkClient()).users.getUserList();
+export const clerkUsers = usersFromClerk.data.map((user) => {
+    return {
+        id: user.id,
+        name: user.fullName,
+        email: user.emailAddresses[0].emailAddress,
+        avatar: user.imageUrl,
+    }
+})
 
 export async function fetchUserEpics() {
     return await db.userEpic.findMany({
@@ -42,7 +53,7 @@ export async function fetchUserStoryById(id: number) {
         where: {
             id: id
         },
-        include: { 
+        include: {
             userEpic: true
         }
     })
@@ -92,7 +103,7 @@ export async function fetchStringOfTest() {
         include: {
             userStoriesOfThisEpic: {
                 include: {
-                    casesOfThisStory: {orderBy: {executionOrder: 'asc'}}
+                    casesOfThisStory: { orderBy: { executionOrder: 'asc' } }
                 }
             }
         }

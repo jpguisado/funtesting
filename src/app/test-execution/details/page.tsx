@@ -8,8 +8,8 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import EditStepStatus from "./edit-step-status"
-import { currentUser } from "@clerk/nextjs/server"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 
 export const dynamic = 'force-dynamic'
 
@@ -20,11 +20,9 @@ export default async function Page({
 }) {
     const id = (await searchParams).id;
     const testCase = await fetchTestCase(parseInt(id));
-    const avatar = await currentUser();
     return (
-        <div>
-            {/* TODO: pasar a grid */}
-            <Alert className="bg-blue-200 mb-12">
+        <div className="grid gap-3">
+            <Alert className="bg-blue-200">
                 <Terminal className="h-8 w-8" />
                 <AlertTitle className="text-2xl">{testCase?.titleCase}</AlertTitle>
                 <AlertDescription className="text-md">
@@ -36,24 +34,21 @@ export default async function Page({
                     <CardHeader className="font-bold text-2xl">Responsable:</CardHeader>
                     <CardContent>
                         <Avatar>
-                            <AvatarImage src={avatar?.imageUrl} />
+                            <AvatarImage src={'user?.imageUrl'} />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </CardContent>
                 </Card>
                 <Card className="w-full">
-                    <CardHeader className="font-bold text-2xl">Ejecución:</CardHeader>
+                    <CardHeader className="font-bold text-2xl">Ejecutados con éxito:</CardHeader>
                     <CardContent>
-                        <div className="bg-blue-200 w-24 h-24 rounded-full flex items-center justify-center">
-                            <div className="bg-red-200 w-16 h-16 rounded-full">
-                            </div>
-                        </div>
+                        <Badge className="text-2xl" variant={"secondary"}>{testCase?.stepList.filter((el) => el.stepStatus === 'pass').length } de {testCase?.stepList.length}</Badge> 
                     </CardContent>
                 </Card>
                 <Card className="w-full">
                     <CardHeader className="font-bold text-2xl">Última ejecución:</CardHeader>
                     <CardContent>
-                        <p>100</p>
+                        {testCase?.updatedAt.toString()}
                     </CardContent>
                 </Card>
             </div>
@@ -77,7 +72,7 @@ export default async function Page({
                                 <p>{step.expectedResult}</p>
                             </CardContent>
                         </Card>
-                        <EditStepStatus stepStatus={step.stepStatus} stepId={step.id} />
+                        <EditStepStatus testCaseId={id} stepStatus={step.stepStatus} stepId={step.id} />
                     </div>
                 )
             })}

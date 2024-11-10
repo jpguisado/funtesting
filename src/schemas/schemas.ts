@@ -63,6 +63,7 @@ export const TestCaseSchema = z.object({
     executionOrder: z.number().default(0),
     status: z.string().default('no ejecutado'),
     executor: userSchema.optional(),
+    updatedAt: z.date()
 })
 
 export const NewTestCaseSchema = z.object({

@@ -2,6 +2,7 @@
 
 import { editTestCaseType, newTestCaseType, userEpicType, userStoryType } from "@/types/types";
 import { db } from "./db";
+import { revalidatePath } from "next/cache";
 
 export async function createUserEpic(data: userEpicType) {
     await db.userEpic.create({
@@ -96,6 +97,18 @@ export async function updateTestCase(data: editTestCaseType, id: number) {
             });
         }
     }
+}
+
+export async function updateTestCaseDate(id: number) {
+    await db.testCase.update({
+        data: {
+            updatedAt: new Date()
+        },
+        where: {
+            id: id
+        }
+    });
+    revalidatePath(`/test-execution/details?id=${id}`)
 }
 
 export async function updateStepStatus(data: string, id: number) {

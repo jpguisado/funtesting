@@ -48,6 +48,7 @@ model testCase {
   stepList step[]
   executionOrder Int @default(0)
   status String @default("pendiente")
+  updatedAt DateTime @default(now())
 }
 
 model step {

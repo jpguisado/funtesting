@@ -2,17 +2,18 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { updateStepStatus } from "@/server/actions"
+import { updateStepStatus, updateTestCaseDate } from "@/server/actions"
 import { CheckCheckIcon, CircleOffIcon } from "lucide-react"
 import { useState } from "react"
 
-export default function EditStepStatus({ stepId, stepStatus }: { stepId: number, stepStatus: string }) {
+export default function EditStepStatus({ testCaseId, stepId, stepStatus }: { testCaseId: string, stepId: number, stepStatus: string }) {
 
     const [stepStatusState, setStepStatus] = useState(stepStatus)
 
     async function save(status: string, id: number) {
         setStepStatus(status);
         await updateStepStatus(status, id);
+        await updateTestCaseDate(parseInt(testCaseId));
     }
 
     return (
