@@ -50,7 +50,7 @@ export async function createNewTestCase(data: testCaseType) {
             preconditions: data.preconditions,
             relatedStory: { connect: { id: data.relatedStory.id } },
             stepList: { createMany: { data: data.stepList } },
-            executor: { connect: { id: data.executor.id } }
+            executor: { connect: { id: data.executor.id } },
         }
     })
 }
@@ -109,6 +109,17 @@ export async function updateTestCaseDate(id: number) {
         }
     });
     revalidatePath(`/test-execution/details?id=${id}`)
+}
+
+export async function updateTestCaseStatus(id: number, status: string) {
+    await db.testCase.update({
+        data: {
+            status: status
+        },
+        where: {
+            id: id
+        }
+    })
 }
 
 export async function updateStepStatus(data: string, id: number) {

@@ -39,7 +39,7 @@ export default function TestCaseForm(
         title: '',
         description: ''
       },
-      preconditions: "",
+      preconditions: '',
       stepList: [{
         order: 0,
         expectedResult: '',
@@ -47,7 +47,7 @@ export default function TestCaseForm(
         isBlocker: 'no',
         stepStatus: 'pendiente'
       }],
-      executionOrder: 99,
+      executionOrder: 0,
       status: 'no ejecutado',
       updatedAt: new Date(),
     },
@@ -61,7 +61,6 @@ export default function TestCaseForm(
   });
 
   async function onSubmit(data: testCaseType) {
-    console.log(data.relatedStory)
     toast({
       title: "You submitted the following values:",
       description: (
@@ -77,6 +76,8 @@ export default function TestCaseForm(
       reset()
     }
   }
+
+  console.log(control._formState)
 
   async function deleteStepFromDB(stepId: number) {
     if(stepId) await deleteStep(stepId)

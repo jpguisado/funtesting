@@ -46,7 +46,7 @@ model testCase {
   relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
   relatedStoryId Int ?
   stepList step[]
-  executionOrder Int @default(0)
+  executionOrder Int @default(autoincrement())
   status String @default("pendiente")
   updatedAt DateTime @default(now())
 }
