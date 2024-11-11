@@ -1,12 +1,13 @@
 'use client';
 
-import { updateTestCaseOrder } from "@/server/actions";
+// import { updateTestCaseOrder } from "@/server/actions";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function ChangeCaseOrder({ order, testCount, testCaseId }: { order: number, testCount?: number, testCaseId: number }) {
 
     async function updateOrder(order: number, testCaseId: number) {
-        await updateTestCaseOrder(order, testCaseId)
+        // await updateTestCaseOrder(order, testCaseId)
+        console.log(order, testCaseId)
     }
 
     if (order <= 1) {
