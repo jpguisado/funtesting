@@ -11,17 +11,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Edit2Icon, FilePlus2 } from "lucide-react";
+import ChangeCaseOrder from "./edit/change-case-order";
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
     const testCases = await fetchTestCases();
+    const testCaseSize = testCases.length
 
     return (
 
         <>
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Resumen de test:</div>
-                <Link className="text-blue-500 font-bold flex items-center gap-1" href={'test-case/create'}>crear <FilePlus2 size={18}/></Link>
+                <Link className="text-blue-500 font-bold flex items-center gap-1" href={'test-case/create'}>crear <FilePlus2 size={18} /></Link>
             </div>
             <Table>
                 <TableCaption>A list of your tests.</TableCaption>
@@ -46,7 +48,14 @@ export default async function Page() {
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
                                 <TableCell><Badge variant="outline">{test.stepList.length}</Badge></TableCell>
-                                <TableCell className="text-right"><Link href={'/test-case/edit/?id=' + test.id.toString()}><Edit2Icon/></Link></TableCell>
+                                <TableCell className="text-right flex gap-1">
+                                    <Link href={'/test-case/edit/?id=' + test.id.toString()}><Edit2Icon size={18} /></Link>
+                                    <ChangeCaseOrder
+                                        testCaseId={test.id}
+                                        testCount={testCaseSize}
+                                        order={test.executionOrder}>
+                                    </ChangeCaseOrder>
+                                </TableCell>
                             </TableRow>
                         )
                     })}

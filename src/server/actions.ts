@@ -32,7 +32,6 @@ export async function createUserStory(data: userStoryType) {
 }
 
 export async function updateUserStory(data: userStoryType, id: number) {
-    console.log(data)
     await db.userStory.update({
         data: {
             title: data.title,
@@ -132,6 +131,13 @@ export async function updateStepStatus(data: string, id: number) {
         }
     })
 }
+
+// export async function updateTestCaseOrder(newExecutionOrder: number, testCaseId: number) {
+//     await db.testCase.update({
+//        data: { executionOrder: newExecutionOrder },
+//        where: { id: testCaseId }
+//     })
+// }
 
 export async function deleteStep(id: number) {
     await db.step.delete({ where: { id: id } })

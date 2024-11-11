@@ -77,8 +77,6 @@ export default function TestCaseForm(
     }
   }
 
-  console.log(control._formState)
-
   async function deleteStepFromDB(stepId: number) {
     if(stepId) await deleteStep(stepId)
   }
