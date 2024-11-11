@@ -14,13 +14,13 @@ export default async function Home() {
   const content = [{
     'icon': <MountainSnowIcon />,
     'title': 'Épicas de usuario',
-    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'subtitle': 'Creación y edición de las épicas de usuario',
     'link': '/user-epic'
 
   }, {
     'icon': <BookOpenTextIcon />,
     'title': 'Historias de usuario',
-    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'subtitle': 'Creación y edición de las historias de usuario',
     'link': '/user-story'
 
   }, {
@@ -32,25 +32,25 @@ export default async function Home() {
   }, , {
     'icon': <WrenchIcon />,
     'title': 'Ejecución de test',
-    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'subtitle': 'Ejecución de test',
     'link': '/test-execution'
 
   }, {
     'icon': <DatabaseZapIcon />,
     'title': 'Preparación de datos',
-    'subtitle': 'Diseño y gestión de los datos necesarios para lanzar las pruebas',
+    'subtitle': 'Preparación de los datos necesarios para lanzar las pruebas de manera controlada',
     'link': '/data-preparation'
 
   }, {
     'icon': <MonitorCogIcon />,
     'title': 'Administración del proyecto',
-    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'subtitle': 'Administra los principales valores de configuración del proyecto',
     'link': '/project-config'
 
   }, {
     'icon': <CogIcon />,
     'title': 'Administración de la herramienta',
-    'subtitle': 'Diseño y gestión de los test generados en el proyecto',
+    'subtitle': 'Administración de la plataforma',
     'link': '/administrator'
   }]
 
