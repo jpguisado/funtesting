@@ -19,7 +19,7 @@ export default async function Page() {
     return (
         <div className="">
             <div className="flex items-center justify-between mb-12">
-                <div className="text-2xl font-bold">Test ejecutables:</div>
+                <div className="text-2xl font-bold">Lista de test disponibles:</div>
             </div>
             <Table className="">
                 <TableCaption>A list of your tests.</TableCaption>
@@ -43,7 +43,7 @@ export default async function Page() {
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
-                                <TableCell><Badge variant="outline">{test.stepList.filter((step) => step.stepStatus === 'pass').length}</Badge></TableCell>
+                                <TableCell>{test.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
                                     {/* <Link href={'/test-execution/details/?id=' + test.id.toString()}><CheckCheckIcon/></Link> */}
                                     <Link href={'/test-execution/details/?id=' + test.id.toString()}><EyeIcon/></Link>

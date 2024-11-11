@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { FilePlus2 } from "lucide-react";
+import { Edit2Icon, FilePlus2 } from "lucide-react";
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
@@ -46,7 +46,7 @@ export default async function Page() {
                                 <TableCell>{test.titleCase}</TableCell>
                                 <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
                                 <TableCell><Badge variant="outline">{test.stepList.length}</Badge></TableCell>
-                                <TableCell className="text-right"><Link href={'/test-case/edit/?id=' + test.id.toString()}>Detalles</Link></TableCell>
+                                <TableCell className="text-right"><Link href={'/test-case/edit/?id=' + test.id.toString()}><Edit2Icon/></Link></TableCell>
                             </TableRow>
                         )
                     })}

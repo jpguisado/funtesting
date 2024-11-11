@@ -19,7 +19,7 @@ export default async function Page() {
         <>
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Resumen de User Epics:</div>
-                <Link className="text-blue-500 font-bold flex items-center gap-1" href={'user-story/create'}>crear <FilePlus2 size={18} /></Link>
+                <Link className="text-blue-500 font-bold flex items-center gap-1" href={'user-epic/create'}>crear <FilePlus2 size={18} /></Link>
             </div>
             <Table>
                 <TableCaption>A list of your User Epics.</TableCaption>

@@ -41,7 +41,7 @@ export default function TestCaseForm(
       },
       preconditions: "",
       stepList: [{
-        order: 99,
+        order: 0,
         expectedResult: '',
         stepDescription: '',
         isBlocker: 'no',
@@ -53,7 +53,7 @@ export default function TestCaseForm(
     },
   })
 
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, reset } = form;
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "stepList",
@@ -73,7 +73,8 @@ export default function TestCaseForm(
     if (editedCase) {
       await updateTestCase(data, editedCase.id);
     } else {
-      await createNewTestCase(data)
+      await createNewTestCase(data);
+      reset()
     }
   }
 
