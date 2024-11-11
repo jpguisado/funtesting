@@ -30,20 +30,27 @@ export default function TestCaseForm(
     resolver: zodResolver(testCaseSchema),
     defaultValues: editedCase || {
       titleCase: '',
-      executor: '',
+      executor: {
+        id: '',
+        email: '',
+        name: '',
+      },
       relatedStory: {
         title: '',
         description: ''
       },
       preconditions: "",
       stepList: [{
-        id: '',
+        id: 0,
         order: 99,
         expectedResult: '',
         stepDescription: '',
         isBlocker: 'no',
         stepStatus: 'pendiente'
       }],
+      executionOrder: 99,
+      status: 'no ejecutado',
+      updatedAt: new Date(),
     },
   })
 
@@ -55,6 +62,7 @@ export default function TestCaseForm(
   });
 
   async function onSubmit(data: testCaseType) {
+    console.log(data.relatedStory)
     toast({
       title: "You submitted the following values:",
       description: (

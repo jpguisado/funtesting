@@ -9,6 +9,7 @@ export const userEpicSchema = z.object({
 export const userEpicListSchema = userEpicSchema.array()
 
 export const userStorySchema = z.object({
+    id: z.number().optional(),
     title: z.string().min(2, {
         message: "User Epic must be at least 2 characters.",
     }),
@@ -45,15 +46,14 @@ export const userListSchema = userSchema.array();
 
 export const testCaseSchema = z.object({
     id: z.number().optional(),
-    userEpic: userEpicSchema.optional(),
-    relatedStory: userEpicSchema.optional(), // TODO: VER QUE HACEMOS CON ESTO
     titleCase: z.string(),
+    executor: userSchema.optional(),
+    relatedStory: userStorySchema.optional(),
     preconditions: z.string().min(1, {
         message: "At least one precondition."
     }),
     stepList: stepSchema.array(),
     executionOrder: z.number().default(0),
     status: z.string().default('no ejecutado'),
-    executor: userSchema.optional(),
-    updatedAt: z.date()
+    updatedAt: z.date().optional()
 })
