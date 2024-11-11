@@ -41,7 +41,6 @@ export default function TestCaseForm(
       },
       preconditions: "",
       stepList: [{
-        id: 0,
         order: 99,
         expectedResult: '',
         stepDescription: '',
