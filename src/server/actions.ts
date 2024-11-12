@@ -132,12 +132,45 @@ export async function updateStepStatus(data: string, id: number) {
     })
 }
 
-// export async function updateTestCaseOrder(newExecutionOrder: number, testCaseId: number) {
-//     await db.testCase.update({
-//        data: { executionOrder: newExecutionOrder },
-//        where: { id: testCaseId }
-//     })
-// }
+export async function updateTestCaseOrder(from: number, to: number) {
+    console.log(from, to);
+    const fromPositionTestCaseId = await db.testCase.findFirst({
+        select: {
+            id: true,
+        },
+        where: {
+            executionOrder: from
+        }
+    });
+
+    const toPositionTestCaseId = await db.testCase.findFirst({
+        select: {
+            id: true,
+        },
+        where: {
+            executionOrder: to
+        }
+    });
+
+    await db.testCase.update({
+        data: {
+            executionOrder: to
+        },
+        where: {
+            id: fromPositionTestCaseId!.id
+        }
+    })
+
+    await db.testCase.update({
+        data: {
+            executionOrder: from
+        },
+        where: {
+            id: toPositionTestCaseId!.id
+        }
+    })
+    revalidatePath('/test-case')
+}
 
 export async function deleteStep(id: number) {
     await db.step.delete({ where: { id: id } })

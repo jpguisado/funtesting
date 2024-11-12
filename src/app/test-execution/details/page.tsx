@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { fetchTestCaseById } from "@/server/data-layer"
-import { CheckCheckIcon, Terminal } from "lucide-react"
+import { Terminal } from "lucide-react"
 import {
     Card,
     CardContent,
@@ -11,7 +11,6 @@ import EditStepStatus from "./edit-step-status"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { clerkClient } from "@clerk/nextjs/server"
-import { Button } from "@/components/ui/button"
 import CertifyCase from "./certify-case"
 
 export const dynamic = 'force-dynamic'

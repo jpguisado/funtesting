@@ -51,7 +51,6 @@ export default async function Page() {
                                 <TableCell className="text-right flex gap-1">
                                     <Link href={'/test-case/edit/?id=' + test.id.toString()}><Edit2Icon size={18} /></Link>
                                     <ChangeCaseOrder
-                                        testCaseId={test.id}
                                         testCount={testCaseSize}
                                         order={test.executionOrder}>
                                     </ChangeCaseOrder>

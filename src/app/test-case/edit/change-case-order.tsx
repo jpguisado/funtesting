@@ -1,24 +1,30 @@
 'use client';
 
-// import { updateTestCaseOrder } from "@/server/actions";
+import { toast } from "@/hooks/use-toast";
+import { updateTestCaseOrder } from "@/server/actions";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function ChangeCaseOrder({ order, testCount, testCaseId }: { order: number, testCount?: number, testCaseId: number }) {
+export default function ChangeCaseOrder({ order, testCount }: { order: number, testCount?: number }) {
 
-    async function updateOrder(order: number, testCaseId: number) {
-        // await updateTestCaseOrder(order, testCaseId)
-        console.log(order, testCaseId)
+    async function updateOrder(from: number, to: number) {
+        await updateTestCaseOrder(from, to);
+        toast({
+            title: "You updated test case order:",
+            description: (
+                <span>From position {from} to position {to}</span>
+            ),
+        });
     }
 
     if (order <= 1) {
-        return <ChevronDown onClick={() => updateOrder(order + 1, testCaseId)} size={18} />
+        return <ChevronDown onClick={() => updateOrder(order, order + 1)} size={18} />
     } else if (order === testCount) {
-        return <ChevronUp size={18} />
+        return <ChevronUp onClick={() => updateOrder(order, order - 1)} size={18} />
     } else {
         return (
             <>
-                <ChevronUp onClick={() => updateOrder(order - 1, testCaseId)} size={18} />
-                <ChevronDown size={18} />
+                <ChevronUp onClick={() => updateOrder(order, order - 1)} size={18} />
+                <ChevronDown onClick={() => updateOrder(order, order + 1)} size={18} />
             </>
         )
     }
