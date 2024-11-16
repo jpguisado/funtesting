@@ -108,7 +108,7 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
         where: {
             environmentId: envId
         }
-    })
+    }).catch(() => console.log('No se ha pasado ID'))
 }
 
 export async function fetchTestCaseById(id: number) {

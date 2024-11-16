@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchEnvironment, fetchTestCasesByEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer"
+import { fetchEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer"
 import { EyeIcon } from "lucide-react";
 import Link from "next/link"
 import FilterByExecutionEnvironment from "./filter-by-environment";
@@ -58,7 +58,7 @@ export default async function Page(props: {
                                 <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
                                 <TableCell className="font-medium">{test.testCase.executor?.name}</TableCell>
                                 <TableCell>{test.testCase.titleCase}</TableCell>
-                                <TableCell><span className={`border-[2px] px-1 rounded-lg`}>{test.testCase.status}</span></TableCell>
+                                <TableCell><span className={`border-[2px] px-1 rounded-lg`}>{test.status}</span></TableCell>
                                 <TableCell>{test.testCase.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.testCase.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
                                     <Link href={'/test-execution/details/?id=' + test.testCaseId.toString()}><EyeIcon /></Link>

@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
       // pathname: '/account123/**',
     }]
   }
-  /* config options here */
 };
 
 export default nextConfig;

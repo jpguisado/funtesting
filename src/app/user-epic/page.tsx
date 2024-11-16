@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/table"
 import Link from "next/link";
 import { FilePlus2 } from "lucide-react";
+import { Suspense } from "react";
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
     const userEpics = await fetchUserEpics();
-
     return (
         <>
             <div className="flex items-center justify-between mb-12">
@@ -31,15 +31,17 @@ export default async function Page() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {userEpics.map((epic) => {
-                        return (
-                            <TableRow key={epic.id}>
-                                <TableCell>{epic.title}</TableCell>
-                                <TableCell>{epic.description}</TableCell>
-                                <TableCell className="text-right"><Link href={'/user-epic/edit/?id=' + epic.id.toString()}>Editar</Link></TableCell>
-                            </TableRow>
-                        )
-                    })}
+                    <Suspense>
+                        {userEpics.map((epic) => {
+                            return (
+                                <TableRow key={epic.id}>
+                                    <TableCell>{epic.title}</TableCell>
+                                    <TableCell>{epic.description}</TableCell>
+                                    <TableCell className="text-right"><Link href={'/user-epic/edit/?id=' + epic.id.toString()}>Editar</Link></TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </Suspense>
                 </TableBody>
             </Table>
         </>
