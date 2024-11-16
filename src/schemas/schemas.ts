@@ -57,3 +57,12 @@ export const testCaseSchema = z.object({
     status: z.string().default('no ejecutado'),
     updatedAt: z.date().optional()
 })
+
+export const environmentSchema = z.object({
+    id: z.number().optional(),
+    title: z.string(),
+    URL: z.string(),
+    testCase: testCaseSchema.array().optional()
+})
+
+export const environmentListSchema = environmentSchema.array();

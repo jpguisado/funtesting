@@ -175,3 +175,31 @@ export async function updateTestCaseOrder(from: number, to: number) {
 export async function deleteStep(id: number) {
     await db.step.delete({ where: { id: id } })
 }
+
+export async function copyCasesOnEnvironment(fromEnvironment: number, toEnvironment: number) {
+
+    // Retrieve all the cases from the original environment
+    const cases = await db.testCaseInEnvironment.findMany({
+        where: {
+            environmentId: fromEnvironment
+        },
+        select: {
+            testCaseId: true
+        }
+    })
+
+    // Prepare data with destination environmet
+    const casesWithEnv = cases.map((tcase) => {
+        return {
+            testCaseId: tcase.testCaseId,
+            environmentId: toEnvironment,
+        }
+    })
+
+    // Inserts all the records
+    await db.testCaseInEnvironment.createMany({
+        data: casesWithEnv,
+        skipDuplicates: true,
+    },
+    )
+}

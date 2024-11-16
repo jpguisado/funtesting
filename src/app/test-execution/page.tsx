@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import {
     Table,
     TableBody,
@@ -8,20 +7,35 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchTestCases } from "@/server/data-layer"
+import { fetchEnvironment, fetchTestCasesByEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer"
 import { EyeIcon } from "lucide-react";
 import Link from "next/link"
-
+import FilterByExecutionEnvironment from "./filter-by-environment";
+import CopyIntoEnvironment from "./copy-into-environment";
 export const dynamic = 'force-dynamic'
 
-export default async function Page() {
-    const testCases = await fetchTestCases();
+export default async function Page(props: {
+    searchParams?: Promise<{
+        query?: string;
+        page?: string;
+    }>;
+}) {
+    const searchParams = await props.searchParams;
+    const query = searchParams?.query || '';
+    const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
+    const environments = await fetchEnvironment();
     return (
         <div className="">
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
+                <CopyIntoEnvironment
+                    environments={environments}
+                />
             </div>
-            <Table className="">
+            <FilterByExecutionEnvironment
+                environments={environments}
+            />
+            <Table className="mt-3">
                 <TableCaption>A list of your tests.</TableCaption>
                 <TableHeader>
                     <TableRow>
@@ -35,18 +49,19 @@ export default async function Page() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {testCases.map((test) => {
+                    {!testCaseWithEnv ? <TableRow>
+                        <TableCell colSpan={7} className="font-medium text-center text-slate-500">Selecciona un entorno</TableCell>
+                    </TableRow> : testCaseWithEnv?.map((test) => {
                         return (
-                            <TableRow key={test.id}>
-                                <TableCell className="font-medium">{test.id}</TableCell>
-                                <TableCell className="font-medium">{test.executionOrder}</TableCell>
-                                <TableCell className="font-medium">{test.executor?.name}</TableCell>
-                                <TableCell>{test.titleCase}</TableCell>
-                                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
-                                <TableCell>{test.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.stepList.length}</TableCell>
+                            <TableRow key={test.testCaseId}>
+                                <TableCell className="font-medium">{test.testCaseId}</TableCell>
+                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
+                                <TableCell className="font-medium">{test.testCase.executor?.name}</TableCell>
+                                <TableCell>{test.testCase.titleCase}</TableCell>
+                                <TableCell><span className={`border-[2px] px-1 rounded-lg`}>{test.testCase.status}</span></TableCell>
+                                <TableCell>{test.testCase.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.testCase.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
-                                    {/* <Link href={'/test-execution/details/?id=' + test.id.toString()}><CheckCheckIcon/></Link> */}
-                                    <Link href={'/test-execution/details/?id=' + test.id.toString()}><EyeIcon/></Link>
+                                    <Link href={'/test-execution/details/?id=' + test.testCaseId.toString()}><EyeIcon /></Link>
                                 </TableCell>
                             </TableRow>
                         )

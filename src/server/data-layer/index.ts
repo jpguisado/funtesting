@@ -72,6 +72,45 @@ export async function fetchTestCases() {
     })
 }
 
+export async function fetchTestCasesByEnvironment(id: number) {
+    return await db.testCase.findMany({
+        include: {
+            stepList: true,
+            relatedStory: true,
+            executor: true,
+            environmentWhereIsExecuted: true
+        },
+        orderBy: {
+            executionOrder: 'asc'
+        },
+        where: {
+            environmentWhereIsExecuted: {
+                some: {
+                    environmentId: {
+                        equals: id
+                    }
+                }
+            }
+        }
+    }).catch(() => console.log('No se ha pasado id de entorno'))
+}
+
+export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
+    return await db.testCaseInEnvironment.findMany({
+        include: {
+            testCase: {
+                include: {
+                    executor: true,
+                    stepList: true
+                }
+            }
+        },
+        where: {
+            environmentId: envId
+        }
+    })
+}
+
 export async function fetchTestCaseById(id: number) {
     return await db.testCase.findFirst({
         where: {
@@ -106,6 +145,16 @@ export async function fetchStringOfTest() {
                     casesOfThisStory: { orderBy: { executionOrder: 'asc' } }
                 }
             }
+        }
+    })
+}
+
+export async function fetchEnvironment() {
+    return await db.environment.findMany({
+        select: {
+            id: true,
+            title: true,
+            URL: true,
         }
     })
 }
