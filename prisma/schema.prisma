@@ -18,7 +18,7 @@ model Project {
   id Int @id @default(autoincrement())
   title String @unique
   description String @default("")
-  enviromentsOfTheProject Environment[]
+  enviroments Environment[]
 }
 
 model Environment {
@@ -27,7 +27,7 @@ model Environment {
   URL String @default("")
   testCaseInEnvironment TestCaseInEnvironment[]
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int @default(1)
+  projectId Int
   stepsInEnvironment StepStatusByEnvironment[]
 }
 
@@ -63,6 +63,7 @@ model testCase {
   relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
   relatedStoryId Int ?
   stepList step[]
+  status String
   executionOrder Int @default(autoincrement())
   updatedAt DateTime @default(now())
   environmentWhereIsExecuted TestCaseInEnvironment[]
