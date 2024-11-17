@@ -22,7 +22,7 @@ export default async function Page() {
 
         <>
             <div className="flex items-center justify-between mb-12">
-                <div className="text-2xl font-bold">Resumen de test:</div>
+                <div className="text-2xl font-bold">Test del proyecto:</div>
                 <Link className="text-blue-500 font-bold flex items-center gap-1" href={'test-case/create'}>crear <FilePlus2 size={18} /></Link>
             </div>
             <Table>
@@ -33,7 +33,6 @@ export default async function Page() {
                         <TableHead>Execution order</TableHead>
                         <TableHead>Asignee</TableHead>
                         <TableHead>Title</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead>Steps</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -46,7 +45,6 @@ export default async function Page() {
                                 <TableCell className="font-medium">{test.executionOrder}</TableCell>
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.titleCase}</TableCell>
-                                <TableCell><Badge variant="outline">{test.status}</Badge></TableCell>
                                 <TableCell><Badge variant="outline">{test.stepList.length}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
                                     <Link href={'/test-case/edit/?id=' + test.id.toString()}><Edit2Icon size={18} /></Link>

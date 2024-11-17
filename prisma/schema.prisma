@@ -18,7 +18,7 @@ model Project {
   id Int @id @default(autoincrement())
   title String @unique
   description String @default("")
-  testCase testCase []
+  enviromentsOfTheProject Environment[]
 }
 
 model Environment {
@@ -26,6 +26,9 @@ model Environment {
   title String @unique
   URL String @default("")
   testCaseInEnvironment TestCaseInEnvironment[]
+  project Project @relation(fields: [projectId], references: [id])
+  projectId Int @default(1)
+  stepsInEnvironment StepStatusByEnvironment[]
 }
 
 model User {
@@ -61,10 +64,7 @@ model testCase {
   relatedStoryId Int ?
   stepList step[]
   executionOrder Int @default(autoincrement())
-  status String @default("pendiente")
   updatedAt DateTime @default(now())
-  projectOfThisCase Project ? @relation(fields: [projectId], references: [id])
-  projectId Int ?
   environmentWhereIsExecuted TestCaseInEnvironment[]
 }
 
@@ -77,6 +77,25 @@ model step {
   stepStatus String
   isBlocker String ?
   order Int
+  stepStatusByEnv StepStatusByEnvironment[]
+}
+
+model TestCaseInEnvironment {
+  environment Environment @relation(fields: [environmentId], references: [id])
+  environmentId Int
+  testCase testCase @relation(fields: [testCaseId], references: [id]) 
+  testCaseId Int
+  status String @default("pendiente")
+  @@id([environmentId, testCaseId])
+}
+
+model StepStatusByEnvironment {
+  environment Environment @relation(fields: [environmentId], references: [id])
+  environmentId Int
+  step step @relation(fields: [stepId], references: [id])
+  stepId Int
+  status String
+    @@id([environmentId, stepId])
 }
 
 /// RECETARIO MODELS
@@ -94,15 +113,6 @@ model Ingredient {
     id Int @id @default(autoincrement())
     name String
     dishes IngredientsinDishes[]
-}
-
-model TestCaseInEnvironment {
-  environment Environment @relation(fields: [environmentId], references: [id])
-  environmentId Int
-  testCase testCase @relation(fields: [testCaseId], references: [id]) 
-  testCaseId Int
-  status String @default("pendiente")
-  @@id([environmentId, testCaseId])
 }
 
 model IngredientsinDishes {

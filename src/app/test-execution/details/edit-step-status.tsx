@@ -2,17 +2,26 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { updateStepStatus, updateTestCaseDate } from "@/server/actions"
+import { updateStepStatusInEnvironment, updateTestCaseDate } from "@/server/actions"
 import { CheckCheckIcon, CircleOffIcon } from "lucide-react"
 import { useState } from "react"
 
-export default function EditStepStatus({ testCaseId, stepId, stepStatus }: { testCaseId: string, stepId: number, stepStatus: string }) {
+export default function EditStepStatus({
+    testCaseId,
+    stepId,
+    environmentId,
+    stepStatus }: {
+        testCaseId: string,
+        stepId: number,
+        environmentId: number,
+        stepStatus: string
+    }) {
 
     const [stepStatusState, setStepStatus] = useState(stepStatus)
 
-    async function save(status: string, id: number) {
+    async function save(status: string, stepId: number) {
         setStepStatus(status);
-        await updateStepStatus(status, id);
+        await updateStepStatusInEnvironment(status, stepId, environmentId);
         await updateTestCaseDate(parseInt(testCaseId));
     }
 

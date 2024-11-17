@@ -124,13 +124,16 @@ export async function updateTestCaseStatus(testCaseId: number, environmentId: nu
     })
 }
 
-export async function updateStepStatus(data: string, id: number) {
-    await db.step.update({
+export async function updateStepStatusInEnvironment(status: string, stepId: number, environmentId: number) {
+    await db.stepStatusByEnvironment.update({
         where: {
-            id: id
+            environmentId_stepId: {
+                stepId: stepId,
+                environmentId: environmentId
+            }
         },
         data: {
-            stepStatus: data
+            status: status
         }
     })
 }
