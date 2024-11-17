@@ -110,13 +110,16 @@ export async function updateTestCaseDate(id: number) {
     revalidatePath(`/test-execution/details?id=${id}`)
 }
 
-export async function updateTestCaseStatus(id: number, status: string) {
-    await db.testCase.update({
+export async function updateTestCaseStatus(testCaseId: number, environmentId: number, status: string) {
+    await db.testCaseInEnvironment.update({
         data: {
             status: status
         },
         where: {
-            id: id
+            environmentId_testCaseId: {
+                testCaseId: testCaseId,
+                environmentId: environmentId,
+            }
         }
     })
 }

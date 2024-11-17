@@ -18,9 +18,10 @@ export const dynamic = 'force-dynamic'
 export default async function Page({
     searchParams,
 }: {
-    searchParams: Promise<{ id: string }>
+    searchParams: Promise<{ id: string, env: string }>
 }) {
     const id = (await searchParams).id;
+    const env = (await searchParams).env;
     const testCase = await fetchTestCaseById(parseInt(id));
     const userId = testCase?.executor?.id?.toString() ?? '';
     const avatar = (await (await clerkClient()).users.getUser(userId).then((user) => user).catch(() => console.log('This case does not have a executor'))) ?? {imageUrl: '', fullName: ''}; 
@@ -81,7 +82,10 @@ export default async function Page({
                 )
             })}
             {/* TODO: solo si se han completado todos los pasos */}
-            {<CertifyCase testCaseId={parseInt(id)} />} 
+            {<CertifyCase
+                testCaseId={parseInt(id)}
+                environmentId={parseInt(env)} />
+            } 
         </div>
     )
 }

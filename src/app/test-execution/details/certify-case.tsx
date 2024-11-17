@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button"
 import { updateTestCaseStatus } from "@/server/actions"
 import { CheckCheckIcon } from "lucide-react"
 
-export default function CertifyCase({ testCaseId }: { testCaseId: number }) {
-
-    async function updateCaseStatus(id: number) {
-        updateTestCaseStatus(id, 'pass');
+export default function CertifyCase({ testCaseId, environmentId }: { testCaseId: number, environmentId: number }) {
+    console.log('certify-case comp: ', environmentId)
+    async function updateCaseStatus(testCaseId: number) {
+        updateTestCaseStatus(testCaseId, environmentId, 'pass');
     }
 
     return (

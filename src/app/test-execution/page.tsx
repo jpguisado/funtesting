@@ -61,7 +61,7 @@ export default async function Page(props: {
                                 <TableCell><span className={`border-[2px] px-1 rounded-lg`}>{test.status}</span></TableCell>
                                 <TableCell>{test.testCase.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.testCase.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
-                                    <Link href={'/test-execution/details/?id=' + test.testCaseId.toString()}><EyeIcon /></Link>
+                                    <Link href={'/test-execution/details/?id=' + test.testCaseId.toString() + '&env=' + test.environmentId.toString()}><EyeIcon /></Link>
                                 </TableCell>
                             </TableRow>
                         )
