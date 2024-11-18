@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodType } from "zod";
 
 export const userEpicSchema = z.object({
     id: z.number().optional(),
@@ -54,15 +54,30 @@ export const testCaseSchema = z.object({
     }),
     stepList: stepSchema.array(),
     executionOrder: z.number().default(0),
-    status: z.string().default('no ejecutado'),
-    updatedAt: z.date().optional()
+    // status: z.string().default('no ejecutado'),
+    updatedAt: z.date().optional(),
+    environmentWhereIsExecuted: z.lazy((): ZodType => environmentSchema), // ???
+})
+
+export const projectSchema = z.object({
+    id: z.number().optional(),
+    title: z.string(),
+    URL: z.string(),
+    // enviroments: z.lazy(() => environmentSchema.optional())  
 })
 
 export const environmentSchema = z.object({
     id: z.number().optional(),
     title: z.string(),
     URL: z.string(),
-    testCase: testCaseSchema.array().optional()
+    testCaseInEnvironment: testCaseSchema.array().optional(),
+    project: projectSchema.optional(),
+})
+
+export const stepStatusByEnvironmentSchema = z.object({
+    environment: environmentSchema,
+    step: stepSchema,
+    status: z.string(),
 })
 
 export const environmentListSchema = environmentSchema.array();
