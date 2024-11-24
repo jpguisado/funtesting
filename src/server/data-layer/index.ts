@@ -103,7 +103,11 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
                     executor: true,
                     stepList: {
                         include: {
-                            stepStatusByEnv: true
+                            stepStatusByEnv: {
+                                select: {
+                                    status: true
+                                }
+                            }
                         }
                     },
                     

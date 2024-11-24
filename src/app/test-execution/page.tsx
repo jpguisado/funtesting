@@ -24,6 +24,7 @@ export default async function Page(props: {
     const query = searchParams?.query || '';
     const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
     const environments = await fetchEnvironment();
+    console.log(testCaseWithEnv)
     return (
         <div className="">
             <div className="flex items-center justify-between mb-12">

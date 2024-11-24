@@ -49,7 +49,7 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
                 id: step.id,
                 stepDescription: step.stepDescription,
                 expectedResult: step.expectedResult,
-                status: step.stepStatusByEnv[0].status,
+                status: step.stepStatusByEnv[0]?.status || '',
                 isBlocker: step.isBlocker,
                 order: step.order,
             }
