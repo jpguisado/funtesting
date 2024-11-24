@@ -21,7 +21,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Textarea } from "@/components/ui/textarea"
 import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, environmentType } from "@/types/types"
 import { testCaseSchema } from "@/schemas/schemas"
-import { createNewTestCase, deleteStep, updateTestCase } from "@/server/actions"
+import { deleteStep, updateTestCase } from "@/server/actions"
+import { createTestCaseWithSteps } from "@/server/data-layer/test-case"
 
 export default function TestCaseForm(
   { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
@@ -33,6 +34,7 @@ export default function TestCaseForm(
       environmentWhereIsExecuted: {
         title: '',
         URL: '',
+        id: 0,
       },
       executor: {
         id: '',
@@ -49,14 +51,11 @@ export default function TestCaseForm(
         expectedResult: '',
         stepDescription: '',
         isBlocker: 'no',
-        stepStatus: 'pendiente'
       }],
       executionOrder: 0,
-      // status: 'no ejecutado',
       updatedAt: new Date(),
     },
   })
-
   const { control, handleSubmit, reset } = form;
   const { fields, append, remove, move } = useFieldArray({
     control,
@@ -76,7 +75,7 @@ export default function TestCaseForm(
     if (editedCase) {
       await updateTestCase(data, editedCase.id);
     } else {
-      await createNewTestCase(data);
+      await createTestCaseWithSteps(data);
       reset()
     }
   }

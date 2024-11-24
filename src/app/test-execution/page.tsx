@@ -23,7 +23,6 @@ export default async function Page(props: {
     const searchParams = await props.searchParams;
     const query = searchParams?.query || '';
     const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
-    console.log(testCaseWithEnv)
     const environments = await fetchEnvironment();
     return (
         <div className="">
@@ -61,7 +60,7 @@ export default async function Page(props: {
                                 <TableCell>{test.testCase.titleCase}</TableCell>
                                 <TableCell><span className={`border-[2px] px-1 rounded-lg`}>{test.status}</span></TableCell>
                                 {/* TODO: change step status */}
-                                <TableCell>{test.testCase.stepList.filter((step) => step.stepStatus === 'pass').length + ' de ' + test.testCase.stepList.length}</TableCell>
+                                <TableCell>{test.testCase.stepList.filter((step) => step.stepStatusByEnv.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
                                     <Link href={'/test-execution/details/?id=' + test.testCaseId.toString() + '&env=' + test.environmentId.toString()}><EyeIcon /></Link>
                                 </TableCell>

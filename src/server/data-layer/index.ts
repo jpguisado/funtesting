@@ -101,10 +101,19 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
             testCase: {
                 include: {
                     executor: true,
-                    stepList: true,
+                    stepList: {
+                        include: {
+                            stepStatusByEnv: true
+                        }
+                    },
                     
                 }
             },
+        },
+        orderBy: {
+            testCase: {
+                executionOrder: 'asc'
+            }
         },
         where: {
             environmentId: envId
@@ -121,27 +130,19 @@ export async function fetchTestCaseById(id: number) {
             executor: true,
             stepList: {
                 select: {
-                    case: true,
+                    // case: true,
                     expectedResult: true,
                     id: true,
                     isBlocker: true,
                     order: true,
                     stepDescription: true,
-                    stepStatus: true,
-                    stepStatusByEnv: {
-                        select: {
-                            status: true
-                        },
-                        where: {
-                            environmentId: 1
-                        }
-                    }
                 },
                 orderBy: {
                     order: 'asc'
                 }
             },
-            relatedStory: true
+            relatedStory: true,
+            environmentWhereIsExecuted: true,
         }
     })
 }

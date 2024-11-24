@@ -63,6 +63,7 @@ model testCase {
   relatedStory userStory ? @relation(fields: [relatedStoryId], references: [id])
   relatedStoryId Int ?
   stepList step[]
+  status String ?
   executionOrder Int @default(autoincrement())
   updatedAt DateTime @default(now())
   environmentWhereIsExecuted TestCaseInEnvironment[]
