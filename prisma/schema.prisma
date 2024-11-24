@@ -74,7 +74,6 @@ model step {
   testCaseId Int
   stepDescription String
   expectedResult String
-  stepStatus String
   isBlocker String ?
   order Int
   stepStatusByEnv StepStatusByEnvironment[]
@@ -95,7 +94,7 @@ model StepStatusByEnvironment {
   step step @relation(fields: [stepId], references: [id])
   stepId Int
   status String
-    @@id([environmentId, stepId])
+  @@id([environmentId, stepId])
 }
 
 /// RECETARIO MODELS

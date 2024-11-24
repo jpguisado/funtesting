@@ -19,17 +19,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import { userStoryListType, userStoryType, userListType, userType, testCaseType } from "@/types/types"
+import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, environmentType } from "@/types/types"
 import { testCaseSchema } from "@/schemas/schemas"
-import { createNewTestCase, deleteStep, updateTestCase } from "@/server/actions"
+import { deleteStep, updateTestCase } from "@/server/actions"
+import { createTestCaseWithSteps } from "@/server/data-layer/test-case"
 
 export default function TestCaseForm(
-  { editedCase, userStoriesList, userList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType }
+  { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
 ) {
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
     defaultValues: editedCase || {
       titleCase: '',
+      environmentWhereIsExecuted: {
+        title: '',
+        URL: '',
+        id: 0,
+      },
       executor: {
         id: '',
         email: '',
@@ -45,14 +51,11 @@ export default function TestCaseForm(
         expectedResult: '',
         stepDescription: '',
         isBlocker: 'no',
-        stepStatus: 'pendiente'
       }],
       executionOrder: 0,
-      status: 'no ejecutado',
       updatedAt: new Date(),
     },
   })
-
   const { control, handleSubmit, reset } = form;
   const { fields, append, remove, move } = useFieldArray({
     control,
@@ -72,13 +75,15 @@ export default function TestCaseForm(
     if (editedCase) {
       await updateTestCase(data, editedCase.id);
     } else {
-      await createNewTestCase(data);
+      await createTestCaseWithSteps(data);
       reset()
     }
   }
 
+  console.log(control._formState)
+
   async function deleteStepFromDB(stepId: number) {
-    if(stepId) await deleteStep(stepId)
+    if (stepId) await deleteStep(stepId)
   }
   return (
     <Form {...form}>
@@ -202,6 +207,65 @@ export default function TestCaseForm(
               </FormItem>
             )}
           />
+          <FormField
+            control={control}
+            name="environmentWhereIsExecuted"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Entorno de ejecución</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value?.title ? field.value.title : 'Select environment'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search language..." />
+                      <CommandList>
+                        <CommandEmpty>No user found.</CommandEmpty>
+                        <CommandGroup>
+                          {enviromentList.map((env: environmentType) => (
+                            <CommandItem
+                              value={env.title}
+                              key={env.title}
+                              onSelect={() => {
+                                form.setValue("environmentWhereIsExecuted", env)
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  env === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {env.title}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  This is the environment where test will be executed
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           control={control}
@@ -293,7 +357,7 @@ export default function TestCaseForm(
               <div className="flex gap-1">
                 <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
                 <Button type="button" variant={"destructive"} onClick={() => {
-                  if (editedCase?.stepList[index]?.id) { 
+                  if (editedCase?.stepList[index]?.id) {
                     // TODO: revalidate page when I create a new step. If not, I cannot delete step, cause Id doesn't exist
                     deleteStepFromDB(parseInt(editedCase.stepList[index].id))
                   };

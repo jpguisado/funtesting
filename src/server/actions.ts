@@ -57,6 +57,7 @@ export async function createNewTestCase(data: testCaseType) {
 export async function updateTestCase(data: testCaseType, id: number) {
     await db.testCase.update({
         data: {
+            // TODO: restore env an update it.
             titleCase: data.titleCase,
             preconditions: data.preconditions,
             relatedStory: { update: { id: data.relatedStory.id } },
@@ -79,7 +80,6 @@ export async function updateTestCase(data: testCaseType, id: number) {
                     isBlocker: step.isBlocker,
                     stepDescription: step.stepDescription,
                     order: step.order,
-                    stepStatus: step.stepStatus,
                 },
             });
         } else {
@@ -90,7 +90,6 @@ export async function updateTestCase(data: testCaseType, id: number) {
                     isBlocker: step.isBlocker,
                     stepDescription: step.stepDescription,
                     order: step.order,
-                    stepStatus: step.stepStatus,
                     testCaseId: id
                 },
             });
