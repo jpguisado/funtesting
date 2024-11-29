@@ -64,7 +64,6 @@ export async function fetchTestCases() {
         include: {
             stepList: true,
             relatedStory: true,
-            executor: true,
         },
         orderBy: {
             executionOrder: 'asc'
@@ -77,7 +76,6 @@ export async function fetchTestCasesByEnvironment(id: number) {
         include: {
             stepList: true,
             relatedStory: true,
-            executor: true,
             environmentWhereIsExecuted: true
         },
         orderBy: {
@@ -87,7 +85,7 @@ export async function fetchTestCasesByEnvironment(id: number) {
             environmentWhereIsExecuted: {
                 some: {
                     environmentId: {
-                        equals: id
+                        equals: id || 1
                     }
                 }
             }
@@ -98,9 +96,9 @@ export async function fetchTestCasesByEnvironment(id: number) {
 export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
     return await db.testCaseInEnvironment.findMany({
         include: {
+            executor: true,
             testCase: {
                 include: {
-                    executor: true,
                     stepList: {
                         include: {
                             stepStatusByEnv: {
@@ -110,7 +108,6 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
                             }
                         }
                     },
-                    
                 }
             },
         },
@@ -131,7 +128,6 @@ export async function fetchTestCaseById(id: number) {
             id: id
         },
         include: {
-            executor: true,
             stepList: {
                 select: {
                     // case: true,
@@ -146,7 +142,12 @@ export async function fetchTestCaseById(id: number) {
                 }
             },
             relatedStory: true,
-            environmentWhereIsExecuted: true,
+            environmentWhereIsExecuted: {
+                include: {
+                    environment: true,
+                    executor: true
+                }
+            },
         }
     })
 }
@@ -171,4 +172,62 @@ export async function fetchEnvironment() {
             URL: true,
         }
     })
+}
+
+export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, environmentId: number) {
+    const rawTestCase = await db.testCase.findFirst({
+        where: {
+            id: testCaseId
+        },
+        include: {
+            environmentWhereIsExecuted: {
+                include: {
+                    executor: true
+                },
+                where: {
+                    environmentId: environmentId,
+                    testCaseId: testCaseId,
+                }
+            },
+            stepList: {
+                select: {
+                    id: true,
+                    stepDescription: true,
+                    expectedResult: true,
+                    isBlocker: true,
+                    order: true,
+                    stepStatusByEnv: {
+                        select: {
+                            stepId: true,
+                            status: true
+                        },
+                        where: {
+                            environmentId: environmentId,
+                        }
+                    }
+                },
+                orderBy: {
+                    order: 'asc'
+                }
+            },
+        }
+    })
+
+    return {
+        titleCase: rawTestCase?.titleCase,
+        executor: rawTestCase?.environmentWhereIsExecuted[0].executor,
+        preconditions: rawTestCase?.preconditions,
+        updatedAt: rawTestCase?.updatedAt,
+        stepList: rawTestCase?.stepList.map((step) => {
+            return {
+                id: step.id,
+                stepDescription: step.stepDescription,
+                expectedResult: step.expectedResult,
+                status: step.stepStatusByEnv[0]?.status || '',
+                isBlocker: step.isBlocker,
+                order: step.order,
+            }
+        }),
+    }
+
 }

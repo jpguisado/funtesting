@@ -19,10 +19,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, environmentType } from "@/types/types"
+import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, testCaseInEnvironmentType } from "@/types/types"
 import { testCaseSchema } from "@/schemas/schemas"
-import { deleteStep, updateTestCase } from "@/server/actions"
-import { createTestCaseWithSteps } from "@/server/data-layer/test-case"
+import { deleteStep } from "@/server/actions"
+import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case-actions"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function TestCaseForm(
   { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
@@ -31,20 +32,6 @@ export default function TestCaseForm(
     resolver: zodResolver(testCaseSchema),
     defaultValues: editedCase || {
       titleCase: '',
-      environmentWhereIsExecuted: {
-        title: '',
-        URL: '',
-        id: 0,
-      },
-      executor: {
-        id: '',
-        email: '',
-        name: '',
-      },
-      relatedStory: {
-        title: '',
-        description: ''
-      },
       preconditions: '',
       stepList: [{
         order: 0,
@@ -52,7 +39,16 @@ export default function TestCaseForm(
         stepDescription: '',
         isBlocker: 'no',
       }],
-      executionOrder: 0,
+      environmentWhereIsExecuted: {
+        environment: {
+          id: new Number(),
+          title: '',
+          URL: '',
+        },
+        executor: {
+          name: '',
+        },
+      },
       updatedAt: new Date(),
     },
   })
@@ -80,8 +76,8 @@ export default function TestCaseForm(
     }
   }
 
+  console.log(editedCase)
   console.log(control._formState)
-
   async function deleteStepFromDB(stepId: number) {
     if (stepId) await deleteStep(stepId)
   }
@@ -94,7 +90,7 @@ export default function TestCaseForm(
             name="relatedStory"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
-                <FormLabel>Historia de usuario</FormLabel>
+                <FormLabel>User story:</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -142,18 +138,43 @@ export default function TestCaseForm(
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  This is the language that will be used in the dashboard.
+                  User story related to this case.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+           <FormField
+          control={form.control}
+          name="environmentWhereIsExecuted.status"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel>Estado del test</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the initial status of the test" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="pendiente">pendiente</SelectItem>
+                  <SelectItem value="iniciado">iniciado</SelectItem>
+                  <SelectItem value="bloqueado">bloqueado</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                You can set the initial status of the test
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
           <FormField
             control={control}
-            name="executor"
+            name="environmentWhereIsExecuted.executor"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
-                <FormLabel>Responsable de la ejecución</FormLabel>
+                <FormLabel>Asigned to:</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -181,7 +202,7 @@ export default function TestCaseForm(
                               value={user.name}
                               key={user.name}
                               onSelect={() => {
-                                form.setValue("executor", user)
+                                form.setValue("environmentWhereIsExecuted.executor", user)
                               }}
                             >
                               <Check
@@ -209,10 +230,10 @@ export default function TestCaseForm(
           />
           <FormField
             control={control}
-            name="environmentWhereIsExecuted"
+            name="environmentWhereIsExecuted.environment"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
-                <FormLabel>Entorno de ejecución</FormLabel>
+                <FormLabel>Environment where it&apos; ll be executed:</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -231,22 +252,22 @@ export default function TestCaseForm(
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Search language..." />
+                      <CommandInput placeholder="Search for environment..." />
                       <CommandList>
-                        <CommandEmpty>No user found.</CommandEmpty>
+                        <CommandEmpty>No environment found.</CommandEmpty>
                         <CommandGroup>
-                          {enviromentList.map((env: environmentType) => (
+                          {enviromentList.map((env: testCaseInEnvironmentType) => (
                             <CommandItem
                               value={env.title}
                               key={env.title}
                               onSelect={() => {
-                                form.setValue("environmentWhereIsExecuted", env)
+                                form.setValue("environmentWhereIsExecuted.environment", env)
                               }}
                             >
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  env === field.value
+                                  env.title === field.value?.title
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}

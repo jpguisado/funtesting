@@ -39,7 +39,7 @@ interface UserEpic {
     id?: number,
     title: string,
     description?: string,
-    userStoriesOfThisEpic: userStory[]
+    userStoriesOfThisEpic?: userStory[]
 }
 
 interface UserStory {
@@ -54,39 +54,17 @@ interface TestCase {
     id?: number,
     titleCase: string,
     description?: string,
-    executor?: User,
     relatedStory?: userStory
     preconditions: string,
     stepList: Step[],
-    executionOrder: number,
+    executionOrder?: number,
     updatedAt?: Date,
-    environmentWhereIsExecuted: Environment
+    environmentWhereIsExecuted?: TestCaseInEnvironment
 }
 
-interface TestCaseTwo {
-    id?: number,
-    name: string,
-    description: string,
-    createdAt?: Date,
-    updatedAt?: Date,
-}
-
-interface StepTwo {
-    id?: number,
-    description: string,
-    testCaseId: number,
-    executions: StepExecutionTwo,
-    createdAt?: Date,
-    updatedAt?: Date,
-}
-
-interface StepExecutionTwo {
-    id?: number,
+interface TestCaseInEnvironment {
+    environment: Environment,
+    testCase?: TestCase,
     status: string,
-    stepId: number,
-    environmentId: number,
-    executedat?: Date,
-    createdAt?: Date,
-    updatedAt?: Date,
-
+    executor: User,
 }

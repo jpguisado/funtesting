@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { clerkClient } from "@clerk/nextjs/server"
 import CertifyCase from "./certify-case"
-import { fetchTestCaseByEnvironmentAndId } from "@/server/data-layer/test-case"
+import { fetchTestCaseByEnvironmentAndId } from "@/server/data-layer"
 
 export const dynamic = 'force-dynamic'
 
