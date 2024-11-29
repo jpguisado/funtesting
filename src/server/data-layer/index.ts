@@ -83,7 +83,7 @@ export async function fetchTestCasesByEnvironment(id: number) {
         },
         where: {
             environmentWhereIsExecuted: {
-                some: {
+                every: {
                     environmentId: {
                         equals: id || 1
                     }
@@ -117,7 +117,7 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
             }
         },
         where: {
-            environmentId: envId
+            environmentId: envId || 1
         }
     }).catch(() => console.log('No se ha pasado ID'))
 }

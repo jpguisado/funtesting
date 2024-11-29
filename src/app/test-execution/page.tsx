@@ -24,6 +24,7 @@ export default async function Page(props: {
     const query = searchParams?.query || '';
     const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
     const environments = await fetchEnvironment();
+    console.log(testCaseWithEnv)
     return (
         <div>
             <div className="flex items-center justify-between mb-12">
@@ -55,6 +56,7 @@ export default async function Page(props: {
                         return (
                             <TableRow key={test.testCaseId}>
                                 <TableCell className="font-medium">{test.testCaseId}</TableCell>
+                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
                                 <TableCell>{test.testCase.titleCase}</TableCell>
                                 <TableCell><span className={`px-[5px] py-[2px] rounded-lg ${test.status === 'pass' ? 'bg-green-200' : 'bg-red-200'}`}>{test.status}</span></TableCell>

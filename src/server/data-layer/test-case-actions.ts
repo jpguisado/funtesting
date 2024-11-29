@@ -21,7 +21,6 @@ export async function createTestCaseWithSteps(testData: testCaseType) {
                     }
                 },
                 relatedStory: {connect: relatedStory},
-                environmentWhereIsExecuted: {create: {environmentId: environmentWhereIsExecuted!.environment!.id!}}
             },
             include: {
                 stepList: {
@@ -31,17 +30,19 @@ export async function createTestCaseWithSteps(testData: testCaseType) {
         });
         if (environmentWhereIsExecuted!.environment.id) {
             const id = environmentWhereIsExecuted!.environment.id;
-            // await db.testCaseInEnvironment.create({
-            //     data: {
-            //         environmentId: id,
-            //         testCaseId: createdTest.id,
-            //     }
-            // })
+            await db.testCaseInEnvironment.create({
+                data: {
+                    environmentId: id,
+                    testCaseId: createdTest.id,
+                    userId: environmentWhereIsExecuted?.executor.id
+                }
+            })
             const stepswithEnv = createdTest.stepList.map((step) => {
                 return {
                     stepId: step.id,
                     environmentId: id,
-                    status: 'pendiente'
+                    status: 'pendiente',
+                    comment: '',
                 }
             })
             await db.stepStatusByEnvironment.createMany({

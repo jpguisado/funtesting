@@ -1,4 +1,4 @@
-import { fetchEnvironment, fetchTestCasesByEnvironment } from "@/server/data-layer";
+import { fetchEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer";
 import {
     Table,
     TableBody,
@@ -24,7 +24,7 @@ export default async function Page(props: {
     const searchParams = await props.searchParams;
     const query = searchParams?.query || '';
     const environments = await fetchEnvironment();
-    const testCases = await fetchTestCasesByEnvironment(parseInt(query));
+    const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
     return (
         <>
             <div className="flex items-center justify-between mb-12">
@@ -48,13 +48,13 @@ export default async function Page(props: {
                 <TableBody>
                     {testCases!.map((test) => {
                         return (
-                            <TableRow key={test.id}>
-                                <TableCell className="font-medium">{test.id}</TableCell>
-                                <TableCell className="font-medium">{test.executionOrder}</TableCell>
-                                <TableCell>{test.titleCase}</TableCell>
-                                <TableCell><Badge variant="outline">{test.stepList.length}</Badge></TableCell>
+                            <TableRow key={test.testCaseId}>
+                                <TableCell className="font-medium">{test.testCaseId}</TableCell>
+                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
+                                <TableCell>{test.testCase.titleCase}</TableCell>
+                                <TableCell><Badge variant="outline">{test.testCase.stepList.length}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
-                                    <Link href={'/test-case/edit/?id=' + test.id.toString() + '&env=' + query.toString() }><Edit2Icon size={18} /></Link>
+                                    <Link href={'/test-case/edit/?id=' + test.testCaseId.toString() + '&env=' + query.toString() }><Edit2Icon size={18} /></Link>
                                     {/* <ChangeCaseOrder
                                         testCount={0}
                                         order={test.executionOrder}>

@@ -28,9 +28,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function TestCaseForm(
   { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
 ) {
+  const editedCaseEdited: testCaseType = {
+    id: editedCase.id,
+    titleCase: editedCase.titleCase,
+    preconditions: editedCase.preconditions,
+    stepList: editedCase.stepList,
+    environmentWhereIsExecuted: editedCase.environmentWhereIsExecuted[0],
+    updatedAt: new Date(),
+  }
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
-    defaultValues: editedCase || {
+    defaultValues: editedCaseEdited || {
       titleCase: '',
       preconditions: '',
       stepList: [{
@@ -76,8 +84,6 @@ export default function TestCaseForm(
     }
   }
 
-  console.log(editedCase)
-  console.log(control._formState)
   async function deleteStepFromDB(stepId: number) {
     if (stepId) await deleteStep(stepId)
   }
@@ -160,6 +166,7 @@ export default function TestCaseForm(
                   <SelectItem value="pendiente">pendiente</SelectItem>
                   <SelectItem value="iniciado">iniciado</SelectItem>
                   <SelectItem value="bloqueado">bloqueado</SelectItem>
+                  <SelectItem value="pass">finalizado</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
