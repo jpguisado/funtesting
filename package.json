@@ -12,7 +12,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.3.0",
     "@hookform/resolvers": "^3.9.1",
-    "@prisma/client": "5.22.0",
+    "@prisma/client": "6.0.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
@@ -25,6 +25,8 @@
     "@t3-oss/env-core": "^0.11.1",
     "@t3-oss/env-nextjs": "^0.11.1",
     "@types/eslint": "^9.6.1",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -37,9 +39,7 @@
     "react-hook-form": "^7.53.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.17.6",
@@ -47,7 +47,7 @@
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "prettier": "3.3.3",
-    "prisma": "^5.22.0",
+    "prisma": "^6.0.0",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"

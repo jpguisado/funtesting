@@ -135,7 +135,7 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(environmentId: number
                 testCaseId: test.testCaseId,
                 testCase: test.testCase,
                 executor: test.executor,
-                // status: test.status, TODO: ¿Do I need this value?
+                status: test.status,
                 stepListLength: test.testCase.stepList.length,
                 title: test.testCase.titleCase,
                 executionOrder: test.testCase.executionOrder,
