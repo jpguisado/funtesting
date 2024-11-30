@@ -28,17 +28,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function TestCaseForm(
   { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
 ) {
-  const editedCaseEdited: testCaseType = {
-    id: editedCase.id,
-    titleCase: editedCase.titleCase,
-    preconditions: editedCase.preconditions,
-    stepList: editedCase.stepList,
-    environmentWhereIsExecuted: editedCase.environmentWhereIsExecuted[0],
-    updatedAt: new Date(),
-  }
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
-    defaultValues: editedCaseEdited || {
+    defaultValues: editedCase || {
       titleCase: '',
       preconditions: '',
       stepList: [{
@@ -383,7 +375,16 @@ export default function TestCaseForm(
             />
             <div className="grid col-span-2 gap-1">
               <div className="flex gap-1">
-                <Button type="button" variant={"default"} onClick={() => append({ stepDescription: "", expectedResult: "", stepStatus: "not started", isBlocker: "", order: index + 1 })}><PlusCircleIcon className="" /></Button>
+                <Button type="button" variant={"default"} onClick={() => append({
+                  stepDescription: "",
+                  expectedResult: "",
+                  stepStatus: "pendiente",
+                  isBlocker: "",
+                  order: index + 1
+                })
+                }>
+                  <PlusCircleIcon className="" />
+                </Button>
                 <Button type="button" variant={"destructive"} onClick={() => {
                   if (editedCase?.stepList[index]?.id) {
                     // TODO: revalidate page when I create a new step. If not, I cannot delete step, cause Id doesn't exist

@@ -90,11 +90,17 @@ export async function fetchTestCasesByEnvironment(id: number) {
                 }
             }
         }
-    }).catch(() => console.log('No se ha pasado id de entorno'))
+    }).catch((error) => {
+        console.log('No se ha pasado id de entorno');
+        throw error;
+    })
 }
 
-export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
-    return await db.testCaseInEnvironment.findMany({
+
+
+export async function fetchTestCaseWithEnvirontmentByEnvId(environmentId: number) {
+    if(!environmentId) return null;
+    const testCases = await db.testCaseInEnvironment.findMany({
         include: {
             executor: true,
             testCase: {
@@ -117,9 +123,25 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(envId: number) {
             }
         },
         where: {
-            environmentId: envId || 1
-        }
-    }).catch(() => console.log('No se ha pasado ID'))
+            environmentId: environmentId
+        },
+    }).catch((error) => {
+        console.error('Error en la op. de bbdd ', error)
+    });
+    if (testCases) {
+        return testCases.map((test) => {
+            return {
+                environmentId: test.environmentId,
+                testCaseId: test.testCaseId,
+                testCase: test.testCase,
+                executor: test.executor,
+                // status: test.status, TODO: ¿Do I need this value?
+                stepListLength: test.testCase.stepList.length,
+                title: test.testCase.titleCase,
+                executionOrder: test.testCase.executionOrder,
+            }
+        })
+    }
 }
 
 export async function fetchTestCaseById(id: number) {

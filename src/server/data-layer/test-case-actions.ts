@@ -53,12 +53,13 @@ export async function createTestCaseWithSteps(testData: testCaseType) {
 }
 
 export async function updateTestCase(data: testCaseType, id: number) {
+    console.log(data)
     await db.testCase.update({
         data: {
             updatedAt: new Date(),
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStory: { update: { id: data.relatedStory.id } },
+            relatedStoryId: data.relatedStory.id,
         },
         where: {
             id: id
@@ -93,7 +94,7 @@ export async function updateTestCase(data: testCaseType, id: number) {
             await db.stepStatusByEnvironment.create({
                 data: {
                     status: 'pendiente',
-                    environmentId: data.environmentWhereIsExecuted.id,
+                    environmentId: data.environmentWhereIsExecuted.environment.id,
                     stepId: newSteps.id
                 }
             })

@@ -11,14 +11,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Edit2Icon, FilePlus2 } from "lucide-react";
-// import ChangeCaseOrder from "./edit/change-case-order";
 import FilterByExecutionEnvironment from "../test-execution/filter-by-environment";
+import ChangeCaseOrder from "./edit/change-case-order";
+
 export const dynamic = 'force-dynamic'
 
 export default async function Page(props: {
     searchParams?: Promise<{
         query?: string;
-        page?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
@@ -34,7 +34,7 @@ export default async function Page(props: {
             <FilterByExecutionEnvironment
                 environments={environments}
             />
-            <Table>
+            <Table className="">
                 <TableCaption>A list of your tests.</TableCaption>
                 <TableHeader>
                     <TableRow>
@@ -46,19 +46,21 @@ export default async function Page(props: {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {testCases!.map((test) => {
+                    {testCases ? '' : <TableRow><TableCell className="text-center" colSpan={5}>Error al cargar el dato</TableCell></TableRow>}
+                    {testCases?.map((test) => {
+                        const {testCaseId, stepListLength, executionOrder, title, } = test
                         return (
-                            <TableRow key={test.testCaseId}>
-                                <TableCell className="font-medium">{test.testCaseId}</TableCell>
-                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
-                                <TableCell>{test.testCase.titleCase}</TableCell>
-                                <TableCell><Badge variant="outline">{test.testCase.stepList.length}</Badge></TableCell>
+                            <TableRow key={testCaseId}>
+                                <TableCell className="font-medium">{testCaseId}</TableCell>
+                                <TableCell className="font-medium">{executionOrder}</TableCell>
+                                <TableCell>{title}</TableCell>
+                                <TableCell><Badge variant="outline">{stepListLength}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
-                                    <Link href={'/test-case/edit/?id=' + test.testCaseId.toString() + '&env=' + query.toString() }><Edit2Icon size={18} /></Link>
-                                    {/* <ChangeCaseOrder
-                                        testCount={0}
-                                        order={test.executionOrder}>
-                                    </ChangeCaseOrder> */}
+                                    <Link href={'/test-case/edit/?id=' + testCaseId.toString() + '&env=' + query.toString()}><Edit2Icon size={18} /></Link>
+                                    <ChangeCaseOrder
+                                        testCount={testCases.length}
+                                        order={executionOrder}>
+                                    </ChangeCaseOrder>
                                 </TableCell>
                             </TableRow>
                         )
