@@ -313,7 +313,7 @@ export default function TestCaseForm(
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little bit about preconditions"
-                  className="resize-none"
+                  className="resize-y"
                   {...field}
                 />
               </FormControl>
@@ -336,7 +336,7 @@ export default function TestCaseForm(
                     <FormControl className="">
                       <div className="flex gap-1">
                         <Textarea
-                          placeholder="Añade una descripción del paso"
+                          placeholder="Add a step description"
                           className="resize-y"
                           {...field}
                         />
@@ -360,8 +360,8 @@ export default function TestCaseForm(
                     <FormControl className="">
                       <div className="flex gap-1">
                         <Textarea
-                          placeholder="Añade una descripción del resultado de este paso"
-                          className="resize-none"
+                          placeholder="Add a expected result description"
+                          className="resize-y"
                           {...field}
                         />
                       </div>

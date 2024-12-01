@@ -140,7 +140,20 @@ export async function updateTestCaseOrder(from: number, to: number) {
 }
 
 export async function deleteStep(id: number) {
-    await db.step.delete({ where: { id: id } })
+    console.log(id)
+    await db.stepStatusByEnvironment.delete({
+        where: {
+            environmentId_stepId: {
+                stepId: id,
+                environmentId: 1
+            }
+        }
+    })
+    await db.step.delete({
+        where: {
+            id: id
+        }
+    })
 }
 
 export async function copyCasesOnEnvironment(fromEnvironment: number, toEnvironment: number) {
