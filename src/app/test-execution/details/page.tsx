@@ -90,7 +90,8 @@ export default async function Page({
             {/* TODO: solo si se han completado todos los pasos */}
             {<CertifyCase
                 testCaseId={parseInt(testCaseId)}
-                environmentId={parseInt(envId)} />
+                environmentId={parseInt(envId)}
+                testStatus={testCaseDetails.status!} />
             } 
         </div>
     )

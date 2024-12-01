@@ -13,7 +13,6 @@ export default async function Page({
     const userStories = await fetchUserStories();
     const editedCase = await fetchTestCaseByIdAndEnvironment(parseInt(testCaseId, 10), parseInt(environmentId, 10));
     const enviromentList = await fetchEnvironment();
-    console.log('Caso editado', editedCase);
     return <TestCaseForm
         enviromentList={enviromentList}
         editedCase={editedCase}

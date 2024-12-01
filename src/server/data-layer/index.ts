@@ -204,7 +204,7 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
         include: {
             environmentWhereIsExecuted: {
                 include: {
-                    executor: true
+                    executor: true,
                 },
                 where: {
                     environmentId: environmentId,
@@ -240,6 +240,7 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
         executor: rawTestCase?.environmentWhereIsExecuted[0].executor,
         preconditions: rawTestCase?.preconditions,
         updatedAt: rawTestCase?.updatedAt,
+        status: rawTestCase?.environmentWhereIsExecuted[0].status,
         stepList: rawTestCase?.stepList.map((step) => {
             return {
                 id: step.id,

@@ -70,6 +70,7 @@ export async function updateTestCaseDate(id: number) {
 }
 
 export async function updateTestCaseStatus(testCaseId: number, environmentId: number, status: string) {
+    console.log(status)
     await db.testCaseInEnvironment.update({
         data: {
             status: status
@@ -81,6 +82,7 @@ export async function updateTestCaseStatus(testCaseId: number, environmentId: nu
             }
         }
     })
+    revalidatePath('/test-execution/details')
 }
 
 export async function updateStepStatusInEnvironment(status: string, stepId: number, environmentId: number) {
