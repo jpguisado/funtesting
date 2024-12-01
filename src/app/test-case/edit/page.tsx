@@ -1,16 +1,19 @@
-import { clerkUsers, fetchEnvironment, fetchTestCaseById, fetchUserStories } from "@/server/data-layer";
+import { clerkUsers, fetchEnvironment, fetchUserStories } from "@/server/data-layer";
 import TestCaseForm from "../test-case-form";
+import { fetchTestCaseByIdAndEnvironment } from "@/server/data-layer/test-case-data";
 
 export default async function Page({
     searchParams,
 }: {
-    searchParams: Promise<{ id: string }>
+    searchParams: Promise<{ testId: string, envId: string }>
 }) {
-    const id = (await searchParams).id
+    const testCaseId = (await searchParams).testId
+    const environmentId = (await searchParams).envId
 
     const userStories = await fetchUserStories();
-    const editedCase = await fetchTestCaseById(parseInt(id, 10));
+    const editedCase = await fetchTestCaseByIdAndEnvironment(parseInt(testCaseId, 10), parseInt(environmentId, 10));
     const enviromentList = await fetchEnvironment();
+    console.log('Caso editado', editedCase);
     return <TestCaseForm
         enviromentList={enviromentList}
         editedCase={editedCase}

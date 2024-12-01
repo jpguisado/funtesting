@@ -48,6 +48,7 @@ export default function TestCaseForm(
         executor: {
           name: '',
         },
+        status: ''
       },
       updatedAt: new Date(),
     },
@@ -143,7 +144,7 @@ export default function TestCaseForm(
             )}
           />
            <FormField
-          control={form.control}
+          control={control}
           name="environmentWhereIsExecuted.status"
           render={({ field }) => (
             <FormItem className="flex flex-col w-full">

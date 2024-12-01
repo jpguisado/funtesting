@@ -7,7 +7,6 @@ import {testCaseSchema } from "@/schemas/schemas";
 export async function createTestCaseWithSteps(testData: testCaseType) {
 
     const {data} = testCaseSchema.safeParse(testData);
-    console.log(data)
 
     if (data) {
         const { titleCase, preconditions, relatedStory, environmentWhereIsExecuted } = data;
@@ -52,8 +51,8 @@ export async function createTestCaseWithSteps(testData: testCaseType) {
     }
 }
 
-export async function updateTestCase(data: testCaseType, id: number) {
-    console.log(data)
+export async function updateTestCase(data: testCaseType, testCaseId: number) {
+    if (!testCaseId || !data) return null
     await db.testCase.update({
         data: {
             updatedAt: new Date(),
@@ -62,7 +61,21 @@ export async function updateTestCase(data: testCaseType, id: number) {
             relatedStoryId: data.relatedStory.id,
         },
         where: {
-            id: id
+            id: testCaseId
+        }
+    })
+
+    await db.testCaseInEnvironment.update({
+        data: {
+            userId: data.environmentWhereIsExecuted.executor.id,
+            status: data.environmentWhereIsExecuted.status,
+            environmentId: data.environmentWhereIsExecuted.environmentId,
+        },
+        where: {
+            environmentId_testCaseId: {
+                environmentId: data.environmentWhereIsExecuted.environment.id,
+                testCaseId: testCaseId
+            }
         }
     })
 
@@ -88,7 +101,7 @@ export async function updateTestCase(data: testCaseType, id: number) {
                     isBlocker: step.isBlocker,
                     stepDescription: step.stepDescription,
                     order: step.order,
-                    testCaseId: id
+                    testCaseId: testCaseId
                 },
             });
             await db.stepStatusByEnvironment.create({

@@ -56,7 +56,7 @@ export default async function Page(props: {
                                 <TableCell>{title}</TableCell>
                                 <TableCell><Badge variant="outline">{stepListLength}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
-                                    <Link href={'/test-case/edit/?id=' + testCaseId.toString() + '&env=' + query.toString()}><Edit2Icon size={18} /></Link>
+                                    <Link href={'/test-case/edit/?testId=' + testCaseId.toString() + '&envId=' + query.toString()}><Edit2Icon size={18} /></Link>
                                     <ChangeCaseOrder
                                         testCount={testCases.length}
                                         order={executionOrder}>
