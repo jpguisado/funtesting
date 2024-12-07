@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, testCaseInEnvironmentType } from "@/types/types"
 import { testCaseSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
-import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case-actions"
+import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function TestCaseForm(
@@ -76,7 +76,7 @@ export default function TestCaseForm(
       reset()
     }
   }
-
+  {console.log(  control._formState)}
   async function deleteStepFromDB(stepId: number) {
     if (stepId) await deleteStep(stepId)
   }

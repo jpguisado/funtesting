@@ -16,18 +16,18 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { userEpicSchema } from "@/schemas/schemas"
-import { userEpicType } from "@/types/types"
-import { createUserEpic, updateUserEpic } from "@/server/actions"
+import { type userEpicType } from "@/types/types"
+import { createUserEpic, updateUserEpic } from "@/server/data-layer/epic/epic-actions"
 
-export default function UserEpicForm({ userEpic }: { userEpic?: userEpicType }) {
+export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpicType }) {
+    const { data: fetchedUserEpic } = userEpicSchema.safeParse(payload);
     const form = useForm<userEpicType>({
         resolver: zodResolver(userEpicSchema),
-        defaultValues: userEpic || {
+        defaultValues: fetchedUserEpic ?? {
             title: "",
             description: "",
         }
-    })
-
+    });
     async function onSubmit(data: userEpicType) {
         toast({
             title: "You submitted the following values:",
@@ -37,13 +37,12 @@ export default function UserEpicForm({ userEpic }: { userEpic?: userEpicType }) 
                 </pre>
             ),
         })
-        if (userEpic) {
-            await updateUserEpic(data, userEpic.id);
+        if (fetchedUserEpic) {
+            await updateUserEpic(data, fetchedUserEpic.id!);
         } else {
             await createUserEpic(data);
         }
-    }
-
+    };
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
@@ -86,5 +85,5 @@ export default function UserEpicForm({ userEpic }: { userEpic?: userEpicType }) 
                 <Button type="submit">Guardar</Button>
             </form>
         </Form>
-    )
-}
+    );
+};

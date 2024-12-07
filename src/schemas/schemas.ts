@@ -24,7 +24,9 @@ export const userSchema = z.object({
 
 export const userEpicSchema: z.ZodType<UserEpic> = z.object({
     id: z.number().optional(),
-    title: z.string(),
+    title: z.string().min(2, {
+        message: 'This epic needs a title'
+    }),
     description: z.string().optional(),
     userStoriesOfThisEpic: z.lazy(() => userStoryListSchema).optional()
 });
@@ -34,11 +36,11 @@ export const userEpicListSchema = userEpicSchema.array()
 export const userStorySchema = z.object({
     id: z.number().optional(),
     title: z.string().min(2, {
-        message: "User Epic must be at least 2 characters.",
+        message: "Title must have at least 2 characters long.",
     }),
     description: z.string().min(2, {
-        message: "User History must be at least 2 characters.",
-    }).optional(),
+        message: "Description must have at least 2 characters long.",
+    }),
     userEpic: userEpicSchema.optional(),
     casesOfThisStory: z.lazy(() => testCaseSchema.array()).optional()
 })

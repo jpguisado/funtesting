@@ -19,24 +19,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
-import { userEpicListType, userEpicType, userStoryType } from "@/types/types"
-import { userStorySchema } from "@/schemas/schemas"
-import { createUserStory, updateUserStory } from "@/server/actions"
+import type { userEpicListType, userStoryType } from "@/types/types"
+import { userEpicListSchema, userStorySchema } from "@/schemas/schemas"
+import { createUserStory, updateUserStory } from "@/server/data-layer/user-story/user-story-actions"
 
-export default function UserStoryForm({userEpicsList, editedUserStory} : {userEpicsList : userEpicListType, editedUserStory ? : userStoryType}) {
+export default function UserStoryForm({ userEpicsList, editedUserStory: payload }: { userEpicsList: userEpicListType, editedUserStory?: userStoryType }) {
+    const { data: fetchedUserStory } = userStorySchema.safeParse(payload);
+    const { data: fetchedUserEpicList } = userEpicListSchema.safeParse(userEpicsList);
     const form = useForm<userStoryType>({
-        resolver: zodResolver(userStorySchema),
-        defaultValues: editedUserStory || {
+        resolver: zodResolver(userStorySchema.omit({ casesOfThisStory: true })),
+        defaultValues: fetchedUserStory ?? {
             title: "",
             description: "",
             userEpic: {
+                id: "",
                 title: "",
                 description: "",
-                id: "",
             },
-        }
+        },
     })
-
     async function onSubmit(data: userStoryType) {
         toast({
             title: "You submitted the following values:",
@@ -46,13 +47,12 @@ export default function UserStoryForm({userEpicsList, editedUserStory} : {userEp
                 </pre>
             ),
         });
-        if (editedUserStory) {
-            await updateUserStory(data, editedUserStory.id);
+        if (fetchedUserStory) {
+            await updateUserStory(data, fetchedUserStory.id!);
         } else {
             await createUserStory(data)
         }
     }
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -61,7 +61,7 @@ export default function UserStoryForm({userEpicsList, editedUserStory} : {userEp
                     name="userEpic"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
-                            <FormLabel>Épica de usuario</FormLabel>
+                            <FormLabel>User epic</FormLabel>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
@@ -73,7 +73,11 @@ export default function UserStoryForm({userEpicsList, editedUserStory} : {userEp
                                                 !field.value && "text-muted-foreground"
                                             )}
                                         >
-                                            {field.value?.title ? field.value.title : 'Select user epic'}
+                                            {field.value
+                                                ? fetchedUserEpicList!.find(
+                                                    (epic) => epic.id === field.value
+                                                )?.title
+                                                : "Select user epic"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
@@ -84,18 +88,18 @@ export default function UserStoryForm({userEpicsList, editedUserStory} : {userEp
                                         <CommandList>
                                             <CommandEmpty>No user epic found.</CommandEmpty>
                                             <CommandGroup>
-                                                {userEpicsList.map((userEpic: userEpicType) => (
+                                                {fetchedUserEpicList!.map((userEpic) => (
                                                     <CommandItem
-                                                        value={userEpic.title}
-                                                        key={userEpic.title}
+                                                        value={userEpic.id?.toString()}
+                                                        key={userEpic.id}
                                                         onSelect={() => {
-                                                            form.setValue("userEpic", userEpic)
+                                                            form.setValue("userEpic", userEpic.id)
                                                         }}
                                                     >
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                userEpic.title === field.value?.title
+                                                                userEpic.id === field.value
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
@@ -120,12 +124,12 @@ export default function UserStoryForm({userEpicsList, editedUserStory} : {userEp
                     name="title"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Título de la historia de usuario</FormLabel>
+                            <FormLabel>User story title</FormLabel>
                             <FormControl>
                                 <Input placeholder="Indica el título de la historia de usuario" {...field} />
                             </FormControl>
                             <FormDescription>
-                                Nombre descriptivo de la historia de usuario
+                                Name of the user story
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

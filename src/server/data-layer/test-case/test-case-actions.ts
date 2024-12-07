@@ -1,7 +1,7 @@
 "use server";
 
-import { testCaseType } from "@/types/types";
-import { db } from "../db";
+import { type testCaseType } from "@/types/types";
+import { db } from "../../db";
 import {testCaseSchema } from "@/schemas/schemas";
 
 export async function createTestCaseWithSteps(testData: testCaseType) {
