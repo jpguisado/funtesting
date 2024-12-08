@@ -77,7 +77,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                                 ? fetchedUserEpicList!.find(
                                                     (epic) => epic.id === field.value
                                                 )?.title
-                                                : "Select user epic"}
+                                                : "Select user epic from this list"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>

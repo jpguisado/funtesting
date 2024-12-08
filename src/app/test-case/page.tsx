@@ -22,7 +22,7 @@ export default async function Page(props: {
     }>;
 }) {
     const searchParams = await props.searchParams;
-    const query = searchParams?.query || '';
+    const query = searchParams?.query ?? '';
     const environments = await fetchEnvironment();
     const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
     return (

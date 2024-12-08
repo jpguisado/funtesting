@@ -18,7 +18,7 @@ export const environmentSchema: z.ZodType<Environment> = z.object({
 export const userSchema = z.object({
     id: z.string().optional(),
     email: z.string().email(),
-    name: z.string(),
+    name: z.string().min(2, {message: 'Select an asignee'}),
     assignedTest: z.lazy(() => testCaseSchema.array()).optional()
 })
 
@@ -58,25 +58,18 @@ export const stepSchema: z.ZodType<Step> = z.object({
     }),
     isBlocker: z.string().optional(),
     order: z.number(),
-    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional())
+    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}))
 })
 
 export const stepListSchema = stepSchema.array();
 
 export const userListSchema = userSchema.array();
 
-export const testCaseInEnvironmentFormSchema = z.object({
-    environment: environmentSchema.optional(),
-    testCase: z.optional(z.lazy(() => testCaseSchema)),
-    status: z.string(),
-    executor: z.optional(userSchema),
-})
-
 export const testCaseInEnvironmentSchema = z.object({
     environment: environmentSchema,
     testCase: z.lazy(() => testCaseSchema).optional(),
-    status: z.string(),
-    executor: userSchema,
+    status: z.string().min(2, { message: 'At least we need two chars' }),
+    executor: userSchema.required(),
 })
 
 export const testCaseSchema: z.ZodType<TestCase> = z.object({
@@ -84,7 +77,7 @@ export const testCaseSchema: z.ZodType<TestCase> = z.object({
     titleCase: z.string().min(1, {
         message: "Test must have a title."
     }),
-    relatedStory: userStorySchema.optional(),
+    relatedStory: userStorySchema.required(),
     preconditions: z.string().min(1, {
         message: "Please, fill preconditions of this case"
     }),

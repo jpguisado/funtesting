@@ -19,18 +19,30 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, testCaseInEnvironmentType } from "@/types/types"
-import { testCaseSchema } from "@/schemas/schemas"
+import type { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, testCaseInEnvironmentType, stepListType } from "@/types/types"
+import { environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
 import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export default function TestCaseForm(
-  { editedCase, userStoriesList, userList, enviromentList }: { editedCase?: testCaseType, userList: userListType, userStoriesList: userStoryListType, enviromentList: environmentListType }
-) {
+export default function TestCaseForm({
+  editedCase: payload,
+  userStoriesList: userStoriesListPayload,
+  userList: userListPayload,
+  enviromentList: enviromentListPayload
+}: {
+  editedCase?: testCaseType,
+  userList: userListType,
+  userStoriesList: userStoryListType,
+  enviromentList: environmentListType
+}) {
+  const { data: fetchedTestCase } = testCaseSchema.safeParse(payload);
+  const { data: fetchedUserStoriesList } = userStoryListSchema.safeParse(userStoriesListPayload);
+  const { data: fetchedUsersList } = userListSchema.safeParse(userListPayload);
+  const { data: fetchedEnviromentsList } = environmentListSchema.safeParse(enviromentListPayload);
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
-    defaultValues: editedCase || {
+    defaultValues: fetchedTestCase ?? {
       titleCase: '',
       preconditions: '',
       stepList: [{
@@ -39,9 +51,11 @@ export default function TestCaseForm(
         stepDescription: '',
         isBlocker: 'no',
       }],
+      relatedStory: {
+        title: '',
+      },
       environmentWhereIsExecuted: {
         environment: {
-          id: new Number(),
           title: '',
           URL: '',
         },
@@ -69,16 +83,36 @@ export default function TestCaseForm(
         </pre>
       ),
     });
-    if (editedCase) {
-      await updateTestCase(data, editedCase.id);
+    if (fetchedTestCase) {
+      await updateTestCase(data, fetchedTestCase.id!);
     } else {
       await createTestCaseWithSteps(data);
       reset()
     }
   }
-  {console.log(  control._formState)}
   async function deleteStepFromDB(stepId: number) {
-    if (stepId) await deleteStep(stepId)
+    if (stepId) {
+      await deleteStep(stepId)
+    };
+  }
+
+  /**
+   * Change the order of a step in the form and the view
+   * @param fromIndex origin position
+   * @param toIndex destination position
+   */
+  function changeStepOrder(fromIndex: number, toIndex: number) {
+    const stepList = stepListSchema.safeParse(form.getValues('stepList')).data!;
+    if (toIndex >= 0 && toIndex < stepList.length) {
+      console.log('fromIndex ', fromIndex)
+      console.log('toIndex ', toIndex)
+      stepList[fromIndex]!.order = toIndex;
+      stepList[toIndex]!.order = fromIndex;
+      stepList.sort((a, b) => a.order - b.order)
+      console.log(stepList);
+      move(fromIndex, toIndex);
+      form.setValue('stepList', stepList);
+    }
   }
   return (
     <Form {...form}>
@@ -86,7 +120,7 @@ export default function TestCaseForm(
         <div className="flex gap-3">
           <FormField
             control={control}
-            name="relatedStory"
+            name="relatedStory.id"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>User story:</FormLabel>
@@ -101,7 +135,11 @@ export default function TestCaseForm(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value?.title ? field.value.title : 'Select HU'}
+                        {field.value
+                          ? fetchedUserStoriesList!.find(
+                            (US) => US.id === field.value
+                          )?.title
+                          : "Select user story from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -112,23 +150,23 @@ export default function TestCaseForm(
                       <CommandList>
                         <CommandEmpty>No HU found.</CommandEmpty>
                         <CommandGroup>
-                          {userStoriesList.map((HU: userStoryType) => (
+                          {fetchedUserStoriesList!.map((US) => (
                             <CommandItem
-                              value={HU.title}
-                              key={HU.title}
+                              value={US.id?.toString()}
+                              key={US.title}
                               onSelect={() => {
-                                form.setValue("relatedStory", HU)
+                                form.setValue("relatedStory", US)
                               }}
                             >
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  HU.title === field.value
+                                  US.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}
                               />
-                              {HU.title}
+                              {US.title}
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -143,35 +181,35 @@ export default function TestCaseForm(
               </FormItem>
             )}
           />
-           <FormField
-          control={control}
-          name="environmentWhereIsExecuted.status"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel>Estado del test</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select the initial status of the test" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="pendiente">pendiente</SelectItem>
-                  <SelectItem value="iniciado">iniciado</SelectItem>
-                  <SelectItem value="bloqueado">bloqueado</SelectItem>
-                  <SelectItem value="pass">finalizado</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can set the initial status of the test
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
           <FormField
             control={control}
-            name="environmentWhereIsExecuted.executor"
+            name="environmentWhereIsExecuted.status"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Estado del test</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select the initial status of the test" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pendiente">pendiente</SelectItem>
+                    <SelectItem value="iniciado">iniciado</SelectItem>
+                    <SelectItem value="bloqueado">bloqueado</SelectItem>
+                    <SelectItem value="pass">finalizado</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  You can set the initial status of the test
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="environmentWhereIsExecuted.executor.id"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Asigned to:</FormLabel>
@@ -186,7 +224,11 @@ export default function TestCaseForm(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value?.name ? field.value.name : 'Select responsible'}
+                        {field.value
+                          ? fetchedUsersList!.find(
+                            (epic) => epic.id === field.value
+                          )?.name
+                          : "Select a user from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -197,10 +239,10 @@ export default function TestCaseForm(
                       <CommandList>
                         <CommandEmpty>No user found.</CommandEmpty>
                         <CommandGroup>
-                          {userList.map((user: userType) => (
+                          {fetchedUsersList!.map((user) => (
                             <CommandItem
-                              value={user.name}
-                              key={user.name}
+                              value={user.id}
+                              key={user.id}
                               onSelect={() => {
                                 form.setValue("environmentWhereIsExecuted.executor", user)
                               }}
@@ -208,7 +250,7 @@ export default function TestCaseForm(
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  user === field.value
+                                  user.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}
@@ -230,7 +272,7 @@ export default function TestCaseForm(
           />
           <FormField
             control={control}
-            name="environmentWhereIsExecuted.environment"
+            name="environmentWhereIsExecuted.environment.id"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Environment where it&apos; ll be executed:</FormLabel>
@@ -245,7 +287,11 @@ export default function TestCaseForm(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value?.title ? field.value.title : 'Select environment'}
+                        {field.value
+                          ? fetchedEnviromentsList!.find(
+                            (env) => env.id === field.value
+                          )?.title
+                          : "Select a environment from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -256,10 +302,10 @@ export default function TestCaseForm(
                       <CommandList>
                         <CommandEmpty>No environment found.</CommandEmpty>
                         <CommandGroup>
-                          {enviromentList.map((env: testCaseInEnvironmentType) => (
+                          {fetchedEnviromentsList!.map((env) => (
                             <CommandItem
-                              value={env.title}
-                              key={env.title}
+                              value={env.id?.toString()}
+                              key={env.id}
                               onSelect={() => {
                                 form.setValue("environmentWhereIsExecuted.environment", env)
                               }}
@@ -267,7 +313,7 @@ export default function TestCaseForm(
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  env.title === field.value?.title
+                                  env.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}
@@ -379,7 +425,6 @@ export default function TestCaseForm(
                 <Button type="button" variant={"default"} onClick={() => append({
                   stepDescription: "",
                   expectedResult: "",
-                  stepStatus: "pendiente",
                   isBlocker: "",
                   order: index + 1
                 })
@@ -387,16 +432,15 @@ export default function TestCaseForm(
                   <PlusCircleIcon className="" />
                 </Button>
                 <Button type="button" variant={"destructive"} onClick={() => {
-                  if (editedCase?.stepList[index]?.id) {
-                    // TODO: revalidate page when I create a new step. If not, I cannot delete step, cause Id doesn't exist
-                    deleteStepFromDB(parseInt(editedCase.stepList[index].id))
+                  if (fetchedTestCase?.stepList[index]?.id) {
+                    void deleteStepFromDB(fetchedTestCase.stepList[index].id)
                   };
                   remove(index)
                 }
                 }
                 ><Trash2Icon /></Button>
-                <Button type="button" variant={"outline"} onClick={() => { move(index, index - 1) }}><ChevronUp className="" /></Button>
-                <Button type="button" variant={"outline"} onClick={() => { move(index, index + 1) }}><ChevronDown className="" /></Button>
+                <Button type="button" variant={"outline"} onClick={() => { changeStepOrder(index, index - 1) }}><ChevronUp className="" /></Button>
+                <Button type="button" variant={"outline"} onClick={() => { changeStepOrder(index, index + 1) }}><ChevronDown className="" /></Button>
               </div>
               <div className="flex gap-3">
                 <Button type="button" variant={"outline"} onClick={() => { console.log(index) }}><CopyCheckIcon className="" /></Button>
