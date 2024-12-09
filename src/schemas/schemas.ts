@@ -40,7 +40,7 @@ export const userStorySchema = z.object({
     }),
     description: z.string().min(2, {
         message: "Description must have at least 2 characters long.",
-    }),
+    }).optional(),
     userEpic: userEpicSchema.optional(),
     casesOfThisStory: z.lazy(() => testCaseSchema.array()).optional()
 })
@@ -58,7 +58,7 @@ export const stepSchema: z.ZodType<Step> = z.object({
     }),
     isBlocker: z.string().optional(),
     order: z.number(),
-    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}))
+    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional())
 })
 
 export const stepListSchema = stepSchema.array();
@@ -69,7 +69,7 @@ export const testCaseInEnvironmentSchema = z.object({
     environment: environmentSchema,
     testCase: z.lazy(() => testCaseSchema).optional(),
     status: z.string().min(2, { message: 'At least we need two chars' }),
-    executor: userSchema.required(),
+    executor: userSchema,
 })
 
 export const testCaseSchema: z.ZodType<TestCase> = z.object({
@@ -77,14 +77,14 @@ export const testCaseSchema: z.ZodType<TestCase> = z.object({
     titleCase: z.string().min(1, {
         message: "Test must have a title."
     }),
-    relatedStory: userStorySchema,
+    relatedStory: userStorySchema.optional(),
     preconditions: z.string().min(1, {
         message: "Please, fill preconditions of this case"
     }),
     stepList: stepSchema.array(),
     executionOrder: z.number().optional(),
     updatedAt: z.date().optional(),
-    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true})
+    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true}).optional()
 })
 
 export const stepStatusByEnvironmentSchema = z.object({
