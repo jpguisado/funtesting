@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import type { userStoryListType, userStoryType, userListType, userType, testCaseType, environmentListType, testCaseInEnvironmentType, stepListType } from "@/types/types"
+import type { userStoryListType, userListType, testCaseType, environmentListType } from "@/types/types"
 import { environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
 import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"

@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
+import { testCaseListType } from "@/app/export/select-from-client";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -71,12 +72,17 @@ export async function fetchTestCases() {
     })
 }
 
-export async function fetchTestCasesByEnvironment(id: number) {
+export async function fetchTestCasesByEnvironment(id: number): Promise<testCaseListType> {
     return await db.testCase.findMany({
         include: {
-            stepList: true,
+            stepList: {
+                select: {
+                    expectedResult: true,
+                    stepDescription: true,
+                    order: true
+                }
+            },
             relatedStory: true,
-            environmentWhereIsExecuted: true,
         },
         orderBy: {
             executionOrder: 'asc'

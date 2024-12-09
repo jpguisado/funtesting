@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { userStorySchema } from "@/schemas/schemas";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from "docx";
 import { z } from "zod";
 
@@ -24,13 +23,13 @@ export const testCaseForExportationSchema = z.object({
     titleCase: z.string().min(1, {
         message: "Test must have a title."
     }),
-    relatedStory: userStorySchema,
     preconditions: z.string().min(1, {
         message: "Please, fill preconditions of this case"
     }),
     stepList: stepForExportationSchema.array(),
-    executionOrder: z.number().optional(),
-    updatedAt: z.date().optional(),
+    executionOrder: z.number(),
+    updatedAt: z.date(),
+
 }).array();
 
 export type testCaseListType = z.infer<typeof testCaseForExportationSchema>
@@ -207,62 +206,6 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
     function generateDocx() {
         const doc = new Document({
             sections: sections,
-        });
-
-        Packer.toBlob(doc).then((blob) => {
-            const file = new File([blob], "name", { type: blob.type });
-            console.log("Document created successfully", file);
-            const url = window.URL.createObjectURL(file);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = file.name || 'download';
-            link.click();
-            window.URL.revokeObjectURL(url);
-        }).catch((e) => { console.log(e) });
-    }
-
-    function generateDocxLegacy() {
-        const doc = new Document({
-            sections: [{
-                children: [
-                    new Paragraph({
-                        text: 'CASO NÚMERO 1: usuario no registrado se conecta con certificado digital',
-                        heading: 'Heading2'
-                    }),
-                    new Paragraph({
-                        text: 'Número de caso: 24',
-                    }),
-                    new Table({
-                        margins: {
-                            top: 50,
-                            bottom: 50,
-                            left: 50,
-                            right: 50,
-                        },
-                        width: {
-                            size: `100%`,
-                            type: 'dxa',
-                        },
-                        rows:
-                            testList.map((test) => {
-                                return (
-                                    new TableRow({
-                                        children: [
-                                            new TableCell({
-                                                columnSpan: 1,
-                                                children: [new Paragraph("Código único:")],
-                                            }),
-                                            new TableCell({
-                                                columnSpan: 3,
-                                                children: [new Paragraph(test.id!.toString())],
-                                            })
-                                        ]
-                                    })
-                                )
-                            })
-                    }),
-                ],
-            }],
         });
 
         Packer.toBlob(doc).then((blob) => {

@@ -1,6 +1,6 @@
 'use server'
 
-import type { testCaseType, userEpicType, userStoryType } from "@/types/types";
+import type { testCaseType } from "@/types/types";
 import { revalidatePath } from "next/cache";
 import { db } from "./db";
 
