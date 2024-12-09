@@ -77,7 +77,7 @@ export const testCaseSchema: z.ZodType<TestCase> = z.object({
     titleCase: z.string().min(1, {
         message: "Test must have a title."
     }),
-    relatedStory: userStorySchema.required(),
+    relatedStory: userStorySchema,
     preconditions: z.string().min(1, {
         message: "Please, fill preconditions of this case"
     }),

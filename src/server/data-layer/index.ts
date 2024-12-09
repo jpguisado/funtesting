@@ -76,7 +76,7 @@ export async function fetchTestCasesByEnvironment(id: number) {
         include: {
             stepList: true,
             relatedStory: true,
-            environmentWhereIsExecuted: true
+            environmentWhereIsExecuted: true,
         },
         orderBy: {
             executionOrder: 'asc'
@@ -87,7 +87,7 @@ export async function fetchTestCasesByEnvironment(id: number) {
                     environmentId: {
                         equals: id || 1
                     }
-                }
+                },
             }
         }
     }).catch((error) => {
@@ -237,16 +237,16 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
 
     return {
         titleCase: rawTestCase?.titleCase,
-        executor: rawTestCase?.environmentWhereIsExecuted[0].executor,
+        executor: rawTestCase?.environmentWhereIsExecuted[0]?.executor,
         preconditions: rawTestCase?.preconditions,
         updatedAt: rawTestCase?.updatedAt,
-        status: rawTestCase?.environmentWhereIsExecuted[0].status,
+        status: rawTestCase?.environmentWhereIsExecuted[0]?.status,
         stepList: rawTestCase?.stepList.map((step) => {
             return {
                 id: step.id,
                 stepDescription: step.stepDescription,
                 expectedResult: step.expectedResult,
-                status: step.stepStatusByEnv[0]?.status || '',
+                status: step.stepStatusByEnv[0]?.status ?? '',
                 isBlocker: step.isBlocker,
                 order: step.order,
             }
