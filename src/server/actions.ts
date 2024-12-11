@@ -1,46 +1,8 @@
 'use server'
 
-import { testCaseType, userEpicType, userStoryType } from "@/types/types";
-import { db } from "./db";
+import type { testCaseType } from "@/types/types";
 import { revalidatePath } from "next/cache";
-
-export async function createUserEpic(data: userEpicType) {
-    await db.userEpic.create({
-        data: data
-    })
-}
-
-export async function updateUserEpic(data: userEpicType, id: number) {
-    await db.userEpic.update({
-        data: data,
-        where: { id: id }
-    })
-}
-
-export async function createUserStory(data: userStoryType) {
-    try {
-        await db.userStory.create({
-            data: {
-                title: data.title,
-                description: data.description,
-                userEpic: { connect: { id: data.userEpic.id } },
-            }
-        })
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export async function updateUserStory(data: userStoryType, id: number) {
-    await db.userStory.update({
-        data: {
-            title: data.title,
-            description: data.description,
-            userEpic: { connect: { id: data.userEpic.id } }
-        },
-        where: { id: id }
-    })
-}
+import { db } from "./db";
 
 /**
  * @deprecated

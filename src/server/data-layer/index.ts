@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
+import { testCaseListType } from "@/app/export/select-from-client";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -71,12 +72,17 @@ export async function fetchTestCases() {
     })
 }
 
-export async function fetchTestCasesByEnvironment(id: number) {
+export async function fetchTestCasesByEnvironment(id: number): Promise<testCaseListType> {
     return await db.testCase.findMany({
         include: {
-            stepList: true,
+            stepList: {
+                select: {
+                    expectedResult: true,
+                    stepDescription: true,
+                    order: true
+                }
+            },
             relatedStory: true,
-            environmentWhereIsExecuted: true
         },
         orderBy: {
             executionOrder: 'asc'
@@ -87,7 +93,7 @@ export async function fetchTestCasesByEnvironment(id: number) {
                     environmentId: {
                         equals: id || 1
                     }
-                }
+                },
             }
         }
     }).catch((error) => {
@@ -237,16 +243,16 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
 
     return {
         titleCase: rawTestCase?.titleCase,
-        executor: rawTestCase?.environmentWhereIsExecuted[0].executor,
+        executor: rawTestCase?.environmentWhereIsExecuted[0]?.executor,
         preconditions: rawTestCase?.preconditions,
         updatedAt: rawTestCase?.updatedAt,
-        status: rawTestCase?.environmentWhereIsExecuted[0].status,
+        status: rawTestCase?.environmentWhereIsExecuted[0]?.status,
         stepList: rawTestCase?.stepList.map((step) => {
             return {
                 id: step.id,
                 stepDescription: step.stepDescription,
                 expectedResult: step.expectedResult,
-                status: step.stepStatusByEnv[0]?.status || '',
+                status: step.stepStatusByEnv[0]?.status ?? '',
                 isBlocker: step.isBlocker,
                 order: step.order,
             }

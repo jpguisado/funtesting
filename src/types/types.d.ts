@@ -1,4 +1,4 @@
-import {
+import type {
     userEpicSchema,
     userSchema,
     userListSchema,
@@ -20,6 +20,7 @@ export type userStoryType = z.infer<typeof userStorySchema>
 export type userStoryListType = z.infer<typeof userStoryListSchema>
 
 export type userEpicType = z.infer<typeof userEpicSchema>
+export type userEpicTypeCreation = z.infer<typeof userEpicSchema>
 export type userEpicListType = z.infer<typeof userEpicListSchema>
 
 export type userType = z.infer<typeof userSchema>
@@ -32,3 +33,4 @@ export type environmentType = z.infer<typeof environmentSchema>
 export type environmentListType = z.infer<typeof environmentListSchema>
 
 export type testCaseInEnvironmentType = z.infer<typeof testCaseInEnvironmentSchema>
+

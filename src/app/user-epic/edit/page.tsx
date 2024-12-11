@@ -6,8 +6,8 @@ export default async function Page({
 }: {
     searchParams: Promise<{ id: string }>
 }) {
-    const id = (await searchParams).id
-    const userEpic = await fetchUserEpicById(parseInt(id, 10))
+    const id = (await searchParams).id;
+    const userEpic = await fetchUserEpicById(parseInt(id, 10));
     return (
         <UserEpicForm
             userEpic={userEpic}

@@ -18,13 +18,15 @@ export const environmentSchema: z.ZodType<Environment> = z.object({
 export const userSchema = z.object({
     id: z.string().optional(),
     email: z.string().email(),
-    name: z.string(),
+    name: z.string().min(2, {message: 'Select an asignee'}),
     assignedTest: z.lazy(() => testCaseSchema.array()).optional()
 })
 
 export const userEpicSchema: z.ZodType<UserEpic> = z.object({
     id: z.number().optional(),
-    title: z.string(),
+    title: z.string().min(2, {
+        message: 'This epic needs a title'
+    }),
     description: z.string().optional(),
     userStoriesOfThisEpic: z.lazy(() => userStoryListSchema).optional()
 });
@@ -34,10 +36,10 @@ export const userEpicListSchema = userEpicSchema.array()
 export const userStorySchema = z.object({
     id: z.number().optional(),
     title: z.string().min(2, {
-        message: "User Epic must be at least 2 characters.",
+        message: "Title must have at least 2 characters long.",
     }),
     description: z.string().min(2, {
-        message: "User History must be at least 2 characters.",
+        message: "Description must have at least 2 characters long.",
     }).optional(),
     userEpic: userEpicSchema.optional(),
     casesOfThisStory: z.lazy(() => testCaseSchema.array()).optional()
@@ -63,17 +65,10 @@ export const stepListSchema = stepSchema.array();
 
 export const userListSchema = userSchema.array();
 
-export const testCaseInEnvironmentFormSchema = z.object({
-    environment: environmentSchema.optional(),
-    testCase: z.optional(z.lazy(() => testCaseSchema)),
-    status: z.string(),
-    executor: z.optional(userSchema),
-})
-
 export const testCaseInEnvironmentSchema = z.object({
     environment: environmentSchema,
     testCase: z.lazy(() => testCaseSchema).optional(),
-    status: z.string(),
+    status: z.string().min(2, { message: 'At least we need two chars' }),
     executor: userSchema,
 })
 
@@ -89,7 +84,7 @@ export const testCaseSchema: z.ZodType<TestCase> = z.object({
     stepList: stepSchema.array(),
     executionOrder: z.number().optional(),
     updatedAt: z.date().optional(),
-    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true})
+    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true}).optional()
 })
 
 export const stepStatusByEnvironmentSchema = z.object({

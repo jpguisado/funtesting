@@ -8,7 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { environmentListType, environmentType } from "@/types/types"
+import type { environmentListType, environmentType } from "@/types/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function FilterByExecutionEnvironment({ environments }: { environments: environmentListType }) {
