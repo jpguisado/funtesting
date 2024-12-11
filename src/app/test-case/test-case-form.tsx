@@ -105,8 +105,6 @@ export default function TestCaseForm({
   function changeStepOrder(fromIndex: number, toIndex: number) {
     const stepList = stepListSchema.safeParse(form.getValues('stepList')).data!;
     if (toIndex >= 0 && toIndex < stepList.length) {
-      console.log('fromIndex ', fromIndex)
-      console.log('toIndex ', toIndex)
       stepList[fromIndex]!.order = toIndex;
       stepList[toIndex]!.order = fromIndex;
       stepList.sort((a, b) => a.order - b.order)
