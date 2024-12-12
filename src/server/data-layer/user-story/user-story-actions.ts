@@ -4,7 +4,7 @@ import { userStorySchema } from "@/schemas/schemas";
 import { db } from "@/server/db";
 import { type userStoryType } from "@/types/types";
 
-export async function createUserStory(payload: userStoryType): Promise<userStoryType> {
+export async function createUserStory(payload: userStoryType) {
     const { data, error } = userStorySchema.safeParse(payload);
     if (error) return 'Payload does not have required format or does not exist.'
     return await db.userStory.create({

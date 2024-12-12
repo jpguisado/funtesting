@@ -1,40 +1,42 @@
+import { Environment, Step, TestCase, UserEpic } from "@/types/ts";
 import { z } from "zod";
 
-export const projectSchema = z.object({
+// Base schemas for common properties
+const baseEntitySchema = z.object({
     id: z.number().optional(),
+});
+
+export const projectSchema = baseEntitySchema.extend({
     title: z.string(),
     description: z.string().optional(),
     environments: z.lazy(() => environmentListSchema),
 })
 
-export const environmentSchema: z.ZodType<Environment> = z.object({
-    id: z.number().optional(),
+export const environmentSchema: z.ZodType<Environment> = baseEntitySchema.extend({
     title: z.string(),
     URL: z.string(),
-    project: projectSchema.optional(),
+    project: z.lazy(() => projectSchema.optional()),
     testCaseInEnvironment: z.lazy(() => testCaseInEnvironmentSchema.array()).optional(),
 })
 
 export const userSchema = z.object({
     id: z.string().optional(),
     email: z.string().email(),
-    name: z.string().min(2, {message: 'Select an asignee'}),
+    name: z.string().min(2, {message: 'Name is required'}),
     assignedTest: z.lazy(() => testCaseSchema.array()).optional()
 })
 
-export const userEpicSchema: z.ZodType<UserEpic> = z.object({
-    id: z.number().optional(),
+export const userEpicSchema: z.ZodType<UserEpic> = baseEntitySchema.extend({
     title: z.string().min(2, {
         message: 'This epic needs a title'
     }),
     description: z.string().optional(),
     userStoriesOfThisEpic: z.lazy(() => userStoryListSchema).optional()
-});
+})
 
 export const userEpicListSchema = userEpicSchema.array()
 
-export const userStorySchema = z.object({
-    id: z.number().optional(),
+export const userStorySchema = baseEntitySchema.extend({
     title: z.string().min(2, {
         message: "Title must have at least 2 characters long.",
     }),
@@ -47,8 +49,7 @@ export const userStorySchema = z.object({
 
 export const userStoryListSchema = userStorySchema.array()
 
-export const stepSchema: z.ZodType<Step> = z.object({
-    id: z.number().optional(),
+export const stepSchema: z.ZodType<Step>  = baseEntitySchema.extend({
     case: z.lazy(() => testCaseSchema).optional(),
     stepDescription: z.string().min(2, {
         message: "You need at least 2 characters.",
@@ -56,7 +57,7 @@ export const stepSchema: z.ZodType<Step> = z.object({
     expectedResult: z.string().min(2, {
         message: "You need at least 2 characters.",
     }),
-    isBlocker: z.string().optional(),
+    isBlocker: z.string().nullable(),
     order: z.number(),
     stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional())
 })
@@ -65,15 +66,21 @@ export const stepListSchema = stepSchema.array();
 
 export const userListSchema = userSchema.array();
 
-export const testCaseInEnvironmentSchema = z.object({
+// Environment execution status schema
+const executionStatusSchema = z.object({
     environment: environmentSchema,
-    testCase: z.lazy(() => testCaseSchema).optional(),
-    status: z.string().min(2, { message: 'At least we need two chars' }),
     executor: userSchema,
-})
+    status: z.string().min(2, { 
+      message: 'At least we need two chars' 
+    }),
+  });
 
-export const testCaseSchema: z.ZodType<TestCase> = z.object({
-    id: z.number().optional(),
+// TestCaseInEnvironment schema with lazy reference
+export const testCaseInEnvironmentSchema = executionStatusSchema.extend({
+    testCase: z.lazy(() => testCaseSchema).optional(),
+  });
+
+export const testCaseSchema: z.ZodType<TestCase> = baseEntitySchema.extend({
     titleCase: z.string().min(1, {
         message: "Test must have a title."
     }),

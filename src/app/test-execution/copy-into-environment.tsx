@@ -114,7 +114,7 @@ export default function CopyIntoEnvironment({ environments }: { environments: en
                                                     <CommandGroup>
                                                         {environments.map((env: environmentType) => (
                                                             <CommandItem
-                                                                value={env}
+                                                                value={env.title}
                                                                 key={env.id}
                                                                 onSelect={() => {
                                                                     form.setValue("fromEnvironment", env)
@@ -124,7 +124,7 @@ export default function CopyIntoEnvironment({ environments }: { environments: en
                                                                 <Check
                                                                     className={cn(
                                                                         "ml-auto",
-                                                                        env.value === field.value
+                                                                        env === field.value
                                                                             ? "opacity-100"
                                                                             : "opacity-0"
                                                                     )}
@@ -180,7 +180,7 @@ export default function CopyIntoEnvironment({ environments }: { environments: en
                                                     <CommandGroup>
                                                         {environments.map((env: environmentType) => (
                                                             <CommandItem
-                                                                value={env}
+                                                                value={env.title}
                                                                 key={env.id}
                                                                 onSelect={() => {
                                                                     form.setValue("toEnvironment", env)
@@ -190,7 +190,7 @@ export default function CopyIntoEnvironment({ environments }: { environments: en
                                                                 <Check
                                                                     className={cn(
                                                                         "ml-auto",
-                                                                        env.value === field.value
+                                                                        env === field.value
                                                                             ? "opacity-100"
                                                                             : "opacity-0"
                                                                     )}

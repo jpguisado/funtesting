@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { FilePlus2 } from "lucide-react";
 export const dynamic = 'force-dynamic'
-
+    
 export default async function Page() {
     const userStories = await fetchUserStories();
 
@@ -36,7 +36,7 @@ export default async function Page() {
                             <TableRow key={HU.id}>
                                 <TableCell>{HU.title}</TableCell>
                                 <TableCell>{HU.description}</TableCell>
-                                <TableCell className="text-right"><Link href={'/user-story/edit/?id=' + HU.id.toString()}>Editar</Link></TableCell>
+                                <TableCell className="text-right"><Link href={'/user-story/edit/?id=' + HU.id!.toString()}>Editar</Link></TableCell>
                             </TableRow>
                         )
                     })}

@@ -24,7 +24,7 @@ import { userEpicListSchema, userStorySchema } from "@/schemas/schemas"
 import { createUserStory, updateUserStory } from "@/server/data-layer/user-story/user-story-actions"
 
 export default function UserStoryForm({ userEpicsList, editedUserStory: payload }: { userEpicsList: userEpicListType, editedUserStory?: userStoryType }) {
-    const { data: fetchedUserStory } = userStorySchema.safeParse(payload);
+    const { data: fetchedUserStory } = userStorySchema.omit({ casesOfThisStory: true }).safeParse(payload);
     const { data: fetchedUserEpicList } = userEpicListSchema.safeParse(userEpicsList);
     const form = useForm<userStoryType>({
         resolver: zodResolver(userStorySchema.omit({ casesOfThisStory: true })),
@@ -32,7 +32,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
             title: "",
             description: "",
             userEpic: {
-                id: "",
+                id: 0,
                 title: "",
                 description: "",
             },
@@ -93,7 +93,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                                         value={userEpic.id?.toString()}
                                                         key={userEpic.id}
                                                         onSelect={() => {
-                                                            form.setValue("userEpic", userEpic.id)
+                                                            form.setValue("userEpic", userEpic)
                                                         }}
                                                     >
                                                         <Check

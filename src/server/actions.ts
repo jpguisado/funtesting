@@ -13,7 +13,7 @@ export async function createNewTestCase(data: testCaseType) {
         data: {
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStory: { connect: { id: data.relatedStory.id } },
+            relatedStory: { connect: { id: data.relatedStory!.id } },
             stepList: { createMany: { data: data.stepList } },
         }
     })
@@ -135,6 +135,7 @@ export async function copyCasesOnEnvironment(fromEnvironment: number, toEnvironm
         return {
             testCaseId: tcase.testCaseId,
             environmentId: toEnvironment,
+            userId: '' // TODO
         }
     })
 

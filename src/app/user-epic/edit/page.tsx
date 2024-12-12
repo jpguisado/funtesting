@@ -10,7 +10,7 @@ export default async function Page({
     const userEpic = await fetchUserEpicById(parseInt(id, 10));
     return (
         <UserEpicForm
-            userEpic={userEpic}
+            userEpic={userEpic!}
         />
     )
 }

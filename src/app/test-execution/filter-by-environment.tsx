@@ -33,7 +33,7 @@ export default function FilterByExecutionEnvironment({ environments }: { environ
                 <SelectGroup>
                     <SelectLabel>Entornos:</SelectLabel>
                     {environments.map((env: environmentType) => {
-                        return <SelectItem key={env.id} value={env.id}>{env.title}</SelectItem>
+                        return <SelectItem key={env.id} value={env.id!.toString()}>{env.title}</SelectItem>
                     })}
                 </SelectGroup>
             </SelectContent>

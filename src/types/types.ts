@@ -12,6 +12,7 @@ import type {
     environmentListSchema,
     testCaseInEnvironmentSchema
 } from "@/schemas/schemas"
+import { z } from "zod"
 
 export type testCaseType = z.infer<typeof testCaseSchema>
 export type testCaseInEnvironment = z.infer<typeof testCaseInEnvironmentSchema>

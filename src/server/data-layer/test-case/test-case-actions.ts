@@ -33,7 +33,7 @@ export async function createTestCaseWithSteps(testData: testCaseType) {
                 data: {
                     environmentId: id,
                     testCaseId: createdTest.id,
-                    userId: environmentWhereIsExecuted?.executor.id
+                    userId: environmentWhereIsExecuted!.executor!.id!
                 }
             })
             const stepswithEnv = createdTest.stepList.map((step) => {
@@ -58,7 +58,7 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
             updatedAt: new Date(),
             titleCase: data.titleCase,
             preconditions: data.preconditions,
-            relatedStoryId: data.relatedStory.id,
+            relatedStoryId: data.relatedStory!.id,
         },
         where: {
             id: testCaseId
@@ -67,13 +67,13 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
 
     await db.testCaseInEnvironment.update({
         data: {
-            userId: data.environmentWhereIsExecuted.executor.id,
-            status: data.environmentWhereIsExecuted.status,
-            environmentId: data.environmentWhereIsExecuted.environment.id,
+            userId: data.environmentWhereIsExecuted!.executor.id,
+            status: data.environmentWhereIsExecuted!.status,
+            environmentId: data.environmentWhereIsExecuted!.environment.id,
         },
         where: {
             environmentId_testCaseId: {
-                environmentId: data.environmentWhereIsExecuted.environment.id,
+                environmentId: data.environmentWhereIsExecuted!.environment!.id!,
                 testCaseId: testCaseId
             }
         }
@@ -107,7 +107,7 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
             await db.stepStatusByEnvironment.create({
                 data: {
                     status: 'pendiente',
-                    environmentId: data.environmentWhereIsExecuted.environment.id,
+                    environmentId: data.environmentWhereIsExecuted!.environment.id!,
                     stepId: newSteps.id
                 }
             })

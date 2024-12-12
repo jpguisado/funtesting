@@ -1,12 +1,13 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { testCaseListType } from "@/app/export/select-from-client";
+import { userStoryListSchema, userStorySchema } from "@/schemas/schemas";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
     return {
         id: user.id,
-        name: user.fullName,
+        name: user.fullName!,
         email: user.emailAddresses[0].emailAddress,
         avatar: user.imageUrl,
     }
@@ -35,9 +36,7 @@ export async function fetchUsers() {
 }
 
 export async function fetchUserStories() {
-    return await db.userStory.findMany({
-
-    })
+    return await db.userStory.findMany().then((res) => userStoryListSchema.safeParse(res).data!)
 }
 
 export async function fetchSteps() {
@@ -54,10 +53,11 @@ export async function fetchUserStoryById(id: number) {
         where: {
             id: id
         },
-        include: {
-            userEpic: true,
+        select: {
+            title: true,
+            userEpic: true
         }
-    })
+    }).then((res) => userStorySchema.safeParse(res).data)
 }
 
 export async function fetchTestCases() {

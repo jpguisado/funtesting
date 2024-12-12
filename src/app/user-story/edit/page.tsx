@@ -9,6 +9,7 @@ export default async function Page({
     const id = (await searchParams).id
     const userEpicList = await fetchUserEpics();
     const userStory = await fetchUserStoryById(parseInt(id))
+
     return (
         <UserStoryForm
             editedUserStory={userStory}

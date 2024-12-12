@@ -1,60 +1,54 @@
-interface ProjectType {
+export type ProjectType = {
     id?: number,
     title: string,
     description?: string;
-    environments: EnvironmentType[];
+    environments: Environment[];
 }
 
-interface User {
+export type User = {
     id?: string,
-    name?: string,
+    name: string,
     email: string,
-    assignedTest?: TestCase[]
 }
 
-interface StepStatusByEnvironment {
+export type StepStatusByEnvironment = {
     environment?: Environment,
-    step?: Step,
     status: string,
 }
 
-interface Step {
+export type Step = {
     id?: number,
-    case?: testCase,
     stepDescription: string,
     expectedResult: string,
-    isBlocker?: string,
+    isBlocker: string | null,
     order: number,
     stepStatusByEnv?: StepStatusByEnvironment
 }
 
-interface Environment {
+export type Environment = {
     id?: number,
     title: string,
     URL: string;
-    project?: ProjectType;
 }
 
-interface UserEpic {
+export type UserEpic = {
     id?: number,
     title: string,
     description?: string,
-    userStoriesOfThisEpic?: userStory[]
+    userStoriesOfThisEpic?: UserStory[]
 }
 
-interface UserStory {
+export type UserStory = {
     id?: number,
     title: string,
     description?: string,
-    userEpic?: userEpic,
-    casesOfThisStory: testCase[]
 }
 
-interface TestCase {
+export type TestCase = {
     id?: number,
     titleCase: string,
     description?: string,
-    relatedStory?: userStory
+    relatedStory?: UserStory
     preconditions: string,
     stepList: Step[],
     executionOrder?: number,
@@ -62,9 +56,8 @@ interface TestCase {
     environmentWhereIsExecuted?: TestCaseInEnvironment
 }
 
-interface TestCaseInEnvironment {
+export type TestCaseInEnvironment = {
     environment: Environment,
-    testCase?: TestCase,
     status: string,
     executor: User,
 }

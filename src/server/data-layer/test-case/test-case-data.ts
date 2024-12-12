@@ -1,7 +1,7 @@
 import { db } from "../../db";
 
 export async function fetchTestCaseByIdAndEnvironment(testCaseId: number, environmentId: number) {
-    if (!testCaseId) return null
+    // if (!testCaseId) return undefined
     return await db.testCase.findFirst({
         where: {
             id: testCaseId,
@@ -34,14 +34,12 @@ export async function fetchTestCaseByIdAndEnvironment(testCaseId: number, enviro
         }
     }).then((res) => {
         return {
-            relatedStory: res?.relatedStory,
-            environmentWhereIsExecuted: res?.environmentWhereIsExecuted[0],
-            id: res?.id,
-            titleCase: res?.titleCase,
-            preconditions: res?.preconditions,
-            stepList: res?.stepList,
-
-
+            relatedStory: res!.relatedStory!,
+            environmentWhereIsExecuted: res!.environmentWhereIsExecuted[0]!,
+            id: res!.id,
+            titleCase: res!.titleCase,
+            preconditions: res!.preconditions,
+            stepList: res!.stepList!,
         }
     })
 }

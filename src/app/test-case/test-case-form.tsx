@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import type { userStoryListType, userListType, testCaseType, environmentListType } from "@/types/types"
+import type { userStoryListType, userListType, testCaseType, environmentListType, stepType } from "@/types/types"
 import { environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
 import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
@@ -50,7 +50,7 @@ export default function TestCaseForm({
         order: 0,
         expectedResult: '',
         stepDescription: '',
-        isBlocker: 'no',
+        isBlocker: '',
       }],
       relatedStory: {
         title: '',
@@ -107,8 +107,7 @@ export default function TestCaseForm({
     if (toIndex >= 0 && toIndex < stepList.length) {
       stepList[fromIndex]!.order = toIndex;
       stepList[toIndex]!.order = fromIndex;
-      stepList.sort((a, b) => a.order - b.order)
-      console.log(stepList);
+      stepList.sort((a:stepType, b:stepType) => a.order - b.order)
       move(fromIndex, toIndex);
       form.setValue('stepList', stepList);
     }
