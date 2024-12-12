@@ -35,10 +35,9 @@ export const testCaseForExportationSchema = z.object({
 export type testCaseListType = z.infer<typeof testCaseForExportationSchema>
 export type stepListType = z.infer<typeof stepForExportationListSchema>
 
-export default function SelectFromClient({ testCasesList }: { testCasesList: testCaseListType}) {
-    const { data, error } = testCaseForExportationSchema.safeParse(testCasesList);
-    if (error) {console.log(error); throw new Error}
-    const testList = data;
+export default function SelectFromClient({ testCasesList }: { testCasesList: testCaseListType }) {
+    const { data } = testCaseForExportationSchema.safeParse(testCasesList);
+    const testList = data!;
 
     const generateRows = (stepListParam: stepListType): TableRow[] =>
         stepListParam.map(
@@ -49,7 +48,7 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                             shading: {
                                 type: 'clear',
                                 color: "00FFFF",
-                                fill: "DDE8F6",
+                                fill: "ECF3FA",
                             },
                             width: {
                                 size: `25%`,
@@ -68,13 +67,18 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                 size: `50%`,
                                 type: 'pct',
                             },
-                            children: [new Paragraph(test.stepDescription)],
+                            children: [new Paragraph({
+                                children: [new TextRun({
+                                    text: test.stepDescription,
+                                    font: 'Calibri'
+                                })]
+                            })],
                         }),
                         new TableCell({
                             shading: {
                                 type: 'clear',
                                 color: "00FFFF",
-                                fill: "DDE8F6",
+                                fill: "ECF3FA",
                             },
                             width: {
                                 size: `25%`,
@@ -82,7 +86,7 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                             },
                             children: [new Paragraph({
                                 children: [new TextRun({
-                                    text: "Resultado Esperado Paso ",
+                                    text: "Resultado Esperado Paso",
                                     bold: true,
                                     font: 'Calibri'
                                 })]
@@ -93,7 +97,15 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                 size: `50%`,
                                 type: 'pct',
                             },
-                            children: [new Paragraph(test.expectedResult)],
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: test.expectedResult,
+                                            font: 'Calibri'
+                                        })]
+                                })
+                            ],
                         }),
                     ],
                 }));
@@ -102,8 +114,13 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
         return ({
             children: [
                 new Paragraph({
-                    text: test.titleCase,
                     heading: 'Heading2',
+                    children: [
+                        new TextRun({
+                            text: test.titleCase,
+                            font: 'Calibri',
+                            
+                        })]
                 }),
                 new Table({
                     margins: {
@@ -123,7 +140,7 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                     shading: {
                                         type: 'clear',
                                         color: "00FFFF",
-                                        fill: "DDE8F6",
+                                        fill: "ECF3FA",
                                     },
                                     columnSpan: 1,
                                     width: {
@@ -134,6 +151,7 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                         children: [new TextRun({
                                             text: "Código Único del caso ",
                                             bold: true,
+                                            font: 'Calibri'
                                         })]
                                     })],
 
@@ -144,7 +162,12 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                         size: `75%`,
                                         type: 'pct',
                                     },
-                                    children: [new Paragraph(test.id!.toString())],
+                                    children: [new Paragraph({
+                                        children: [new TextRun({
+                                            text: test.id!.toString(),
+                                            font: 'Calibri'
+                                        })]
+                                    })],
                                 }),
                             ],
                         }),
@@ -154,19 +177,25 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                     shading: {
                                         type: 'clear',
                                         color: "00FFFF",
-                                        fill: "DDE8F6",
+                                        fill: "ECF3FA",
                                     },
                                     columnSpan: 1,
                                     children: [new Paragraph({
                                         children: [new TextRun({
-                                            text: "Precondiciones:",
+                                            text: "Precondiciones",
                                             bold: true,
+                                            font: 'Calibri'
                                         })]
                                     })],
                                 }),
                                 new TableCell({
                                     columnSpan: 3,
-                                    children: [new Paragraph(test.preconditions)],
+                                    children: [new Paragraph({
+                                        children: [new TextRun({
+                                            text: test.preconditions,
+                                            font: 'Calibri'
+                                        })]
+                                    })],
                                 }),
                             ],
                         }),
@@ -177,15 +206,17 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
                                     shading: {
                                         type: 'clear',
                                         color: "00FFFF",
-                                        fill: "DDE8F6",
+                                        fill: "ECF3FA",
                                     },
                                     columnSpan: 4,
-                                    children: [new Paragraph({
-                                        children: [new TextRun({
-                                            text: "Observaciones:",
-                                            bold: true,
-                                        })]
-                                    })],
+                                    children: [
+                                        new Paragraph({
+                                            children: [new TextRun({
+                                                text: "Observaciones:",
+                                                bold: true,
+                                                font: 'Calibri'
+                                            })]
+                                        })],
                                 }),
                             ],
                         }),
@@ -210,7 +241,6 @@ export default function SelectFromClient({ testCasesList }: { testCasesList: tes
 
         Packer.toBlob(doc).then((blob) => {
             const file = new File([blob], "name", { type: blob.type });
-            console.log("Document created successfully", file);
             const url = window.URL.createObjectURL(file);
             const link = document.createElement('a');
             link.href = url;
