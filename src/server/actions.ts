@@ -61,32 +61,52 @@ export async function updateStepStatusInEnvironment(status: string, stepId: numb
     })
 }
 
-export async function updateTestCaseOrder(from: number, to: number) {
-    console.log(from, to);
+/**
+ * Update the proposed execution order of the test cases
+ * @param from position where the test case is
+ * @param to position where the test case will be
+ * @param environmentId id of the environment
+ */
+export async function updateTestCaseOrder(from: number, to: number, environmentId: number) {
+    // Retrieve the id of the test case in the 'from' position
     const fromPositionTestCaseId = await db.testCase.findFirst({
         select: {
             id: true,
         },
         where: {
-            executionOrder: from
+            executionOrder: from,
+            environmentWhereIsExecuted: {
+                some: {
+                    environmentId: environmentId
+                }
+            }
         }
     });
-
+    // Retrieve the id of the test case in the 'to' position
     const toPositionTestCaseId = await db.testCase.findFirst({
         select: {
             id: true,
         },
         where: {
-            executionOrder: to
+            executionOrder: to,
+            environmentWhereIsExecuted: {
+                some: {
+                    environmentId: environmentId
+                }
+            }
         }
     });
-
     await db.testCase.update({
         data: {
             executionOrder: to
         },
         where: {
-            id: fromPositionTestCaseId!.id
+            id: fromPositionTestCaseId!.id,
+            environmentWhereIsExecuted: {
+                some: {
+                    environmentId: environmentId
+                }
+            }
         }
     })
 
@@ -95,7 +115,12 @@ export async function updateTestCaseOrder(from: number, to: number) {
             executionOrder: from
         },
         where: {
-            id: toPositionTestCaseId!.id
+            id: toPositionTestCaseId!.id,
+            environmentWhereIsExecuted: {
+                some: {
+                    environmentId: environmentId
+                }
+            }
         }
     })
     revalidatePath('/test-case')

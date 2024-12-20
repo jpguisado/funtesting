@@ -3,9 +3,10 @@ import { toast } from "@/hooks/use-toast";
 import { updateTestCaseOrder } from "@/server/actions";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function ChangeCaseOrder({ order, testCount }: { order: number, testCount?: number }) {
+export default function ChangeCaseOrder({ order, testCount, environmentId }: { order: number, testCount?: number, environmentId: number }) {
+
     async function updateOrder(from: number, to: number) {
-        await updateTestCaseOrder(from, to);
+        await updateTestCaseOrder(from, to, environmentId);
         toast({
             title: "You updated test case execution order:",
             description: (
@@ -15,7 +16,7 @@ export default function ChangeCaseOrder({ order, testCount }: { order: number, t
     }
     if (order <= 1) {
         return <ChevronDown onClick={() => updateOrder(order, order + 1)} size={18} />
-    } else if (order >= testCount! + 1) { //
+    } else if (order >= testCount!) { //
         return <ChevronUp onClick={() => updateOrder(order, order - 1)} size={18} />
     } else {
         return (

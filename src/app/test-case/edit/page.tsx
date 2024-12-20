@@ -7,8 +7,8 @@ export default async function Page({
 }: {
     searchParams: Promise<{ testId: string, envId: string }>
 }) {
-    const testCaseId = (await searchParams).testId
-    const environmentId = (await searchParams).envId
+    const testCaseId = (await searchParams).testId;
+    const environmentId = (await searchParams).envId;
 
     const userStories = await fetchUserStories();
     const editedCase = await fetchTestCaseByIdAndEnvironment(parseInt(testCaseId, 10), parseInt(environmentId, 10));

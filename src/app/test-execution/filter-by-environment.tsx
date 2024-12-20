@@ -18,9 +18,9 @@ export default function FilterByExecutionEnvironment({ environments }: { environ
     function handleSearch(term: string) {
         const params = new URLSearchParams(searchParams);
         if (term) {
-            params.set('query', term);
+            params.set('envId', term);
         } else {
-            params.delete('query');
+            params.delete('envId');
         }
         replace(`${pathname}?${params.toString()}`);
     }

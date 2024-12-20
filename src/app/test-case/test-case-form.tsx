@@ -36,11 +36,10 @@ export default function TestCaseForm({
   userStoriesList: userStoryListType,
   enviromentList: environmentListType
 }) {
-  const { data: fetchedTestCase, error } = testCaseSchema.safeParse(payload);
+  const { data: fetchedTestCase } = testCaseSchema.safeParse(payload);
   const { data: fetchedUserStoriesList } = userStoryListSchema.safeParse(userStoriesListPayload);
   const { data: fetchedUsersList } = userListSchema.safeParse(userListPayload);
   const { data: fetchedEnviromentsList } = environmentListSchema.safeParse(enviromentListPayload);
-  console.log(error)
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
     defaultValues: fetchedTestCase ?? {

@@ -18,13 +18,13 @@ export const dynamic = 'force-dynamic'
 
 export default async function Page(props: {
     searchParams?: Promise<{
-        query?: string;
+        envId?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
-    const query = searchParams?.query ?? '';
+    const envId = searchParams?.envId ?? '';
     const environments = await fetchEnvironment();
-    const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
+    const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(envId));
     return (
         <>
             <div className="flex items-center justify-between mb-12">
@@ -56,8 +56,9 @@ export default async function Page(props: {
                                 <TableCell>{title}</TableCell>
                                 <TableCell><Badge variant="outline">{stepListLength}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
-                                    <Link href={'/test-case/edit/?testId=' + testCaseId.toString() + '&envId=' + query.toString()}><Edit2Icon size={18} /></Link>
+                                    <Link href={'/test-case/edit/?testId=' + testCaseId.toString() + '&envId=' + envId.toString()}><Edit2Icon size={18} /></Link>
                                     <ChangeCaseOrder
+                                        environmentId={parseInt(envId)}
                                         testCount={testCases.length}
                                         order={executionOrder}>
                                     </ChangeCaseOrder>
