@@ -1,7 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { testCaseListType } from "@/app/export/select-from-client";
-import { userStoryListSchema, userStorySchema } from "@/schemas/schemas";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -35,29 +34,8 @@ export async function fetchUsers() {
     return await db.user.findMany()
 }
 
-export async function fetchUserStories() {
-    return await db.userStory.findMany().then((res) => userStoryListSchema.safeParse(res).data!)
-}
-
 export async function fetchSteps() {
     return await db.step.findMany({})
-}
-
-/**
- * Fetchs an User Story using an id
- * @param id id used to filter all the stories
- * @returns fetched user story
- */
-export async function fetchUserStoryById(id: number) {
-    return await db.userStory.findFirst({
-        where: {
-            id: id
-        },
-        select: {
-            title: true,
-            userEpic: true
-        }
-    }).then((res) => userStorySchema.safeParse(res).data)
 }
 
 export async function fetchTestCases() {

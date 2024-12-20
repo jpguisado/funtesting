@@ -1,5 +1,6 @@
-import { fetchUserEpics, fetchUserStoryById } from "@/server/data-layer"
+import { fetchUserEpics } from "@/server/data-layer"
 import UserStoryForm from "../user-story-form"
+import { fetchUserStoryById } from "@/server/data-layer/user-story/user-story-data-layer";
 
 export default async function Page({
     searchParams,

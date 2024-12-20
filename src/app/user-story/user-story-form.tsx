@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea"
 import type { userEpicListType, userStoryType } from "@/types/types"
 import { userEpicListSchema, userStorySchema } from "@/schemas/schemas"
 import { createUserStory, updateUserStory } from "@/server/data-layer/user-story/user-story-actions"
+import SubmitButton from "@/components/ui/submit-button"
 
 export default function UserStoryForm({ userEpicsList, editedUserStory: payload }: { userEpicsList: userEpicListType, editedUserStory?: userStoryType }) {
     const { data: fetchedUserStory } = userStorySchema.omit({ casesOfThisStory: true }).safeParse(payload);
@@ -53,6 +54,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
             await createUserStory(data)
         }
     }
+    const { isSubmitting } = form.formState;
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -75,7 +77,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                         >
                                             {field.value
                                                 ? fetchedUserEpicList!.find(
-                                                    (epic) => epic.id === field.value
+                                                    (epic) => epic.id === field.value?.id
                                                 )?.title
                                                 : "Select user epic from this list"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -155,7 +157,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Guardar</Button>
+                <SubmitButton isSubmitting={isSubmitting} />
             </form>
         </Form>
     )

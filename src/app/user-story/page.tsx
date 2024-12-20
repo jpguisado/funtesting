@@ -1,4 +1,3 @@
-import { fetchUserStories } from "@/server/data-layer";
 import {
     Table,
     TableBody,
@@ -10,11 +9,11 @@ import {
 } from "@/components/ui/table"
 import Link from "next/link";
 import { FilePlus2 } from "lucide-react";
+import { fetchUserStories } from "@/server/data-layer/user-story/user-story-data-layer";
 export const dynamic = 'force-dynamic'
     
 export default async function Page() {
     const userStories = await fetchUserStories();
-
     return (
         <>
             <div className="flex items-center justify-between mb-12">
