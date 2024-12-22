@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -18,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { userEpicSchema } from "@/schemas/schemas"
 import { type userEpicType } from "@/types/types"
 import { createUserEpic, updateUserEpic } from "@/server/data-layer/epic/epic-actions"
+import SubmitButton from "@/components/ui/submit-button"
 
 export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpicType }) {
     const { data: fetchedUserEpic } = userEpicSchema.safeParse(payload);
@@ -28,6 +28,7 @@ export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpi
             description: "",
         }
     });
+    const { control, handleSubmit, reset, formState } = form;
     async function onSubmit(data: userEpicType) {
         toast({
             title: "You submitted the following values:",
@@ -41,13 +42,15 @@ export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpi
             await updateUserEpic(data, fetchedUserEpic.id!);
         } else {
             await createUserEpic(data);
+            reset();
         }
     };
+    const { isSubmitting } = formState;
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="title"
                     render={({ field }) => (
                         <FormItem>
@@ -63,7 +66,7 @@ export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpi
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
@@ -82,7 +85,7 @@ export default function UserEpicForm({ userEpic: payload }: { userEpic?: userEpi
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Guardar</Button>
+                <SubmitButton isSubmitting={isSubmitting} />
             </form>
         </Form>
     );

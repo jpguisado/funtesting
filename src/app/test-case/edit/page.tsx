@@ -1,6 +1,7 @@
-import { clerkUsers, fetchEnvironment, fetchUserStories } from "@/server/data-layer";
+import { clerkUsers, fetchEnvironment } from "@/server/data-layer";
 import TestCaseForm from "../test-case-form";
 import { fetchTestCaseByIdAndEnvironment } from "@/server/data-layer/test-case/test-case-data";
+import { fetchUserStories } from "@/server/data-layer/user-story/user-story-data-layer";
 
 export default async function Page({
     searchParams,

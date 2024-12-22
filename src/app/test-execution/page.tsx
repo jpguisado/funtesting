@@ -16,12 +16,12 @@ export const dynamic = 'force-dynamic'
 
 export default async function Page(props: {
     searchParams?: Promise<{
-        query?: string;
+        envId?: string;
         page?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
-    const query = searchParams?.query || '';
+    const query = searchParams?.envId || '';
     const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
     const environments = await fetchEnvironment();
     console.log(testCaseWithEnv)
