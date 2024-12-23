@@ -22,10 +22,13 @@ export async function fetchUserStoryById(id: number) {
 
 export async function fetchUserStories() {
     return await db.userStory.findMany({
-        select: {
-            id: true,
-            title: true,
-            description: true
-        }
+        orderBy: {
+            userEpic: {
+                title: 'asc'
+            }
+        },
+        include: {
+            userEpic: true
+        },
     }).then((res) => userStoryListSchema.safeParse(res).data!)
 }

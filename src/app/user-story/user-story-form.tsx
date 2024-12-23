@@ -30,15 +30,11 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
     const form = useForm<userStoryType>({
         resolver: zodResolver(userStorySchema.omit({ casesOfThisStory: true })),
         defaultValues: fetchedUserStory ?? {
-            title: "",
-            description: "",
-            userEpic: {
-                id: 0,
-                title: "",
-                description: "",
-            },
+            title: '',
+            description: '',
         },
-    })
+    });
+    const { control, handleSubmit, reset, formState } = form;
     async function onSubmit(data: userStoryType) {
         toast({
             title: "You submitted the following values:",
@@ -51,15 +47,16 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
         if (fetchedUserStory) {
             await updateUserStory(data, fetchedUserStory.id!);
         } else {
-            await createUserStory(data)
+            await createUserStory(data);
+            reset();
         }
     }
-    const { isSubmitting } = form.formState;
+    const { isSubmitting } = formState;
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="userEpic"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
@@ -92,7 +89,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                             <CommandGroup>
                                                 {fetchedUserEpicList!.map((userEpic) => (
                                                     <CommandItem
-                                                        value={userEpic.id?.toString()}
+                                                        value={userEpic.title?.toString()}
                                                         key={userEpic.id}
                                                         onSelect={() => {
                                                             form.setValue("userEpic", userEpic)
@@ -101,7 +98,7 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                userEpic.id === field.value
+                                                                userEpic.id === field.value?.id
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
@@ -115,43 +112,43 @@ export default function UserStoryForm({ userEpicsList, editedUserStory: payload 
                                 </PopoverContent>
                             </Popover>
                             <FormDescription>
-                                This is the language that will be used in the dashboard.
+                                Related user epic
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="title"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>User story title</FormLabel>
                             <FormControl>
-                                <Input placeholder="Indica el título de la historia de usuario" {...field} />
+                                <Input placeholder="Title of the User Story" {...field} />
                             </FormControl>
                             <FormDescription>
-                                Name of the user story
+                                Full title of the user story
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Descripción</FormLabel>
+                            <FormLabel>Description</FormLabel>
                             <FormControl>
                                 <Textarea
-                                    placeholder="Indica una descripción bonita de la historia de usuario"
+                                    placeholder="Provide a aproximate description of the user story"
                                     className="resize-none"
                                     {...field}
                                 />
                             </FormControl>
                             <FormDescription>
-                                Descripción de la historia de usuario
+                                User story description
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
