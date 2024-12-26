@@ -12,24 +12,6 @@ export const clerkUsers = usersFromClerk.data.map((user) => {
     }
 })
 
-export async function fetchUserEpics() {
-    return await db.userEpic.findMany({
-        select: {
-            id: true,
-            title: true,
-            description: true
-        }
-    })
-}
-
-export async function fetchUserEpicById(id: number) {
-    return await db.userEpic.findFirst({
-        where: {
-            id: id
-        }
-    })
-}
-
 export async function fetchUsers() {
     return await db.user.findMany()
 }

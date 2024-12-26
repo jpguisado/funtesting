@@ -52,17 +52,12 @@ export default function TestCaseForm({
         isBlocker: '',
       }],
       relatedStory: {
-        title: '',
       },
       environmentWhereIsExecuted: {
         environment: {
-          title: '',
-          URL: '',
         },
         executor: {
-          name: '',
         },
-        status: ''
       },
       updatedAt: new Date(),
     },
@@ -149,7 +144,7 @@ export default function TestCaseForm({
                         <CommandGroup>
                           {fetchedUserStoriesList!.map((US) => (
                             <CommandItem
-                              value={US.id?.toString()}
+                              value={US.title}
                               key={US.title}
                               onSelect={() => {
                                 form.setValue("relatedStory", US)

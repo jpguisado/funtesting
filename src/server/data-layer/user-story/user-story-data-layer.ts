@@ -20,6 +20,10 @@ export async function fetchUserStoryById(id: number) {
     }).then((res) => userStorySchema.safeParse(res).data)
 }
 
+/**
+ * Returns all the users stories without any filter
+ * @returns all the user stories
+ */
 export async function fetchUserStories() {
     return await db.userStory.findMany({
         orderBy: {
@@ -30,5 +34,21 @@ export async function fetchUserStories() {
         include: {
             userEpic: true
         },
+    }).then((res) => userStoryListSchema.safeParse(res).data!)
+}
+
+/**
+ * Returns all the user stories related to an epic
+ * @param epicId used to filter user stories
+ * @returns all the user stories filtered by an epic
+ */
+export async function fetchUserStoriesByUserEpics(epicId: number) {
+    return await db.userStory.findMany({
+        where: {
+            userEpicId: epicId
+        },
+        include: {
+            userEpic: true
+        }
     }).then((res) => userStoryListSchema.safeParse(res).data!)
 }

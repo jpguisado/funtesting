@@ -65,6 +65,7 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
         }
     })
 
+    // Maybe this should be upsert, just in case testid-environmentid doesnt exist
     await db.testCaseInEnvironment.update({
         data: {
             userId: data.environmentWhereIsExecuted!.executor.id,

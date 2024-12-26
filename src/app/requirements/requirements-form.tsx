@@ -84,10 +84,10 @@ export default function RequirementsForm({ requirementsForm: payload }: { requir
                         <FormItem>
                             <FormLabel>Requisite title</FormLabel>
                             <FormControl>
-                                <Input placeholder="Title that we are going to give" {...field} />
+                                <Input placeholder="Title that we are going to give to the requisite" {...field} />
                             </FormControl>
                             <FormDescription>
-                                This is the tittle that we are going to give to the requisite.
+                                This is the title that we are going to give to the requisite.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

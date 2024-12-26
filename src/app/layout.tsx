@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import Link from "next/link";
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import { Button } from "@/components/ui/button";
-import { BookOpenTextIcon, DatabaseZapIcon, FlaskConicalIcon, HomeIcon, MountainSnowIcon, WrenchIcon } from "lucide-react";
+import AsideMenu from "./aside-menu";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,11 +21,7 @@ export const metadata: Metadata = {
   description: "Testing made fun",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <ClerkProvider>
       <html lang="en">
@@ -48,14 +42,7 @@ export default function RootLayout({
             </div>
           </main>
           <aside className="">
-            <ul className="space-y-3">
-              <Button variant={"link"}><HomeIcon/><Link href={'/'}>Home</Link></Button>
-              <Button variant={"link"}><MountainSnowIcon/><Link href={'/user-epic'}>Epics</Link></Button>
-              <Button variant={"link"}><BookOpenTextIcon/><Link href={'/user-story'}>User stories</Link></Button>
-              <Button variant={"link"}><FlaskConicalIcon/><Link href={'/test-case'}>Test cases</Link></Button>
-              <Button variant={"link"}><DatabaseZapIcon/><Link href={'/data-preparation'}>Data preparation</Link></Button>
-              <Button variant={"link"}><WrenchIcon/><Link href={'/test-execution'}>Execution</Link></Button>
-            </ul>
+            <AsideMenu />
           </aside>
           <Toaster />
         </body>

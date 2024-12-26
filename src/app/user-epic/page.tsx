@@ -1,4 +1,3 @@
-import { fetchUserEpics } from "@/server/data-layer";
 import {
     Table,
     TableBody,
@@ -11,6 +10,7 @@ import {
 import Link from "next/link";
 import { FilePlus2 } from "lucide-react";
 import { Suspense } from "react";
+import { fetchUserEpics } from "@/server/data-layer/epic/epic-data-layer";
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
