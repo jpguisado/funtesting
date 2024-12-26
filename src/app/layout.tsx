@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import AsideMenu from "./aside-menu";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,7 +43,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             </div>
           </main>
           <aside className="">
-            <AsideMenu />
+            <Suspense fallback={'Cargando el menú lateral ...'}>
+              <AsideMenu />
+            </Suspense>
           </aside>
           <Toaster />
         </body>

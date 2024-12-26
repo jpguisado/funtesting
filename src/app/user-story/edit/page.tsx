@@ -1,4 +1,4 @@
-import { fetchUserEpics } from "@/server/data-layer"
+import { fetchUserEpics } from "@/server/data-layer/epic/epic-data-layer";
 import UserStoryForm from "../user-story-form"
 import { fetchUserStoryById } from "@/server/data-layer/user-story/user-story-data-layer";
 

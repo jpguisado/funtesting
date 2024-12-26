@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from 'next/navigation';
 
 export default function AsideMenu() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const envId = searchParams.get('envId');
 
   const content = [{

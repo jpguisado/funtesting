@@ -1,4 +1,4 @@
-import { fetchUserEpicById } from "@/server/data-layer"
+import { fetchUserEpicById } from "@/server/data-layer/epic/epic-data-layer";
 import UserEpicForm from "../user-epic-form"
 
 export default async function Page({
