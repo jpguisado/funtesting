@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Edit2Icon, FilePlus2 } from "lucide-react";
 import FilterByExecutionEnvironment from "../test-execution/filter-by-environment";
 import ChangeCaseOrder from "./edit/change-case-order";
+import DeleteTestCase from "./delete-case";
 
 export const dynamic = 'force-dynamic'
 
@@ -57,6 +58,10 @@ export default async function Page(props: {
                                 <TableCell><Badge variant="outline">{stepListLength}</Badge></TableCell>
                                 <TableCell className="text-right flex gap-1">
                                     <Link href={'/test-case/edit/?testId=' + testCaseId.toString() + '&envId=' + envId.toString()}><Edit2Icon size={18} /></Link>
+                                    <DeleteTestCase 
+                                        testCaseId={testCaseId}
+                                        environmentId={parseInt(envId)}
+                                    />
                                     <ChangeCaseOrder
                                         environmentId={parseInt(envId)}
                                         testCount={testCases.length}

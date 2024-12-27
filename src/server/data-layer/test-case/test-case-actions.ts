@@ -3,6 +3,8 @@
 import { type testCaseType } from "@/types/types";
 import { db } from "../../db";
 import {testCaseSchema } from "@/schemas/schemas";
+import test from "node:test";
+import { revalidatePath } from "next/cache";
 
 export async function createTestCaseWithSteps(testData: testCaseType) {
 
@@ -116,3 +118,48 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
     }
 }
 
+export async function deleteTestCaseByIdInEnv(testCaseId: number, environmentId: number) {
+    if (!testCaseId || !environmentId) return null
+    console.log(testCaseId, environmentId);
+
+    /**
+     * testCase
+     * testCaseInEnvironment
+     * step
+     * stepStatusByEnvironment
+     **/ 
+
+    await db.stepStatusByEnvironment.deleteMany({
+        where: {
+            step: {
+                case: {
+                    id: testCaseId
+                }
+            },
+            environmentId: environmentId
+        }
+    });
+
+    await db.step.deleteMany({
+        where: {
+            testCaseId: testCaseId
+        }
+    });
+
+    await db.testCaseInEnvironment.delete({
+        where: {
+            environmentId_testCaseId: {
+                environmentId: environmentId,
+                testCaseId: testCaseId
+            }
+        }
+    });
+
+    await db.testCase.delete({
+        where: {
+            id: testCaseId
+        }
+    });
+
+    revalidatePath('/test-case');
+}
