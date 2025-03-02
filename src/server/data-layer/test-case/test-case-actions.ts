@@ -72,6 +72,7 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
             userId: data.environmentWhereIsExecuted!.executor.id,
             status: data.environmentWhereIsExecuted!.status,
             environmentId: data.environmentWhereIsExecuted!.environment.id,
+            cicleId: data.environmentWhereIsExecuted!.cicle.id,
         },
         where: {
             environmentId_testCaseId: {
