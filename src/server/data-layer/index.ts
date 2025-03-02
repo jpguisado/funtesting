@@ -62,8 +62,6 @@ export async function fetchTestCasesByEnvironment(id: number): Promise<testCaseL
     })
 }
 
-
-
 export async function fetchTestCaseWithEnvirontmentByEnvId(environmentId: number) {
     if(!environmentId) return null;
     const testCases = await db.testCaseInEnvironment.findMany({
@@ -108,6 +106,45 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(environmentId: number
             }
         })
     }
+}
+
+export async function fetchTestCaseWithFilters(
+    environmentId?: number, 
+    relatedStoryId?: number,
+    cicleid?: number,
+    epicId?: number,
+) {
+    if(!environmentId) return null;
+    const whereClause = {
+        ...(environmentId && { environmentId }),
+        ...(relatedStoryId && { testCase: { relatedStoryId: relatedStoryId } }),
+    }
+    return await db.testCaseInEnvironment.findMany({
+        include: {
+            executor: true,
+            testCase: {
+                include: {
+                    stepList: {
+                        include: {
+                            stepStatusByEnv: {
+                                select: {
+                                    status: true
+                                }
+                            }
+                        }
+                    },
+                }
+            },
+        },
+        orderBy: {
+            testCase: {
+                executionOrder: 'asc'
+            }
+        },
+        where: whereClause,
+    }).catch((error) => {
+        console.error('Error en la op. de bbdd ', error)
+    });
 }
 
 export async function fetchTestCaseById(id: number) {

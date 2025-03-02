@@ -1,7 +1,6 @@
 import { db } from "../../db";
 
 export async function fetchTestCaseByIdAndEnvironment(testCaseId: number, environmentId: number) {
-    // if (!testCaseId) return undefined
     return await db.testCase.findFirst({
         where: {
             id: testCaseId,

@@ -7,26 +7,62 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer"
-import { EyeIcon } from "lucide-react";
-import Link from "next/link"
-import FilterByExecutionEnvironment from "./filter-by-environment";
-import CopyIntoEnvironment from "./copy-into-environment";
-export const dynamic = 'force-dynamic'
-
-export default async function Page(props: {
+import { fetchEnvironment, fetchTestCaseWithFilters } from "@/server/data-layer";
+import GenericFilter from "./generic-filter";
+import { fetchUserStoriesByEnvironment } from "@/server/data-layer/user-story/user-story-data-layer";
+import { CicleForm } from "./cicle-form";
+import CopyIntoEnvironment from "../test-execution/copy-into-environment";
+import FilterByExecutionEnvironment from "../test-execution/filter-by-environment";
+import Link from "next/link";
+type DynamicData = {
+    id: number;
+    title: string;
+}
+export default async function IdeasPage(props: {
     searchParams?: Promise<{
-        envId?: string;
+        environmentId?: string;
+        userStoryId?: string;
+        cicleId?: string;
         page?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
-    const query = searchParams?.envId || '';
-    const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
+    const env = searchParams?.environmentId ?? '';
+    const us = searchParams?.userStoryId ?? '';
     const environments = await fetchEnvironment();
-
+    const userStories = (await fetchUserStoriesByEnvironment(parseInt(env)));
+    const nonUndefinedStories = userStories.map((val) => {
+        return {
+            id: val.id!,
+            title: val.title
+        }
+    });
+    const testCaseWithEnv = await fetchTestCaseWithFilters(parseInt(env), parseInt(us));
     return (
         <div>
+            <div className="flex gap-3">
+                {/* Filter by Cicle */}
+                <GenericFilter<DynamicData>
+                    label={"Ciclo de pruebas"}
+                    data={nonUndefinedStories}
+                    param="cicleId"
+                />
+                {/* Filter by env */}
+                <GenericFilter<DynamicData>
+                    label={"Entorno"}
+                    data={environments}
+                    param="environmentId"
+                />
+                {/* Filter by User Story */}
+                <GenericFilter<DynamicData>
+                    label={"Historia de usuario"}
+                    data={nonUndefinedStories}
+                    param="userStoryId"
+                />
+            </div>
+            <h1>Ideas</h1>
+            <CicleForm />
+            <div>
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
                 <CopyIntoEnvironment
@@ -71,5 +107,12 @@ export default async function Page(props: {
                 </TableBody>
             </Table>
         </div>
-    )
+            {testCaseWithEnv?.map((test) => {
+                return (
+                    test.testCase.titleCase
+                )
+            })
+            }
+        </div>
+    );
 }

@@ -37,6 +37,25 @@ export async function fetchUserStories() {
     }).then((res) => userStoryListSchema.safeParse(res).data!)
 }
 
+export async function fetchUserStoriesByEnvironment(environmentId: number) {
+    return await db.userStory.findMany({
+        where: {
+            casesOfThisStory: {
+                some: {
+                    environmentWhereIsExecuted: {
+                        some: {
+                            environmentId: environmentId || 1
+                        }
+                    }
+                }
+            }
+        },
+        include: {
+            userEpic: true
+        }
+    }).then((res) => userStoryListSchema.safeParse(res).data!);
+}
+
 /**
  * Returns all the user stories related to an epic
  * @param epicId used to filter user stories
