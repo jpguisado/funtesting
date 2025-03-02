@@ -12,8 +12,8 @@ export type User = {
 }
 
 export type StepStatusByEnvironment = {
-    environment?: Environment,
     status: string,
+    environment?: Environment,
 }
 
 export type Step = {
@@ -22,7 +22,7 @@ export type Step = {
     expectedResult: string,
     isBlocker: string | null,
     order: number,
-    stepStatusByEnv?: StepStatusByEnvironment
+    stepStatusByEnv?: StepStatusByEnvironment[]
 }
 
 export type Environment = {

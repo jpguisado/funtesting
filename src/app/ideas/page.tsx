@@ -11,7 +11,6 @@ import { fetchEnvironment, fetchTestCaseWithFilters } from "@/server/data-layer"
 import GenericFilter from "./generic-filter";
 import { fetchUserStoriesByEnvironment } from "@/server/data-layer/user-story/user-story-data-layer";
 import CopyIntoEnvironment from "../test-execution/copy-into-environment";
-import FilterByExecutionEnvironment from "../test-execution/filter-by-environment";
 import Link from "next/link";
 import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
 import { EyeIcon } from "lucide-react";
@@ -84,18 +83,18 @@ export default async function IdeasPage(props: {
                 <TableBody>
                     {!testCaseWithEnv ? <TableRow>
                         <TableCell colSpan={7} className="font-medium text-center text-slate-500">Selecciona un entorno</TableCell>
-                    </TableRow> : testCaseWithEnv?.map((test: test) => {
+                    </TableRow> : testCaseWithEnv?.map((test) => {
                         return (
-                            <TableRow key={test.testCaseId}>
-                                <TableCell className="font-medium">{test.testCaseId}</TableCell>
-                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
+                            <TableRow key={test.testCase?.id}>
+                                <TableCell className="font-medium">{test.testCase?.id}</TableCell>
+                                <TableCell className="font-medium">{test.testCase?.executionOrder}</TableCell>
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
-                                <TableCell>{test.testCase.titleCase}</TableCell>
+                                <TableCell>{test.testCase?.titleCase}</TableCell>
                                 <TableCell><span className={`px-[5px] py-[2px] rounded-lg ${test.status === 'pass' ? 'bg-green-200' : 'bg-red-200'}`}>{test.status}</span></TableCell>
                                 {/* TODO: change step status */}
-                                <TableCell>{test.testCase.stepList.filter((step) => step.stepStatusByEnv.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase.stepList.length}</TableCell>
+                                <TableCell>{test.testCase?.stepList.filter((step) => step.stepStatusByEnv?.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase?.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
-                                    <Link href={'/test-execution/details/?id=' + test.testCaseId.toString() + '&env=' + test.environmentId.toString()}><EyeIcon /></Link>
+                                    <Link href={'/test-execution/details/?id=' + test.testCase?.id?.toString() + '&env=' + parseInt(env).toString()}><EyeIcon /></Link>
                                 </TableCell>
                             </TableRow>
                         )

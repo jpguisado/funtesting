@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { testCaseListType } from "@/app/export/select-from-client";
-import { testCaseInEnvironmentSchema, testCaseSchema } from "@/schemas/schemas";
+import { testCaseInEnvironmentSchema } from "@/schemas/schemas";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -113,7 +113,6 @@ export async function fetchTestCaseWithFilters(
     environmentId?: number, 
     relatedStoryId?: number,
     cicleId?: number,
-    epicId?: number,
 ) {
     if(!environmentId) return null;
     const whereClause = {
@@ -125,11 +124,15 @@ export async function fetchTestCaseWithFilters(
         include: {
             executor: true,
             testCase: {
-                include: {
+                select: {
+                    id: true,
+                    titleCase: true,
+                    preconditions: true,
                     stepList: {
                         include: {
                             stepStatusByEnv: {
                                 select: {
+                                    environmentId: true,
                                     status: true
                                 }
                             }
@@ -146,9 +149,7 @@ export async function fetchTestCaseWithFilters(
         where: whereClause,
     })
     .then((res) => {
-        console.log(res);
         const { success, data, error } = testCaseInEnvironmentSchema.omit({cicle: true, environment: true}).array().safeParse(res);
-        console.log(error);
         if (!success) throw new Error('Cannot fetch test cases.', error);
         return data!;
     })

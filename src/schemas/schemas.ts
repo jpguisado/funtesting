@@ -59,7 +59,7 @@ export const stepSchema: z.ZodType<Step>  = baseEntitySchema.extend({
     }),
     isBlocker: z.string().nullable(),
     order: z.number(),
-    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional()).array()
+    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).array().optional())
 })
 
 export const stepListSchema = stepSchema.array();
@@ -103,9 +103,9 @@ export const testCaseSchema: z.ZodType<TestCase> = baseEntitySchema.extend({
 })
 
 export const stepStatusByEnvironmentSchema = z.object({
+    status: z.string(),
     environment: environmentSchema,
     step: stepSchema,
-    status: z.string(),
 })
 
 export const environmentListSchema = environmentSchema.array();
