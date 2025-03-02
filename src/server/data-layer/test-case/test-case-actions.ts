@@ -3,7 +3,6 @@
 import { type testCaseType } from "@/types/types";
 import { db } from "../../db";
 import {testCaseSchema } from "@/schemas/schemas";
-import test from "node:test";
 import { revalidatePath } from "next/cache";
 
 export async function createTestCaseWithSteps(testData: testCaseType) {

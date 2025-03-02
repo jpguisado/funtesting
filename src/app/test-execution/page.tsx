@@ -52,7 +52,7 @@ export default async function Page(props: {
                 <TableBody>
                     {!testCaseWithEnv ? <TableRow>
                         <TableCell colSpan={7} className="font-medium text-center text-slate-500">Selecciona un entorno</TableCell>
-                    </TableRow> : testCaseWithEnv?.map((test: test) => {
+                    </TableRow> : testCaseWithEnv?.map((test) => {
                         return (
                             <TableRow key={test.testCaseId}>
                                 <TableCell className="font-medium">{test.testCaseId}</TableCell>
