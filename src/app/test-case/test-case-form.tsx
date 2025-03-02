@@ -26,7 +26,7 @@ import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/tes
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function TestCaseForm({
-  editedCase: payload,
+  editedCase: testCasePayload,
   userStoriesList: userStoriesListPayload,
   userList: userListPayload,
   enviromentList: enviromentListPayload,
@@ -38,7 +38,7 @@ export default function TestCaseForm({
   enviromentList: environmentListType,
   testCyclePayload: testCycleType[];
 }) {
-  const { data: fetchedTestCase } = testCaseSchema.safeParse(payload);
+  const { data: fetchedTestCase } = testCaseSchema.safeParse(testCasePayload);
   const { data: fetchedTestCicle } = cicleSchema.array().safeParse(testCyclePayload);
   const { data: fetchedUserStoriesList } = userStoryListSchema.safeParse(userStoriesListPayload);
   const { data: fetchedUsersList } = userListSchema.safeParse(userListPayload);

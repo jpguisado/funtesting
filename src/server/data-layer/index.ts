@@ -1,6 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { testCaseListType } from "@/app/export/select-from-client";
+import { testCaseInEnvironmentSchema, testCaseSchema } from "@/schemas/schemas";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -111,12 +112,13 @@ export async function fetchTestCaseWithEnvirontmentByEnvId(environmentId: number
 export async function fetchTestCaseWithFilters(
     environmentId?: number, 
     relatedStoryId?: number,
-    cicleid?: number,
+    cicleId?: number,
     epicId?: number,
 ) {
     if(!environmentId) return null;
     const whereClause = {
         ...(environmentId && { environmentId }),
+        ...(cicleId && { cicleId }),
         ...(relatedStoryId && { testCase: { relatedStoryId: relatedStoryId } }),
     }
     return await db.testCaseInEnvironment.findMany({
@@ -142,9 +144,14 @@ export async function fetchTestCaseWithFilters(
             }
         },
         where: whereClause,
-    }).catch((error) => {
-        console.error('Error en la op. de bbdd ', error)
-    });
+    })
+    .then((res) => {
+        console.log(res);
+        const { success, data, error } = testCaseInEnvironmentSchema.omit({cicle: true, environment: true}).array().safeParse(res);
+        console.log(error);
+        if (!success) throw new Error('Cannot fetch test cases.', error);
+        return data!;
+    })
 }
 
 export async function fetchTestCaseById(id: number) {

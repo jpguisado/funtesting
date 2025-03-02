@@ -1,4 +1,4 @@
-import { Environment, Step, TestCase, UserEpic } from "@/types/ts";
+import { Environment, Step, TestCase, UserEpic } from "@/types/ts-types";
 import { z } from "zod";
 
 // Base schemas for common properties
@@ -59,7 +59,7 @@ export const stepSchema: z.ZodType<Step>  = baseEntitySchema.extend({
     }),
     isBlocker: z.string().nullable(),
     order: z.number(),
-    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional())
+    stepStatusByEnv: z.lazy(() => stepStatusByEnvironmentSchema.omit({step: true, environment: true}).optional()).array()
 })
 
 export const stepListSchema = stepSchema.array();
