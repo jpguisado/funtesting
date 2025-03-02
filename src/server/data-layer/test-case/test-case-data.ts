@@ -28,6 +28,7 @@ export async function fetchTestCaseByIdAndEnvironment(testCaseId: number, enviro
                 include: {
                     environment: true,
                     executor: true,
+                    cicle: true
                 }
             },
         }

@@ -10,7 +10,8 @@ import type {
     stepListSchema,
     environmentSchema,
     environmentListSchema,
-    testCaseInEnvironmentSchema
+    testCaseInEnvironmentSchema,
+    cicleSchema
 } from "@/schemas/schemas"
 import { z } from "zod"
 
@@ -34,4 +35,5 @@ export type environmentType = z.infer<typeof environmentSchema>
 export type environmentListType = z.infer<typeof environmentListSchema>
 
 export type testCaseInEnvironmentType = z.infer<typeof testCaseInEnvironmentSchema>
+export type testCycleType = z.infer<typeof cicleSchema>
 

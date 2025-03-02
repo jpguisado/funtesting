@@ -56,8 +56,17 @@ export type TestCase = {
     environmentWhereIsExecuted?: TestCaseInEnvironment
 }
 
+export type Cicle = {
+    id?: number,
+    title: string,
+    startDate: Date,
+    endDate: Date,
+    status: string,
+}
+
 export type TestCaseInEnvironment = {
     environment: Environment,
     status: string,
     executor: User,
+    cicle: Cicle
 }

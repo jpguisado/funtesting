@@ -19,8 +19,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-import type { userStoryListType, userListType, testCaseType, environmentListType, stepType } from "@/types/types"
-import { environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
+import type { userStoryListType, userListType, testCaseType, environmentListType, stepType, testCycleType } from "@/types/types"
+import { cicleSchema, environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
 import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -29,14 +29,17 @@ export default function TestCaseForm({
   editedCase: payload,
   userStoriesList: userStoriesListPayload,
   userList: userListPayload,
-  enviromentList: enviromentListPayload
+  enviromentList: enviromentListPayload,
+  testCyclePayload: testCyclePayload
 }: {
   editedCase?: testCaseType,
   userList: userListType,
   userStoriesList: userStoryListType,
-  enviromentList: environmentListType
+  enviromentList: environmentListType,
+  testCyclePayload: testCycleType[];
 }) {
   const { data: fetchedTestCase } = testCaseSchema.safeParse(payload);
+  const { data: fetchedTestCicle } = cicleSchema.array().safeParse(testCyclePayload);
   const { data: fetchedUserStoriesList } = userStoryListSchema.safeParse(userStoriesListPayload);
   const { data: fetchedUsersList } = userListSchema.safeParse(userListPayload);
   const { data: fetchedEnviromentsList } = environmentListSchema.safeParse(enviromentListPayload);
@@ -58,6 +61,8 @@ export default function TestCaseForm({
         },
         executor: {
         },
+        cicle: {
+        }
       },
       updatedAt: new Date(),
     },
@@ -101,7 +106,7 @@ export default function TestCaseForm({
     if (toIndex >= 0 && toIndex < stepList.length) {
       stepList[fromIndex]!.order = toIndex;
       stepList[toIndex]!.order = fromIndex;
-      stepList.sort((a:stepType, b:stepType) => a.order - b.order)
+      stepList.sort((a: stepType, b: stepType) => a.order - b.order)
       move(fromIndex, toIndex);
       form.setValue('stepList', stepList);
     }
@@ -110,6 +115,69 @@ export default function TestCaseForm({
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex gap-3">
+          <FormField
+            control={control}
+            name="environmentWhereIsExecuted.cicle.id"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Cicle:</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? fetchedTestCicle!.find(
+                            (cicle) => cicle.id === field.value
+                          )?.title
+                          : "Select a cicle from this list"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search Cicle..." />
+                      <CommandList>
+                        <CommandEmpty>No cicle found.</CommandEmpty>
+                        <CommandGroup>
+                          {fetchedTestCicle!.map((cicle) => (
+                            <CommandItem
+                              value={cicle.title}
+                              key={cicle.title}
+                              onSelect={() => {
+                                form.setValue("environmentWhereIsExecuted.cicle", cicle)
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  cicle.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {cicle.title}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  User story related to this case.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={control}
             name="relatedStory.id"
@@ -168,32 +236,6 @@ export default function TestCaseForm({
                 </Popover>
                 <FormDescription>
                   User story related to this case.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="environmentWhereIsExecuted.status"
-            render={({ field }) => (
-              <FormItem className="flex flex-col w-full">
-                <FormLabel>Estado del test</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select the initial status of the test" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="pendiente">pendiente</SelectItem>
-                    <SelectItem value="iniciado">iniciado</SelectItem>
-                    <SelectItem value="bloqueado">bloqueado</SelectItem>
-                    <SelectItem value="pass">finalizado</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  You can set the initial status of the test
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -326,22 +368,50 @@ export default function TestCaseForm({
             )}
           />
         </div>
-        <FormField
-          control={control}
-          name="titleCase"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Título del caso</FormLabel>
-              <FormControl>
-                <Input placeholder="Indica el título del caso" {...field} />
-              </FormControl>
-              <FormDescription>
-                Nombre descriptivo del caso
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-3">
+          <FormField
+            control={control}
+            name="titleCase"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Título del caso</FormLabel>
+                <FormControl>
+                  <Input placeholder="Indica el título del caso" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Nombre descriptivo del caso
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="environmentWhereIsExecuted.status"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Estado del test</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select the initial status of the test" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pendiente">pendiente</SelectItem>
+                    <SelectItem value="iniciado">iniciado</SelectItem>
+                    <SelectItem value="bloqueado">bloqueado</SelectItem>
+                    <SelectItem value="pass">finalizado</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  You can set the initial status of the test
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={control}
           name="preconditions"

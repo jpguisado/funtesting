@@ -32,13 +32,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
+import { cicleSchema } from "@/schemas/schemas";
 
-export const cicleSchema = z.object({
-  title: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
-  status: z.enum(["active", "inactive"]),
-})
+
 export type cicleType = z.infer<typeof cicleSchema>
 
 export function CicleForm() {

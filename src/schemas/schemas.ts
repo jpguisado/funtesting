@@ -66,10 +66,18 @@ export const stepListSchema = stepSchema.array();
 
 export const userListSchema = userSchema.array();
 
+export const cicleSchema = baseEntitySchema.extend({
+  title: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
+  status: z.string(),
+})
+
 // Environment execution status schema
 const executionStatusSchema = z.object({
     environment: environmentSchema,
     executor: userSchema,
+    cicle: cicleSchema,
     status: z.string().min(2, { 
       message: 'At least we need two chars' 
     }),
@@ -91,7 +99,7 @@ export const testCaseSchema: z.ZodType<TestCase> = baseEntitySchema.extend({
     stepList: stepSchema.array(),
     executionOrder: z.number().optional(),
     updatedAt: z.date().optional(),
-    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true}).optional()
+    environmentWhereIsExecuted: testCaseInEnvironmentSchema.pick({environment: true, executor: true, status: true, cicle: true}).optional()
 })
 
 export const stepStatusByEnvironmentSchema = z.object({
