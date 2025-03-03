@@ -111,7 +111,8 @@ export async function updateTestCase(data: testCaseType, testCaseId: number) {
                 data: {
                     status: 'pendiente',
                     environmentId: data.environmentWhereIsExecuted!.environment.id!,
-                    stepId: newSteps.id
+                    stepId: newSteps.id,
+                    cicleId: data.environmentWhereIsExecuted?.cicle.id
                 }
             })
         }
