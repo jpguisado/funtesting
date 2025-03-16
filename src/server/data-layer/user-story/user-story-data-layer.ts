@@ -28,13 +28,14 @@ export async function fetchUserStories() {
     return await db.userStory.findMany({
         orderBy: {
             userEpic: {
-                title: 'asc'
+                title: 'asc',
             }
         },
-        include: {
-            userEpic: true
+        select: {
+            id: true,
+            title: true,
         },
-    }).then((res) => userStoryListSchema.safeParse(res).data!)
+    })
 }
 
 export async function fetchUserStoriesByEnvironment(environmentId: number) {

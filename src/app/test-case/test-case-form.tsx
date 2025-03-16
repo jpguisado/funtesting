@@ -20,32 +20,33 @@ import { cn } from "@/lib/utils"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
 import type { userStoryListType, userListType, testCaseType, environmentListType, stepType, testCycleType } from "@/types/types"
-import { cicleSchema, environmentListSchema, stepListSchema, testCaseSchema, userListSchema, userStoryListSchema } from "@/schemas/schemas"
+import { stepListSchema, testCaseSchema } from "@/schemas/schemas"
 import { deleteStep } from "@/server/actions"
 import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { use } from "react"
 
 export default function TestCaseForm({
-  editedCase: testCasePayload,
-  userStoriesList: userStoriesListPayload,
-  userList: userListPayload,
-  enviromentList: enviromentListPayload,
-  testCyclePayload: testCyclePayload
+  editedCase,
+  userStoriesList,
+  resolvedUserList,
+  enviromentList,
+  testCyclePayload
 }: {
-  editedCase?: testCaseType,
-  userList: userListType,
-  userStoriesList: userStoryListType,
-  enviromentList: environmentListType,
-  testCyclePayload: testCycleType[];
+  editedCase ? : Promise<testCaseType>,
+  userStoriesList: Promise<userStoryListType>,
+  resolvedUserList: userListType,
+  enviromentList: Promise<environmentListType>,
+  testCyclePayload: Promise<testCycleType[]>;
 }) {
-  const { data: fetchedTestCase } = testCaseSchema.safeParse(testCasePayload);
-  const { data: fetchedTestCicle } = cicleSchema.array().safeParse(testCyclePayload);
-  const { data: fetchedUserStoriesList } = userStoryListSchema.safeParse(userStoriesListPayload);
-  const { data: fetchedUsersList } = userListSchema.safeParse(userListPayload);
-  const { data: fetchedEnviromentsList } = environmentListSchema.safeParse(enviromentListPayload);
+  const resolvedTestCase = editedCase ? use(editedCase) : undefined
+  const resolvedUserStoriesList = userStoriesList ? use(userStoriesList) : undefined
+  const resolvedenviromentList = enviromentList ? use(enviromentList) : undefined
+  const resolvedtestCyclesList = testCyclePayload ? use(testCyclePayload) : undefined
+
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
-    defaultValues: fetchedTestCase ?? {
+    defaultValues: resolvedTestCase ?? {
       titleCase: '',
       preconditions: '',
       stepList: [{
@@ -83,8 +84,8 @@ export default function TestCaseForm({
         </pre>
       ),
     });
-    if (fetchedTestCase) {
-      await updateTestCase(data, fetchedTestCase.id!);
+    if (editedCase) {
+      await updateTestCase(data, resolvedTestCase!.id!);
     } else {
       await createTestCaseWithSteps(data);
       reset()
@@ -133,7 +134,7 @@ export default function TestCaseForm({
                         )}
                       >
                         {field.value
-                          ? fetchedTestCicle!.find(
+                          ? resolvedtestCyclesList!.find(
                             (cicle) => cicle.id === field.value
                           )?.title
                           : "Select a cicle from this list"}
@@ -147,7 +148,7 @@ export default function TestCaseForm({
                       <CommandList>
                         <CommandEmpty>No cicle found.</CommandEmpty>
                         <CommandGroup>
-                          {fetchedTestCicle!.map((cicle) => (
+                          {resolvedtestCyclesList!.map((cicle) => (
                             <CommandItem
                               value={cicle.title}
                               key={cicle.title}
@@ -196,7 +197,7 @@ export default function TestCaseForm({
                         )}
                       >
                         {field.value
-                          ? fetchedUserStoriesList!.find(
+                          ? resolvedUserStoriesList!.find(
                             (US) => US.id === field.value
                           )?.title
                           : "Select user story from this list"}
@@ -210,7 +211,7 @@ export default function TestCaseForm({
                       <CommandList>
                         <CommandEmpty>No HU found.</CommandEmpty>
                         <CommandGroup>
-                          {fetchedUserStoriesList!.map((US) => (
+                          {resolvedUserStoriesList!.map((US) => (
                             <CommandItem
                               value={US.title}
                               key={US.title}
@@ -259,8 +260,8 @@ export default function TestCaseForm({
                         )}
                       >
                         {field.value
-                          ? fetchedUsersList!.find(
-                            (epic) => epic.id === field.value
+                          ? resolvedUserList!.find(
+                            (user) => user.id === field.value
                           )?.name
                           : "Select a user from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -273,7 +274,7 @@ export default function TestCaseForm({
                       <CommandList>
                         <CommandEmpty>No user found.</CommandEmpty>
                         <CommandGroup>
-                          {fetchedUsersList!.map((user) => (
+                          {resolvedUserList!.map((user) => (
                             <CommandItem
                               value={user.id}
                               key={user.id}
@@ -322,7 +323,7 @@ export default function TestCaseForm({
                         )}
                       >
                         {field.value
-                          ? fetchedEnviromentsList!.find(
+                          ? resolvedenviromentList!.find(
                             (env) => env.id === field.value
                           )?.title
                           : "Select a environment from this list"}
@@ -336,7 +337,7 @@ export default function TestCaseForm({
                       <CommandList>
                         <CommandEmpty>No environment found.</CommandEmpty>
                         <CommandGroup>
-                          {fetchedEnviromentsList!.map((env) => (
+                          {resolvedenviromentList!.map((env) => (
                             <CommandItem
                               value={env.id?.toString()}
                               key={env.id}
@@ -494,8 +495,8 @@ export default function TestCaseForm({
                   <PlusCircleIcon className="" />
                 </Button>
                 <Button type="button" variant={"destructive"} onClick={() => {
-                  if (fetchedTestCase?.stepList[index]?.id) {
-                    void deleteStepFromDB(fetchedTestCase.stepList[index].id)
+                  if (resolvedTestCase?.stepList[index]?.id) {
+                    void deleteStepFromDB(resolvedTestCase.stepList[index].id)
                   };
                   remove(index)
                 }

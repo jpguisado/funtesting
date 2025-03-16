@@ -33,7 +33,7 @@ export default async function Page() {
                     {userStories.map((HU) => {
                         return (
                             <TableRow key={HU.id}>
-                                <TableCell>{HU.userEpic?.title}</TableCell>
+                                {/* <TableCell>{HU.userEpic?.title}</TableCell> */}
                                 <TableCell>{HU.title}</TableCell>
                                 <TableCell className="text-right flex gap-1">
                                     <Link href={'/user-story/edit/?id=' + HU.id!.toString()}><Edit2Icon size={18} /></Link>

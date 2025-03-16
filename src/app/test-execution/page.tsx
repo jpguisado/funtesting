@@ -7,35 +7,60 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer"
+import { fetchEnvironment, fetchTestCaseWithFilters } from "@/server/data-layer";
+import GenericFilter from "./generic-filter";
+import { fetchUserStories } from "@/server/data-layer/user-story/user-story-data-layer";
+import Link from "next/link";
+import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
 import { EyeIcon } from "lucide-react";
-import Link from "next/link"
-import FilterByExecutionEnvironment from "./filter-by-environment";
 import CopyIntoEnvironment from "./copy-into-environment";
-export const dynamic = 'force-dynamic'
-
-export default async function Page(props: {
+type DynamicData = {
+    id: number;
+    title: string;
+}
+export default async function IdeasPage(props: {
     searchParams?: Promise<{
-        envId?: string;
-        page?: string;
+        cicleId?: string;
+        environmentId?: string;
+        userStoryId?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
-    const query = searchParams?.envId || '';
-    const testCaseWithEnv = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(query));
-    const environments = await fetchEnvironment();
-
+    const env = searchParams?.environmentId ?? '';
+    const us = searchParams?.userStoryId ?? '';
+    const cicleId = searchParams?.cicleId ?? '';
+    const environments = fetchEnvironment();
+    const userStories = fetchUserStories();
+    const testCyclesId = fetchTestCycleList();
+    const testCaseWithEnv = await fetchTestCaseWithFilters(parseInt(env), parseInt(us), parseInt(cicleId));
     return (
         <div>
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
                 <CopyIntoEnvironment
-                    environments={environments}
+                    environments={await environments}
                 />
             </div>
-            <FilterByExecutionEnvironment
-                environments={environments}
-            />
+            <div className="flex gap-3">
+                {/* Filter by Cicle */}
+                <GenericFilter<DynamicData>
+                    label={"Ciclo de pruebas"}
+                    promise={testCyclesId}
+                    param="cicleId"
+                />
+                {/* Filter by env */}
+                <GenericFilter<DynamicData>
+                    label={"Entorno"}
+                    promise={environments}
+                    param="environmentId"
+                />
+                {/* Filter by User Story */}
+                <GenericFilter<DynamicData>
+                    label={"Historia de usuario"}
+                    promise={userStories}
+                    param="userStoryId"
+                />
+            </div>
             <Table className="mt-3">
                 <TableCaption>A list of your tests.</TableCaption>
                 <TableHeader>
@@ -54,16 +79,16 @@ export default async function Page(props: {
                         <TableCell colSpan={7} className="font-medium text-center text-slate-500">Selecciona un entorno</TableCell>
                     </TableRow> : testCaseWithEnv?.map((test) => {
                         return (
-                            <TableRow key={test.testCaseId}>
-                                <TableCell className="font-medium">{test.testCaseId}</TableCell>
-                                <TableCell className="font-medium">{test.testCase.executionOrder}</TableCell>
+                            <TableRow key={test.testCase?.id}>
+                                <TableCell className="font-medium">{test.testCase?.id}</TableCell>
+                                <TableCell className="font-medium">{test.testCase?.executionOrder}</TableCell>
                                 <TableCell className="font-medium">{test.executor?.name}</TableCell>
-                                <TableCell>{test.testCase.titleCase}</TableCell>
+                                <TableCell>{test.testCase?.titleCase}</TableCell>
                                 <TableCell><span className={`px-[5px] py-[2px] rounded-lg ${test.status === 'pass' ? 'bg-green-200' : 'bg-red-200'}`}>{test.status}</span></TableCell>
                                 {/* TODO: change step status */}
-                                <TableCell>{test.testCase.stepList.filter((step) => step.stepStatusByEnv.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase.stepList.length}</TableCell>
+                                <TableCell>{test.testCase?.stepList.filter((step) => step.stepStatusByEnv?.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase?.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
-                                    <Link href={'/test-execution/details/?id=' + test.testCaseId.toString() + '&env=' + test.environmentId.toString()}><EyeIcon /></Link>
+                                    <Link href={'/test-execution/details/?id=' + test.testCase?.id?.toString() + '&env=' + parseInt(env).toString()}><EyeIcon /></Link>
                                 </TableCell>
                             </TableRow>
                         )
@@ -71,5 +96,5 @@ export default async function Page(props: {
                 </TableBody>
             </Table>
         </div>
-    )
+    );
 }

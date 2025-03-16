@@ -9,16 +9,18 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { use } from "react";
 interface BaseItem {
     id: string | number;
     title: string;
 }
 interface ClientComponentProps<T extends BaseItem> {
-    data: T[];
+    promise: Promise<T[]>;
     param: string;
     label: string;
 }
-export default function GenericFilter<T extends BaseItem>({ data, param, label }: ClientComponentProps<T>) {
+export default function GenericFilter<T extends BaseItem>({ promise, param, label }: ClientComponentProps<T>) {
+    const data = use(promise);
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -32,7 +34,7 @@ export default function GenericFilter<T extends BaseItem>({ data, param, label }
         replace(`${pathname}?${params.toString()}`);
     }
     return (
-        <Select onValueChange={(value) => { handleSearch(value.toString()) }}>
+        <Select defaultValue={searchParams.get(param) ?? ''} onValueChange={(value) => { handleSearch(value.toString()) }}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={label} />
             </SelectTrigger>

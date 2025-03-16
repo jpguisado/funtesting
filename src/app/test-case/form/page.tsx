@@ -19,10 +19,10 @@ export default async function Page(
     const testCaseId = searchParams?.testId ?? '';
     const environmentId = searchParams?.envId ?? '';
 
-    const userStories = await fetchUserStories();
-    const editedCase = await fetchTestCaseByIdAndEnvironment(parseInt(testCaseId, 10), parseInt(environmentId, 10));
-    const enviromentList = await fetchEnvironment();
-    const testCyclesList = await fetchTestCycleList();
+    const userStories = fetchUserStories();
+    const editedCase = fetchTestCaseByIdAndEnvironment(parseInt(testCaseId, 10), parseInt(environmentId, 10));
+    const enviromentList = fetchEnvironment();
+    const testCyclesList = fetchTestCycleList();
     return (
         <>
             <div className="flex items-center justify-evenly mb-6">
@@ -39,7 +39,7 @@ export default async function Page(
                 enviromentList={enviromentList}
                 editedCase={editedCase}
                 userStoriesList={userStories}
-                userList={clerkUsers}
+                resolvedUserList={clerkUsers}
             />
         </>
     )

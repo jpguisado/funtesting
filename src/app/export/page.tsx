@@ -1,6 +1,5 @@
 import { fetchEnvironment, fetchTestCasesByEnvironment } from "@/server/data-layer";
 import SelectFromClient from "./select-from-client";
-import FilterByExecutionEnvironment from "../test-execution/filter-by-environment";
 import {
     Table,
     TableBody,
@@ -10,6 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import GenericFilter from "../test-execution/generic-filter";
 export const dynamic = 'force-dynamic'
 
 export default async function Page(props: {
@@ -19,7 +19,7 @@ export default async function Page(props: {
 }) {
     const searchParams = await props.searchParams;
     const query = searchParams?.query ?? '';
-    const environments = await fetchEnvironment();
+    const environments = fetchEnvironment();
     const testCases = await fetchTestCasesByEnvironment(parseInt(query));
     return (
         <div>
@@ -28,8 +28,10 @@ export default async function Page(props: {
                     <div className="text-2xl font-bold">Test del proyecto:</div>
                     <SelectFromClient testCasesList={testCases} />
                 </div>
-                <FilterByExecutionEnvironment
-                    environments={environments}
+                <GenericFilter
+                    promise={environments}
+                    label="Entornos"
+                    param="envId"
                 />
                 <Table className="">
                     <TableCaption>A list of your tests.</TableCaption>
