@@ -18,9 +18,9 @@ type DynamicData = {
     id: number;
     title: string;
 }
-export default async function IdeasPage(props: {
+export default async function Page(props: {
     searchParams?: Promise<{
-        cicleId?: string;
+        cycleId?: string;
         environmentId?: string;
         userStoryId?: string;
     }>;
@@ -28,32 +28,35 @@ export default async function IdeasPage(props: {
     const searchParams = await props.searchParams;
     const env = searchParams?.environmentId ?? '';
     const us = searchParams?.userStoryId ?? '';
-    const cicleId = searchParams?.cicleId ?? '';
+    const cycleId = searchParams?.cycleId ?? '';
     const environments = fetchEnvironment();
     const userStories = fetchUserStories();
     const testCyclesId = fetchTestCycleList();
-    const testCaseWithEnv = await fetchTestCaseWithFilters(parseInt(env), parseInt(us), parseInt(cicleId));
+    const testCaseWithEnv = await fetchTestCaseWithFilters(parseInt(env), parseInt(us), parseInt(cycleId));
     return (
         <div>
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
-                <CopyIntoEnvironment
-                    environments={await environments}
-                />
+                <div className="flex gap-3">
+                    <div className="text-blue-500 font-bold">Copiar entre ciclos</div>
+                    <CopyIntoEnvironment
+                        environments={await environments}
+                    />
+                </div>
             </div>
             <div className="flex gap-3">
                 {/* Filter by Cicle */}
                 <GenericFilter<DynamicData>
                     label={"Ciclo de pruebas"}
                     promise={testCyclesId}
-                    param="cicleId"
+                    param="cycleId"
                 />
                 {/* Filter by env */}
                 <GenericFilter<DynamicData>
                     label={"Entorno"}
                     promise={environments}
                     param="environmentId"
-                />
+                />w
                 {/* Filter by User Story */}
                 <GenericFilter<DynamicData>
                     label={"Historia de usuario"}
@@ -88,7 +91,7 @@ export default async function IdeasPage(props: {
                                 {/* TODO: change step status */}
                                 <TableCell>{test.testCase?.stepList.filter((step) => step.stepStatusByEnv?.filter((status) => status.status === 'pass').length !== 0).length + ' de ' + test.testCase?.stepList.length}</TableCell>
                                 <TableCell className="text-right flex gap-3">
-                                    <Link href={'/test-execution/details/?id=' + test.testCase?.id?.toString() + '&env=' + parseInt(env).toString()}><EyeIcon /></Link>
+                                    <Link href={'/test-execution/details/?id=' + test.testCase?.id?.toString() + '&cycleId=' + parseInt(cycleId) + '&env=' + parseInt(env).toString()}><EyeIcon /></Link>
                                 </TableCell>
                             </TableRow>
                         )

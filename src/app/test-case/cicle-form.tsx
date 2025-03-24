@@ -26,7 +26,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
@@ -34,7 +34,9 @@ import { cicleSchema } from "@/schemas/schemas";
 import { testCycleType } from "@/types/types";
 import { createTestCycle, updateTestCycle } from "@/server/data-layer/cycles/test-cycles-actions";
 
-export function CicleForm({ editedTestCicle: editedTestCicle } : { editedTestCicle?: testCycleType }) {
+export function CicleForm({ editedTestCicle: editedTestCicle }: {
+  editedTestCicle?: testCycleType,
+}) {
   const form = useForm<testCycleType>({
     resolver: zodResolver(cicleSchema),
     defaultValues: editedTestCicle ?? {
@@ -64,7 +66,7 @@ export function CicleForm({ editedTestCicle: editedTestCicle } : { editedTestCic
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Nuevo ciclo</Button>
+      <Button variant="ghost" className="text-blue-500 font-bold">Nuevo ciclo</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -166,7 +168,7 @@ export function CicleForm({ editedTestCicle: editedTestCicle } : { editedTestCic
                       </PopoverContent>
                     </Popover>
                     <FormDescription>
-                    Indica la fecha estimada de fin del ciclo de ejecución del plan de pruebas
+                      Indica la fecha estimada de fin del ciclo de ejecución del plan de pruebas
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

@@ -14,6 +14,9 @@ import { Edit2Icon, FilePlus2 } from "lucide-react";
 import ChangeCaseOrder from "./edit/change-case-order";
 import DeleteTestCase from "./delete-case";
 import GenericFilter from "../test-execution/generic-filter";
+import { CicleForm } from "./cicle-form";
+import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
+import { UserStoryDialogForm } from "./user-story-dialog-form";
 
 export default async function Page(props: {
     searchParams?: Promise<{
@@ -23,12 +26,17 @@ export default async function Page(props: {
     const searchParams = await props.searchParams;
     const envId = searchParams?.envId ?? '';
     const environments = fetchEnvironment();
+    const testCyclesList = fetchTestCycleList()
     const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(envId));
     return (
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
                 <div className="text-2xl font-bold">Test del proyecto:</div>
-                <Link className="text-blue-500 font-bold flex items-center gap-1" href={'test-case/create'}>crear <FilePlus2 size={18} /></Link>
+                <nav className="flex gap-3 w-full justify-end">
+                    <Link className="text-blue-500 font-bold flex items-center gap-1" href={'test-case/create'}>crear <FilePlus2 size={18} /></Link>
+                    <Link className="text-blue-500 hover:text-blue-400 flex items-center font-bold gap-1" href={'/test-case/create'}>Nueva Épica <FilePlus2 size={18} /></Link>
+                    <Link className="text-blue-500 hover:text-blue-400 flex items-center font-bold gap-1" href={'/test-case/create'}>Nueva HU <FilePlus2 size={18} /></Link>
+                </nav>
             </div>
             <GenericFilter
                 promise={environments}

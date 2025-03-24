@@ -1,9 +1,16 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import { Check, ChevronDown, ChevronsUpDown, ChevronUp, CopyCheckIcon, PlusCircleIcon, Trash2Icon } from "lucide-react"
-import { Button } from "@/components/ui/button"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import {
+  Check,
+  ChevronDown,
+  ChevronsUpDown,
+  ChevronUp,
+  CopyCheckIcon,
+  PlusCircleIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,67 +19,99 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "@/hooks/use-toast"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Textarea } from "@/components/ui/textarea"
-import type { userStoryListType, userListType, testCaseType, environmentListType, stepType, testCycleType } from "@/types/types"
-import { stepListSchema, testCaseSchema } from "@/schemas/schemas"
-import { deleteStep } from "@/server/actions"
-import { createTestCaseWithSteps, updateTestCase } from "@/server/data-layer/test-case/test-case-actions"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { use } from "react"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Textarea } from "@/components/ui/textarea";
+import type {
+  userStoryListType,
+  userListType,
+  testCaseType,
+  environmentListType,
+  stepType,
+  testCycleType,
+} from "@/types/types";
+import { stepListSchema, testCaseSchema } from "@/schemas/schemas";
+import { deleteStep } from "@/server/actions";
+import {
+  createTestCaseWithSteps,
+  updateTestCase,
+} from "@/server/data-layer/test-case/test-case-actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { use } from "react";
+import ComboboxField from "./comboboxField";
 
 export default function TestCaseForm({
   editedCase,
   userStoriesList,
   resolvedUserList,
   enviromentList,
-  testCyclePayload
+  testCyclePayload,
 }: {
-  editedCase ? : Promise<testCaseType>,
-  userStoriesList: Promise<userStoryListType>,
-  resolvedUserList: userListType,
-  enviromentList: Promise<environmentListType>,
+  editedCase?: Promise<testCaseType>;
+  userStoriesList: Promise<userStoryListType>;
+  resolvedUserList: userListType;
+  enviromentList: Promise<environmentListType>;
   testCyclePayload: Promise<testCycleType[]>;
 }) {
-  const resolvedTestCase = editedCase ? use(editedCase) : undefined
-  const resolvedUserStoriesList = userStoriesList ? use(userStoriesList) : undefined
-  const resolvedenviromentList = enviromentList ? use(enviromentList) : undefined
-  const resolvedtestCyclesList = testCyclePayload ? use(testCyclePayload) : undefined
+  const resolvedTestCase = editedCase ? use(editedCase) : undefined;
+  const resolvedUserStoriesList = userStoriesList
+    ? use(userStoriesList)
+    : undefined;
+  const resolvedenviromentList = enviromentList
+    ? use(enviromentList)
+    : undefined;
+  const resolvedtestCyclesList = testCyclePayload
+    ? use(testCyclePayload)
+    : undefined;
 
   const form = useForm<testCaseType>({
     resolver: zodResolver(testCaseSchema),
     defaultValues: resolvedTestCase ?? {
-      titleCase: '',
-      preconditions: '',
-      stepList: [{
-        order: 0,
-        expectedResult: '',
-        stepDescription: '',
-        isBlocker: '',
-      }],
-      relatedStory: {
-      },
+      titleCase: "",
+      preconditions: "",
+      stepList: [
+        {
+          order: 0,
+          expectedResult: "",
+          stepDescription: "",
+          isBlocker: "",
+        },
+      ],
+      relatedStory: {},
       environmentWhereIsExecuted: {
-        environment: {
-        },
-        executor: {
-        },
-        cicle: {
-        }
+        environment: {},
+        executor: {},
+        cicle: {},
       },
       updatedAt: new Date(),
     },
-  })
+  });
   const { control, handleSubmit, reset } = form;
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "stepList",
-    keyName: 'key'
+    keyName: "key",
   });
 
   async function onSubmit(data: testCaseType) {
@@ -88,13 +127,13 @@ export default function TestCaseForm({
       await updateTestCase(data, resolvedTestCase!.id!);
     } else {
       await createTestCaseWithSteps(data);
-      reset()
+      reset();
     }
   }
   async function deleteStepFromDB(stepId: number) {
     if (stepId) {
-      await deleteStep(stepId)
-    };
+      await deleteStep(stepId);
+    }
   }
 
   /**
@@ -103,19 +142,28 @@ export default function TestCaseForm({
    * @param toIndex destination position
    */
   function changeStepOrder(fromIndex: number, toIndex: number) {
-    const stepList = stepListSchema.safeParse(form.getValues('stepList')).data!;
+    const stepList = stepListSchema.safeParse(form.getValues("stepList")).data!;
     if (toIndex >= 0 && toIndex < stepList.length) {
       stepList[fromIndex]!.order = toIndex;
       stepList[toIndex]!.order = fromIndex;
-      stepList.sort((a: stepType, b: stepType) => a.order - b.order)
+      stepList.sort((a: stepType, b: stepType) => a.order - b.order);
       move(fromIndex, toIndex);
-      form.setValue('stepList', stepList);
+      form.setValue("stepList", stepList);
     }
   }
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex gap-3">
+          {/* <ComboboxField
+            control={control}
+            fieldName={"environmentWhereIsExecuted"}
+            label={"Cicle:"}
+            form={form}
+            list={resolvedtestCyclesList}
+            formSetValue={"environmentWhereIsExecuted.cicle"}
+            fieldDescription={"Test cycle"}
+          /> */}
           <FormField
             control={control}
             name="environmentWhereIsExecuted.cicle.id"
@@ -130,12 +178,12 @@ export default function TestCaseForm({
                         role="combobox"
                         className={cn(
                           "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value
                           ? resolvedtestCyclesList!.find(
-                            (cicle) => cicle.id === field.value
+                            (cicle) => cicle.id === field.value,
                           )?.title
                           : "Select a cicle from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -146,14 +194,17 @@ export default function TestCaseForm({
                     <Command>
                       <CommandInput placeholder="Search Cicle..." />
                       <CommandList>
-                        <CommandEmpty>No cicle found.</CommandEmpty>
+                        <CommandEmpty>Not found.</CommandEmpty>
                         <CommandGroup>
                           {resolvedtestCyclesList!.map((cicle) => (
                             <CommandItem
                               value={cicle.title}
                               key={cicle.title}
                               onSelect={() => {
-                                form.setValue("environmentWhereIsExecuted.cicle", cicle)
+                                form.setValue(
+                                  "environmentWhereIsExecuted.cicle",
+                                  cicle,
+                                );
                               }}
                             >
                               <Check
@@ -161,7 +212,7 @@ export default function TestCaseForm({
                                   "mr-2 h-4 w-4",
                                   cicle.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                               {cicle.title}
@@ -193,12 +244,12 @@ export default function TestCaseForm({
                         role="combobox"
                         className={cn(
                           "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value
                           ? resolvedUserStoriesList!.find(
-                            (US) => US.id === field.value
+                            (US) => US.id === field.value,
                           )?.title
                           : "Select user story from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -216,7 +267,7 @@ export default function TestCaseForm({
                               value={US.title}
                               key={US.title}
                               onSelect={() => {
-                                form.setValue("relatedStory", US)
+                                form.setValue("relatedStory", US);
                               }}
                             >
                               <Check
@@ -224,7 +275,7 @@ export default function TestCaseForm({
                                   "mr-2 h-4 w-4",
                                   US.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                               {US.title}
@@ -256,12 +307,12 @@ export default function TestCaseForm({
                         role="combobox"
                         className={cn(
                           "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value
                           ? resolvedUserList!.find(
-                            (user) => user.id === field.value
+                            (user) => user.id === field.value,
                           )?.name
                           : "Select a user from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -279,7 +330,10 @@ export default function TestCaseForm({
                               value={user.id}
                               key={user.id}
                               onSelect={() => {
-                                form.setValue("environmentWhereIsExecuted.executor", user)
+                                form.setValue(
+                                  "environmentWhereIsExecuted.executor",
+                                  user,
+                                );
                               }}
                             >
                               <Check
@@ -287,7 +341,7 @@ export default function TestCaseForm({
                                   "mr-2 h-4 w-4",
                                   user.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                               {user.name}
@@ -299,7 +353,8 @@ export default function TestCaseForm({
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  This is the user who will be responsible for the test execution
+                  This is the user who will be responsible for the test
+                  execution
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -310,7 +365,9 @@ export default function TestCaseForm({
             name="environmentWhereIsExecuted.environment.id"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
-                <FormLabel>Environment where it&apos; ll be executed:</FormLabel>
+                <FormLabel>
+                  Environment where it&apos; ll be executed:
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -319,12 +376,12 @@ export default function TestCaseForm({
                         role="combobox"
                         className={cn(
                           "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value
                           ? resolvedenviromentList!.find(
-                            (env) => env.id === field.value
+                            (env) => env.id === field.value,
                           )?.title
                           : "Select a environment from this list"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -342,7 +399,10 @@ export default function TestCaseForm({
                               value={env.id?.toString()}
                               key={env.id}
                               onSelect={() => {
-                                form.setValue("environmentWhereIsExecuted.environment", env)
+                                form.setValue(
+                                  "environmentWhereIsExecuted.environment",
+                                  env,
+                                );
                               }}
                             >
                               <Check
@@ -350,7 +410,7 @@ export default function TestCaseForm({
                                   "mr-2 h-4 w-4",
                                   env.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                               {env.title}
@@ -379,9 +439,7 @@ export default function TestCaseForm({
                 <FormControl>
                   <Input placeholder="Indica el título del caso" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Nombre descriptivo del caso
-                </FormDescription>
+                <FormDescription>Nombre descriptivo del caso</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -392,7 +450,10 @@ export default function TestCaseForm({
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Estado del test</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select the initial status of the test" />
@@ -485,28 +546,63 @@ export default function TestCaseForm({
             />
             <div className="grid col-span-2 gap-1">
               <div className="flex gap-1">
-                <Button type="button" variant={"default"} onClick={() => append({
-                  stepDescription: "",
-                  expectedResult: "",
-                  isBlocker: "",
-                  order: index + 1
-                })
-                }>
+                <Button
+                  type="button"
+                  variant={"default"}
+                  onClick={() =>
+                    append({
+                      stepDescription: "",
+                      expectedResult: "",
+                      isBlocker: "",
+                      order: index + 1,
+                    })
+                  }
+                >
                   <PlusCircleIcon className="" />
                 </Button>
-                <Button type="button" variant={"destructive"} onClick={() => {
-                  if (resolvedTestCase?.stepList[index]?.id) {
-                    void deleteStepFromDB(resolvedTestCase.stepList[index].id)
-                  };
-                  remove(index)
-                }
-                }
-                ><Trash2Icon /></Button>
-                <Button type="button" variant={"outline"} onClick={() => { changeStepOrder(index, index - 1) }}><ChevronUp className="" /></Button>
-                <Button type="button" variant={"outline"} onClick={() => { changeStepOrder(index, index + 1) }}><ChevronDown className="" /></Button>
+                <Button
+                  type="button"
+                  variant={"destructive"}
+                  onClick={() => {
+                    if (resolvedTestCase?.stepList[index]?.id) {
+                      void deleteStepFromDB(
+                        resolvedTestCase.stepList[index].id,
+                      );
+                    }
+                    remove(index);
+                  }}
+                >
+                  <Trash2Icon />
+                </Button>
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  onClick={() => {
+                    changeStepOrder(index, index - 1);
+                  }}
+                >
+                  <ChevronUp className="" />
+                </Button>
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  onClick={() => {
+                    changeStepOrder(index, index + 1);
+                  }}
+                >
+                  <ChevronDown className="" />
+                </Button>
               </div>
               <div className="flex gap-3">
-                <Button type="button" variant={"outline"} onClick={() => { console.log(index) }}><CopyCheckIcon className="" /></Button>
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  onClick={() => {
+                    console.log(index);
+                  }}
+                >
+                  <CopyCheckIcon className="" />
+                </Button>
               </div>
             </div>
           </div>
@@ -514,5 +610,5 @@ export default function TestCaseForm({
         <Button type="submit">Guardar</Button>
       </form>
     </Form>
-  )
+  );
 }

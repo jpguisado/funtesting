@@ -207,7 +207,7 @@ export async function fetchEnvironment() {
     })
 }
 
-export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, environmentId: number) {
+export async function fetchTestCaseByEnvironmentCycleAndId(testCaseId: number, cycleId: number, environmentId: number) {
     const rawTestCase = await db.testCase.findFirst({
         where: {
             id: testCaseId
@@ -236,6 +236,7 @@ export async function fetchTestCaseByEnvironmentAndId(testCaseId: number, enviro
                         },
                         where: {
                             environmentId: environmentId,
+                            cicleId: cycleId
                         }
                     }
                 },

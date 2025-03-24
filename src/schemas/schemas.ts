@@ -76,7 +76,7 @@ export const cicleSchema = baseEntitySchema.extend({
 // Environment execution status schema
 const executionStatusSchema = z.object({
     environment: environmentSchema,
-    executor: userSchema,
+    executor: userSchema, // TODO En este entorno el responsable es ...
     cicle: cicleSchema,
     status: z.string().min(2, { 
       message: 'At least we need two chars' 
