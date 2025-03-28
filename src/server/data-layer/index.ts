@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { testCaseListType } from "@/app/export/select-from-client";
-import { testCaseInEnvironmentSchema } from "@/schemas/schemas";
+import { environmentSchema, testCaseInEnvironmentSchema } from "@/schemas/schemas";
 
 const usersFromClerk = await (await clerkClient()).users.getUserList();
 export const clerkUsers = usersFromClerk.data.map((user) => {
@@ -204,6 +204,21 @@ export async function fetchEnvironment() {
             title: true,
             URL: true,
         }
+    })
+}
+
+export async function fetchEnvironmentById(envId: number) {
+    return await db.environment.findFirst({
+        select: {
+            id: true,
+            title: true,
+            URL: true,
+        },
+        where: {
+            id: envId
+        }
+    }).then((env) => {
+        return environmentSchema.safeParse(env).data!
     })
 }
 

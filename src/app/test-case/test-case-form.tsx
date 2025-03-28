@@ -59,7 +59,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { use } from "react";
-import ComboboxField from "./comboboxField";
 
 export default function TestCaseForm({
   editedCase,
@@ -155,15 +154,6 @@ export default function TestCaseForm({
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex gap-3">
-          {/* <ComboboxField
-            control={control}
-            fieldName={"environmentWhereIsExecuted"}
-            label={"Cicle:"}
-            form={form}
-            list={resolvedtestCyclesList}
-            formSetValue={"environmentWhereIsExecuted.cicle"}
-            fieldDescription={"Test cycle"}
-          /> */}
           <FormField
             control={control}
             name="environmentWhereIsExecuted.cicle.id"

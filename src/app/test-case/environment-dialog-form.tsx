@@ -7,20 +7,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import UserEpicForm from "../user-epic/user-epic-form";
+import EnvironmentForm from "../environment/environment-form";
 
-export function UserEpicDialogForm() {
+export function EnvironmentDialogForm() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-blue-500 font-bold">Nueva épica</Button>
+        <Button variant="ghost" className="text-blue-500 font-bold">Nuevo entorno</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nueva épica</DialogTitle>
+          <DialogTitle>Nuevo entorno</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
-          <UserEpicForm
+          <EnvironmentForm
           />
         </div>
       </DialogContent>
