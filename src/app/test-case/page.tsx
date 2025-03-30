@@ -1,4 +1,4 @@
-import { fetchEnvironment, fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer";
+import { fetchTestCaseWithEnvirontmentByEnvId } from "@/server/data-layer";
 import {
     Table,
     TableBody,
@@ -14,6 +14,7 @@ import { Edit2Icon, FilePlus2 } from "lucide-react";
 import ChangeCaseOrder from "./edit/change-case-order";
 import DeleteTestCase from "./delete-case";
 import GenericFilter from "../test-execution/generic-filter";
+import { fetchEnvironmentList } from "@/server/data-layer/environment/queries";
 
 export default async function Page(props: {
     searchParams?: Promise<{
@@ -22,7 +23,7 @@ export default async function Page(props: {
 }) {
     const searchParams = await props.searchParams;
     const envId = searchParams?.envId ?? '';
-    const environments = fetchEnvironment();
+    const environments = fetchEnvironmentList();
     const testCases = await fetchTestCaseWithEnvirontmentByEnvId(parseInt(envId));
     return (
         <div className="flex flex-col gap-3">

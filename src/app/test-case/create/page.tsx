@@ -1,4 +1,4 @@
-import { clerkUsers, fetchEnvironment } from "@/server/data-layer";
+import { clerkUsers } from "@/server/data-layer";
 import TestCaseForm from "../test-case-form";
 import { fetchUserStories } from "@/server/data-layer/user-story/user-story-data-layer";
 import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
@@ -7,10 +7,11 @@ import { CicleForm } from "../cicle-form";
 import { UserStoryDialogForm } from "../user-story-dialog-form";
 import { UserEpicDialogForm } from "../epic-dialog-form";
 import { EnvironmentDialogForm } from "../environment-dialog-form";
+import { fetchEnvironmentList } from "@/server/data-layer/environment/queries";
 
 export default function Page() {
     const userStories = fetchUserStories();
-    const enviromentList = fetchEnvironment();
+    const enviromentList = fetchEnvironmentList();
     const testCyclesList = fetchTestCycleList();
     return (
         <Suspense fallback={'...'}>

@@ -18,6 +18,7 @@ import { environmentSchema } from "@/schemas/schemas"
 import { environmentType } from "@/types/types"
 import SubmitButton from "@/components/ui/submit-button"
 import { use } from "react"
+import { createNewEnvironment } from "@/server/data-layer/environment/mutations"
 
 export default function EnvironmentForm({ environment: payload }: { environment?: Promise<environmentType> }) {
 
@@ -43,7 +44,7 @@ export default function EnvironmentForm({ environment: payload }: { environment?
         if (fetchedEnvironment) {
             // await updateUserEpic(data, fetchedEnvironment.id!);
         } else {
-            // await createUserEpic(data);
+            await createNewEnvironment(data);
             reset();
         }
     };

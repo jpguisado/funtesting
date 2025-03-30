@@ -197,31 +197,6 @@ export async function fetchStringOfTest() {
     })
 }
 
-export async function fetchEnvironment() {
-    return await db.environment.findMany({
-        select: {
-            id: true,
-            title: true,
-            URL: true,
-        }
-    })
-}
-
-export async function fetchEnvironmentById(envId: number) {
-    return await db.environment.findFirst({
-        select: {
-            id: true,
-            title: true,
-            URL: true,
-        },
-        where: {
-            id: envId
-        }
-    }).then((env) => {
-        return environmentSchema.safeParse(env).data!
-    })
-}
-
 export async function fetchTestCaseByEnvironmentCycleAndId(testCaseId: number, cycleId: number, environmentId: number) {
     const rawTestCase = await db.testCase.findFirst({
         where: {

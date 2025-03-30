@@ -99,7 +99,7 @@ model StepStatusByEnvironment {
   cicleId Int @default(1)
   status String
   comment String ?
-  @@id([environmentId, stepId])
+  @@id([environmentId, stepId, cicleId])
 }
 
 model Cicle {
@@ -109,7 +109,7 @@ model Cicle {
     endDate DateTime
     status String
 
-    TestCaseInEnvironment TestCaseInEnvironment[]
+    TestCaseInEnvironment TestCaseInEnvironment[] 
     StepStatusByEnvironment StepStatusByEnvironment[]
 }
 

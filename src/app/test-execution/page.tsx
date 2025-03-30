@@ -7,13 +7,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchEnvironment, fetchTestCaseWithFilters } from "@/server/data-layer";
+import { fetchTestCaseWithFilters } from "@/server/data-layer";
 import GenericFilter from "./generic-filter";
 import { fetchUserStories } from "@/server/data-layer/user-story/user-story-data-layer";
 import Link from "next/link";
 import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
 import { EyeIcon } from "lucide-react";
-import CopyIntoEnvironment from "./copy-into-environment";
+import { fetchEnvironmentList } from "@/server/data-layer/environment/queries";
+import { CopyIntoEnvironmentDialogForm } from "./copy-into-env-dialog-form";
 type DynamicData = {
     id: number;
     title: string;
@@ -29,7 +30,7 @@ export default async function Page(props: {
     const env = searchParams?.environmentId ?? '';
     const us = searchParams?.userStoryId ?? '';
     const cycleId = searchParams?.cycleId ?? '';
-    const environments = fetchEnvironment();
+    const environments = fetchEnvironmentList();
     const userStories = fetchUserStories();
     const testCyclesId = fetchTestCycleList();
     const testCaseWithEnv = await fetchTestCaseWithFilters(parseInt(env), parseInt(us), parseInt(cycleId));
@@ -38,9 +39,10 @@ export default async function Page(props: {
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
                 <div className="flex gap-3">
-                    <div className="text-blue-500 font-bold">Copiar entre ciclos</div>
-                    <CopyIntoEnvironment
-                        environments={await environments}
+                    <div className="text-blue-500 font-bold">Asociar pruebas a un ciclo</div>
+                    <div className="text-blue-500 font-bold">Asociar pruebas a otro entorno</div>
+                    <CopyIntoEnvironmentDialogForm
+                        environmentListPromise={environments}
                     />
                 </div>
             </div>
@@ -56,7 +58,7 @@ export default async function Page(props: {
                     label={"Entorno"}
                     promise={environments}
                     param="environmentId"
-                />w
+                />
                 {/* Filter by User Story */}
                 <GenericFilter<DynamicData>
                     label={"Historia de usuario"}
