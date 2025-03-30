@@ -15,6 +15,7 @@ import { fetchTestCycleList } from "@/server/data-layer/cycles/cycles-data";
 import { EyeIcon } from "lucide-react";
 import { fetchEnvironmentList } from "@/server/data-layer/environment/queries";
 import { CopyIntoEnvironmentDialogForm } from "./copy-into-env-dialog-form";
+import { CopyIntoTestCycleDialogForm } from "./copy-into-cycle-dialog-form";
 type DynamicData = {
     id: number;
     title: string;
@@ -39,8 +40,9 @@ export default async function Page(props: {
             <div className="flex items-center justify-between mb-12">
                 <div className="text-2xl font-bold">Lista de test disponibles:</div>
                 <div className="flex gap-3">
-                    <div className="text-blue-500 font-bold">Asociar pruebas a un ciclo</div>
-                    <div className="text-blue-500 font-bold">Asociar pruebas a otro entorno</div>
+                    <CopyIntoTestCycleDialogForm
+                        testCyclesListPromise={testCyclesId}
+                    />
                     <CopyIntoEnvironmentDialogForm
                         environmentListPromise={environments}
                     />
